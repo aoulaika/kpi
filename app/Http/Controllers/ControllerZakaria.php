@@ -9,11 +9,10 @@
 namespace App\Http\Controllers;
 
 
-class ControllerZakaria {
+class ControllerZakaria extends Controller{
 
     public function login(){
-        return "hello";
-        //return View('index');
+        return View('index');
     }
 
     public function dashboard(){
