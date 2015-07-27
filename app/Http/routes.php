@@ -16,12 +16,12 @@ Route::get('/', [
     'uses' => 'ControllerZakaria@login'
 ]);
 
-Route::get('/', [
+Route::get('/dashboard', [
     'as' => 'dashboard',
     'uses' => 'ControllerZakaria@dashboard'
 ]);
 
-Route::get('/', [
+Route::get('/forgot', [
     'as' => 'forgot',
     'uses' => 'ControllerZakaria@forgot'
 ]);

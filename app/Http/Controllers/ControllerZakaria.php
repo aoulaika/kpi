@@ -9,7 +9,7 @@
 namespace App\Http\Controllers;
 
 
-class ControllerZakaria {
+class ControllerZakaria extends Controller{
     public function login(){
         return View('index');
     }
