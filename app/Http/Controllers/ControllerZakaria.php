@@ -10,5 +10,16 @@ namespace App\Http\Controllers;
 
 
 class ControllerZakaria {
+    public function login(){
+        return View('index');
+    }
+
+    public function dashboard(){
+        return View('managerViews/dashboard');
+    }
+    
+    public function forgot(){
+        return View('forgot');
+    }
 
 } 

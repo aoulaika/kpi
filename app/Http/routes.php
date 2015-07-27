@@ -11,6 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [
+    'as' => 'login',
+    'uses' => 'ControllerZakaria@login'
+]);
+
+Route::get('/', [
+    'as' => 'dashboard',
+    'uses' => 'ControllerZakaria@dashboard'
+]);
+
+Route::get('/', [
+    'as' => 'forgot',
+    'uses' => 'ControllerZakaria@forgot'
+]);
