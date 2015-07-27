@@ -22,7 +22,7 @@
 <!-- Where all the magic happens -->
 <!-- LOGIN FORM -->
     <div class="text-center" style="padding:50px 0">
-        <div class="logo"><img src="hp.png" class="center-block" style="width:100px"></div>
+        <div class="logo"><img src="{{ asset('/img/hp.png') }}" class="center-block" style="width:100px"></div>
         @yield('content')
     </div>
     <script src="{{ asset('/js/fonctions.js') }}"></script>
