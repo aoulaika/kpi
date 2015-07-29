@@ -12,8 +12,11 @@
                     <i class="fa fa-calendar"></i> Choose a Date
                     <i class="fa fa-caret-down"></i>
                 </button>
+                <h3 id="rangelabel" style="margin-left: 50px;"> All </h3>
             </div>
+
         </div><!-- /.form group -->
+
         <div class="tab-content no-padding">
             <div  class="row" style="padding-top: 20px;">
                 <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
@@ -36,17 +39,17 @@
                     var rp1 = radialProgress(document.getElementById('div1'))
                             .label("Total CI Usage")
                             .diameter(180)
-                            .value(150)
+                            .value( {{ $ci }} )
                             .render();
                     var rp2 = radialProgress(document.getElementById('div2'))
                             .label("Total KB Usage")
                             .diameter(180)
-                            .value(20)
+                            .value({{ $kb }})
                             .render();
                     var rp2 = radialProgress(document.getElementById('div3'))
                             .label("Total FCR")
                             .diameter(180)
-                            .value(33)
+                            .value({{ $fcr }})
                             .render();
                 }
             </script>

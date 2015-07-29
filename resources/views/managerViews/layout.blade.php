@@ -441,6 +441,11 @@
     <div class="control-sidebar-bg"></div>
         <!-- fin -->
         </div>
+        <form action="{{ route('dashboard') }}" method="post" id="dateform">
+            <input id="datedeb" name="datedeb" type="hidden" value=""/>
+            <input id="datefin" name="datefin" type="hidden" value=""/>
+            <input name="_token" value="{{ csrf_token() }}" />
+        </form>
 
 
         <script src="{{ asset('plugins/jQuery/jQuery-2.1.4.min.js') }}"></script>
@@ -452,19 +457,27 @@
             $('#daterange-btn').daterangepicker(
                     {
                         ranges: {
+                            'All':['01-01-1900',moment()],
                             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                             'Last 7 Days': [moment().subtract(6, 'days'), moment()],
                             'Last 30 Days': [moment().subtract(29, 'days'), moment()],
                             'This Month': [moment().startOf('month'), moment().endOf('month')],
                             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                         },
-                        startDate: moment().subtract(29, 'days'),
+                        startDate: '01-01-1900',
                         endDate: moment()
                     },
                     function (start, end) {
                         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
                     }
             );
+            $('#daterange-btn').on('apply.daterangepicker', function(ev, picker) {
+                console.log(picker.startDate.format('YYYY-MM-DD'));
+                console.log(picker.endDate.format('YYYY-MM-DD'));
+                $('#datedeb').attr('value',picker.startDate.format('YYYY-MM-DD'));
+                $('#datefin').attr('value',picker.endDate.format('YYYY-MM-DD'));
+                $('#dateform').submit();
+            });
         </script>
         <!-- jQuery UI 1.11.4 -->
         <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
