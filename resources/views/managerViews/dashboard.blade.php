@@ -54,12 +54,18 @@
             </script>
         </div>
         <!-- end chart zakaria -->
+    </div><!-- /.nav-tabs-custom -->
 
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs pull-right">
+            <li class="pull-left header"><i class="fa fa-inbox"></i> Tickets Per Hours</li>
+        </ul>
         <!-- chart ayoub -->
         <div class="tab-content no-padding">
             <div  class="row" style="padding-top: 20px;">
                 <div class="col-xs-12">
-                    <div  id="chartdiv" width="100%" height="500px"></div>
+                    <div  id="chartdiv"></div>
                 </div>
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/amcharts.js" type="text/javascript"></script>
@@ -120,16 +126,16 @@
                     }
                 });
 
-        chart.addListener("rendered", zoomChart);
-        zoomChart();
+chart.addListener("rendered", zoomChart);
+zoomChart();
 
         // this method is called when chart is first inited as we listen for "dataUpdated" event
         function zoomChart() {
             // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
             chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
         }
-            </script>
-        </div>
-        <!-- end chart ayoub -->
-    </div><!-- /.nav-tabs-custom -->
+    </script>
+</div>
+<!-- end chart ayoub -->
+</div><!-- /.nav-tabs-custom -->
 @endsection
