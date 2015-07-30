@@ -8,18 +8,17 @@
     <!-- Bootstrap 3.3.4 -->
     <link href="{{ asset('/css/bootstrap.css') }}" rel="stylesheet" type="text/css" />
     <!-- Font Awesome Icons -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Ionicons -->
-    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/css/ionicons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- jvectormap -->
-    <link href="{{ asset('plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
     <link href="{{ asset('/dist/css/AdminLTE.min.css') }}" rel="stylesheet" type="text/css" />
-    <!-- AdminLTE Skins. Choose a skin from the css/skins
-         folder instead of downloading all of them to reduce the load. -->
-    <link href="{{ asset('dist/css/skins/_all-skins.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href=" {{ asset('/css/style2.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('plugins/daterangepicker/daterangepicker-bs3.css') }}" rel="stylesheet" type="text/css" />
+    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+    <link href="{{ asset('/dist/css/skins/_all-skins.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/css/style2.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/plugins/daterangepicker/daterangepicker-bs3.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -448,9 +447,10 @@
         </form>
 
 
-        <script src="{{ asset('plugins/jQuery/jQuery-2.1.4.min.js') }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js" type="text/javascript"></script>
-        <script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('/plugins/jQuery/jQuery-2.1.4.min.js') }}"></script>
+        <!-- daterangepicker -->
+        <script src="{{ asset('/js/moment.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('/plugins/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
 
         <!-- Page script -->
         <script type="text/javascript">
@@ -478,9 +478,12 @@
                 $('#datefin').attr('value',picker.endDate.format('YYYY-MM-DD'));
                 $('#dateform').submit();
             });
+            $(document).ready(function() {
+              $('.ranges li').removeAttr('class');
+            });
         </script>
         <!-- jQuery UI 1.11.4 -->
-        <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="{{ asset('/js/jquery-ui.min.js') }}" type="text/javascript"></script>
         <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
         <script type="text/javascript">
             $.widget.bridge('uibutton', $.ui.button);
@@ -494,9 +497,6 @@
         <script src="{{ asset('/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}" type="text/javascript"></script>
         <!-- jQuery Knob Chart -->
         <script src="{{ asset('/plugins/knob/jquery.knob.js') }}" type="text/javascript"></script>
-        <!-- daterangepicker -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js" type="text/javascript"></script>
-        <script src="{{ asset('/plugins/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
         <!-- datepicker -->
         <script src="{{ asset('/plugins/datepicker/bootstrap-datepicker.js') }}" type="text/javascript"></script>
         <!-- Bootstrap WYSIHTML5 -->

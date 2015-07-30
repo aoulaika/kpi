@@ -81,10 +81,18 @@ class ControllerZakaria extends Controller{
             $ci = 0;
             $fcr = 0;
         }
+        /*AyoubOlk*/
+        $tickets=DB::table('fact')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->select(DB::raw('count(*) as count, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
+            ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+        /*End AyoubOlk*/
         return View('managerViews/dashboard')->with([
             'kb' => $kb,
             'ci' => $ci,
-            'fcr' => $fcr
+            'fcr' => $fcr,
+            'tickets' => $tickets
         ]);
     }
 
