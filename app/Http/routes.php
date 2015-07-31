@@ -21,6 +21,11 @@ Route::any('/dashboard', [
     'uses' => 'ControllerZakaria@dashboard'
 ]);
 
+Route::any('/dashboard2', [
+    'as' => 'dashboard2',
+    'uses' => 'ControllerZakaria@dashboard2'
+]);
+
 Route::get('/forgot', [
     'as' => 'forgot',
     'uses' => 'ControllerZakaria@forgot'
