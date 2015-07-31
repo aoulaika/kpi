@@ -125,7 +125,7 @@
                         "enabled": true
                     }
                 });
-
+chart.pathToImages = '/kpi/public/img/';
 chart.addListener("rendered", zoomChart);
 zoomChart();
 
