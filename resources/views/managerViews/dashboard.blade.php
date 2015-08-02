@@ -1,5 +1,90 @@
 @extends('managerViews/layout')
 @section('content')
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Average Handling Time</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div id="chartdiv1" style="margin:auto;width:300px;height:300px;"></div>
+                    <script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
+                    <script src="http://www.amcharts.com/lib/3/gauge.js"></script>
+                    <script src="http://www.amcharts.com/lib/3/themes/light.js"></script>
+                    <script type="text/javascript">
+                        var gaugeChart = AmCharts.makeChart( "chartdiv1", {
+                            "type": "gauge",
+                            "theme": "light",
+                            "axes": [ {
+                                "axisThickness": 1,
+                                "axisAlpha": 0.2,
+                                "tickAlpha": 0.2,
+                                "valueInterval": 2,
+                                "bands": [ {
+                                    "color": "#84b761",
+                                    "endValue": 8,
+                                    "startValue": 0
+                                }, {
+                                    "color": "#fdd400",
+                                    "endValue": 10,
+                                    "startValue": 8
+                                }, {
+                                    "color": "#cc4748",
+                                    "endValue": 22,
+                                    "innerRadius": "95%",
+                                    "startValue": 10
+                                } ],
+                                "bottomText": "05 min 33 sec",
+                                "bottomTextYOffset": -20,
+                                "endValue": 22
+                            } ],
+                            "arrows": [ {} ],
+                            "export": {
+                                "enabled": true
+                            }
+                        } );
+
+                        setInterval( randomValue, 2000 );
+
+                        // set random value
+                        function randomValue() {
+                            var value = "5.372518333333305";
+                            if ( gaugeChart ) {
+                                if ( gaugeChart.arrows ) {
+                                    if ( gaugeChart.arrows[ 0 ] ) {
+                                        if ( gaugeChart.arrows[ 0 ].setValue ) {
+                                            gaugeChart.arrows[ 0 ].setValue( value );
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    </script>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+
+        <div class="col-md-6">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Tickets Priority</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <span class="pull-right">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-gear"></i> <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Bar Chart</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Bubble Chart</a></li>
+                        </ul>
+                        <!-- hna !! -->
+                    </span>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+    </div> <!-- /.row -->
     <div class="nav-tabs-custom">
         <!-- Tabs within a box -->
         <ul class="nav nav-tabs pull-right">
@@ -12,7 +97,6 @@
                     <i class="fa fa-calendar"></i> Choose a Date
                     <i class="fa fa-caret-down"></i>
                 </button>
-                <h3 id="rangelabel" style="margin-left: 50px;"> All </h3>
             </div>
 
         </div><!-- /.form group -->
