@@ -1,5 +1,5 @@
 <?php
-$db=new PDO('mysql:host=localhost;dbname=ticketsdw;charset=utf8', 'root', '');
+$db=new PDO('mysql:host=localhost;dbname=ticketdb;charset=utf8', 'root', '');
 $sql_valide = "SELECT agent_dim.Id, agent_dim.Name, count(agent_dim.Id) AS totale FROM agent_dim, fact, kb_dim WHERE fact.fk_agent=agent_dim.Id AND fact.fk_kb=kb_dim.Id AND kb_dim.EKMS_knowledge_Id LIKE '%https://knowledge.rf.lilly.com%' AND kb_dim.EKMS_knowledge_Id IS NOT NULL GROUP BY agent_dim.Id";
 $sql_totale = "SELECT a.Name,count(a.Id) AS totale FROM fact f, kb_dim k, agent_dim a WHERE k.Id=f.fk_kb AND a.Id=f.fk_agent group by a.Id";
 $agent_totale=$db->query($sql_totale);
