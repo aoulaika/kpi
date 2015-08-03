@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>AdminLTE 2 | Dashboard</title>
+    <title>KPI App</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.4 -->
@@ -51,15 +51,15 @@
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image" />
-                                <span class="hidden-xs">Yassine Harouchi</span>
+                                <img src="{{ asset('img/user2-160x160.jpg') }}" class="user-image" alt="User Image" />
+                                <span class="hidden-xs">Mohamed Yassine El Harruchi</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" />
+                                    <img src="{{ asset('img/user2-160x160.jpg') }}" class="img-circle" alt="User Image" />
                                     <p>
-                                        Alexander Pierce - Project Manager
+                                        Mohamed Yassine El Harruchi - Project Manager
                                         <small>Super User</small>
                                     </p>
                                 </li>
@@ -102,10 +102,10 @@
                 <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="{{ asset('/dist/img/user2-160x160.jpg') }}" class="img-circle" alt="User Image" />
+                        <img src="{{ asset('img/user2-160x160.jpg') }}" class="img-circle" alt="User Image" />
                     </div>
                     <div class="pull-left info">
-                        <p>Yassine Harouchi</p>
+                        <p style="font-size:0.85em">Mohamed Yassine El Harruchi</p>
                         <small>Project Manager</small>
                     </div>
                 </div>
@@ -364,7 +364,7 @@
         <form action="{{ route('dashboard') }}" method="post" id="dateform">
             <input id="datedeb" name="datedeb" type="hidden" value=""/>
             <input id="datefin" name="datefin" type="hidden" value=""/>
-            <input name="_token" value="{{ csrf_token() }}" />
+            <input name="_token" type="hidden" value="{{ csrf_token() }}" />
         </form>
 
 

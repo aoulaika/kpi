@@ -23,18 +23,21 @@ class Time {
      * @var array
      */
     protected $fillable = [
+    'Created',
     'CreatedYear',
     'CreatedMonth',
     'CreatedDay',
     'CreatedHour',
     'CreatedMinute',
     'CreatedSecond',
+    'Updated',
     'UpdatedYear',
     'UpdatedMonth',
     'UpdatedDay',
     'UpdatedHour',
     'UpdatedMinute',
     'UpdatedSecond',
+    'Closed',
     'ClosedYear',
     'ClosedMonth',
     'ClosedDay',

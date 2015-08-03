@@ -45,7 +45,8 @@ class Ticket {
     'Closed_by',
     'Closure_method',
     'Service_level',
-    'SLA_due'
+    'SLA_due',
+    'ResolutionTime'
     ];
 
     /**

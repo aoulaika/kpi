@@ -7,8 +7,9 @@
                     <h3 class="box-title">Average Handling Time</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <div id="chartdiv1" style="margin:auto;width:300px;height:300px;"></div>
-                    <script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
+                    <div id="chartdiv1" style="margin:auto;height:300px;"></div>
+                    <script src="{{ asset('js/jQuery-2.1.4.min.js') }}"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/amcharts.js"></script>
                     <script src="http://www.amcharts.com/lib/3/gauge.js"></script>
                     <script src="http://www.amcharts.com/lib/3/themes/light.js"></script>
                     <script type="text/javascript">
@@ -68,19 +69,85 @@
             <div class="box box-default">
                 <div class="box-header with-border">
                     <h3 class="box-title">Tickets Priority</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body">
                     <span class="pull-right">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-gear"></i> <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Bar Chart</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" id="RadarChart">Radar Chart</a></li>
                             <li role="presentation" class="divider"></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Bubble Chart</a></li>
-                        </ul>
-                        <!-- hna !! -->
+                            <li role="presentation"><a role="menuitem" tabindex="-1" id="PieChart">Pie Chart</a></li>
+                        </ul>                        
                     </span>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div id="priorityRadar"></div>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/radar.js" type="text/javascript"></script>
+                    <script>
+                        var chart;
+                        var priority = JSON.parse('<?php echo json_encode($priority); ?>');
+                        AmCharts.ready(function () {
+                            // RADAR CHART
+                            chart = new AmCharts.AmRadarChart();
+                            chart.dataProvider = priority;
+                            chart.categoryField = "priority";
+                            chart.startDuration = 2;
+                            // VALUE AXIS
+                            var valueAxis = new AmCharts.ValueAxis();
+                            valueAxis.axisAlpha = 0.15;
+                            valueAxis.minimum = 0;
+                            valueAxis.maximum = 2000;
+                            valueAxis.dashLength = 3;
+                            valueAxis.axisTitleOffset = 20;
+                            valueAxis.gridCount = 5;
+                            chart.addValueAxis(valueAxis);
+                            // GRAPH
+                            var graph = new AmCharts.AmGraph();
+                            graph.valueField = "count";
+                            graph.bullet = "round";
+                            graph.balloonText = "[[value]]";
+                            chart.addGraph(graph);
+                            // WRITE
+                            chart.write("priorityRadar");
+                        });
+                    </script>
+
+                    <div id="priorityPie"></div>
+                    <script src="{{ asset('js/pie.js') }}" type="text/javascript"></script>
+                    <script>
+                        var chartPie;
+                        var legend;
+                        var chartPieData = JSON.parse('<?php echo json_encode($priority) ?>');
+                        AmCharts.ready(function () {
+                            // PIE CHART
+                            chartPie = new AmCharts.AmPieChart();
+                            chartPie.dataProvider = chartPieData;
+                            chartPie.titleField = "priority";
+                            chartPie.valueField = "count";
+                            chartPie.outlineColor = "#FFFFFF";
+                            chartPie.outlineAlpha = 0.8;
+                            chartPie.outlineThickness = 2;
+                            chartPie.balloonText = "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>";
+                            // this makes the chart 3D
+                            chartPie.depth3D = 15;
+                            chartPie.angle = 30;
+                            // WRITE
+                            chartPie.write("priorityPie");
+                        });
+                        $(document).ready(function(){
+                            $('#priorityPie').css('height','0px');
+                        });
+                        $('#RadarChart').click(function() {
+                            $('#priorityPie').hide();
+                            $('#priorityRadar').show();
+                        });
+                        $('#PieChart').click(function() {
+                            
+                            $('#priorityRadar').hide();
+                            $('#priorityPie').show();
+                            $('#priorityPie').css('height','300px');
+                        });
+                    </script>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div><!-- /.col -->
@@ -98,7 +165,6 @@
                     <i class="fa fa-caret-down"></i>
                 </button>
             </div>
-
         </div><!-- /.form group -->
         <!-- chart zakaria -->
         <div class="tab-content no-padding">
@@ -118,7 +184,6 @@
             <script language="JavaScript">
                 start();
                 function start() {
-
                     var rp1 = radialProgress(document.getElementById('div1'))
                             .label("Total CI Usage")
                             .diameter(180)
@@ -152,7 +217,6 @@
                     <div  id="chartdiv"></div>
                 </div>
             </div>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/amcharts.js" type="text/javascript"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/serial.js" type="text/javascript"></script>
             <script src="{{ asset('/js/light.js') }}" type="text/javascript"></script>
             <script language="JavaScript">
@@ -164,7 +228,7 @@
                         visits: data[i].count
                     });
                 };
-                var chart = AmCharts.makeChart("chartdiv", {
+                var chart1 = AmCharts.makeChart("chartdiv", {
                     "type": "serial",
                     "theme": "light",
                     "marginRight": 80,
@@ -209,17 +273,30 @@
                         "enabled": true
                     }
                 });
-chart.pathToImages = '/kpi/public/img/';
-chart.addListener("rendered", zoomChart);
-zoomChart();
+                chart1.pathToImages = '/kpi/public/img/';
+                chart1.addListener("rendered", zoomChart);
+                zoomChart();
 
-        // this method is called when chart is first inited as we listen for "dataUpdated" event
-        function zoomChart() {
-            // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
-            chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
-        }
-    </script>
-</div>
-<!-- end chart ayoub -->
-</div><!-- /.nav-tabs-custom -->
+                // this method is called when chart is first inited as we listen for "dataUpdated" event
+                function zoomChart() {
+                    // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+                    chart1.zoomToIndexes(chartData.length - 40, chartData.length - 1);
+                }
+            </script>
+        </div>
+        <!-- end chart ayoub -->
+    </div><!-- /.nav-tabs-custom -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Average Resolution Time</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <iframe scrolling="no" src="http://localhost/kpi/Graphs/global/avg_resol_time.php" style="width:100%; height: 420px;border-width:0px;"></iframe>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+    </div>
 @endsection

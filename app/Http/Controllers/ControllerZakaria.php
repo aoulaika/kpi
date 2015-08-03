@@ -21,7 +21,7 @@ class ControllerZakaria extends Controller{
     }
 
     public function dashboard2(){
-        return View('managerViews/dashboard2');
+        return View('managerViews.dashboard2');
     }
 
     public function dashboard(Request $req){
@@ -91,12 +91,19 @@ class ControllerZakaria extends Controller{
             ->select(DB::raw('count(*) as count, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
             ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
+
+        $priority=DB::table('fact')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->select(DB::raw('count(*) as count, priority'))
+            ->groupBy('Priority')
+            ->get();
         /*End AyoubOlk*/
         return View('managerViews/dashboard')->with([
             'kb' => $kb,
             'ci' => $ci,
             'fcr' => $fcr,
-            'tickets' => $tickets
+            'tickets' => $tickets,
+            'priority' => $priority
         ]);
     }
 

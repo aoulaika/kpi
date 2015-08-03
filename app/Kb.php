@@ -24,7 +24,8 @@ class Kb {
      */
     protected $fillable = [
     'EKMS_knowledge_Id',
-    'Knowledge_Id'
+    'Knowledge_Id',
+    'Categorie'
     ];
 
     /**

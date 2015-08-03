@@ -88,3 +88,14 @@
     width   : 100%;
     height  : 500px;
 }
+#priorityRadar{
+    margin: auto;
+    height: 300px;
+}
+#priorityPie{
+    margin: auto;
+    height: 300px;
+}
+.box-body{
+    height: 300px;
+}
