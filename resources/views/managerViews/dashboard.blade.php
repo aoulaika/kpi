@@ -293,7 +293,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">Average Resolution Time</h3>
                 </div><!-- /.box-header -->
-                <div class="box-body">
+                <div class="box-body" style="height:440px">
                     <iframe scrolling="no" src="http://localhost/kpi/Graphs/global/avg_resol_time.php" style="width:100%; height: 420px;border-width:0px;"></iframe>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
