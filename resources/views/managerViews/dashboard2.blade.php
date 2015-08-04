@@ -43,3 +43,6 @@
         </div><!-- nav-tabs-custom -->
     <!-- end chart zakaria -->
 @endsection
+@section('script')
+
+@endsection
