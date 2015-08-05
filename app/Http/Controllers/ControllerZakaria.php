@@ -137,11 +137,32 @@ class ControllerZakaria extends Controller{
             'password'=>[$tht_password[0]->avg/60,$tab_pass[1].' min '.$tab_pass[2].' sec']
         ];
         /*End gauge Data*/
+        /*Tickets Per Product*/
+        $tickets_per_product=DB::table('fact')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+            ->whereNotNull('Categorie')
+            ->select(DB::raw('count(*) as count, Categorie, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
+            ->groupBy('Categorie','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+        $tickets_product=array();
+        foreach ($tickets_per_product as $value) {
+            if(array_key_exists($value->Categorie, $tickets_product)){
+                array_push($tickets_product[$value->Categorie], (object)array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond));
+            }else{
+                $tickets_product[$value->Categorie]=[array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond)];
+            }
+        }
+        $tickets_all=[
+        'all'=>$tickets,
+        'product'=>$tickets_product
+        ];
+        /*Tickets Per Product*/
         return View('managerViews/dashboard')->with([
             'kb' => $kb,
             'ci' => $ci,
             'fcr' => $fcr,
-            'tickets' => $tickets,
+            'tickets_all' => $tickets_all,
             'priority' => $priority,
             'avg_tht' => $avg_tht
         ]);
