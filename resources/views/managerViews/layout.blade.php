@@ -368,7 +368,7 @@
         </form>
 
 
-        <script src="{{ asset('/plugins/jQuery/jQuery-2.1.4.min.js') }}"></script>
+        <script src="{{ asset('/js/jQuery-2.1.4.min.js') }}"></script>
         <!-- daterangepicker -->
         <script src="{{ asset('/js/moment.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('/plugins/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
@@ -403,8 +403,6 @@
               $('.ranges li').removeAttr('class');
             });
         </script>
-        <!-- jQuery 2.1.4 -->
-        <script src="{{ asset('js/jQuery-2.1.4.min.js') }}"></script>
         <!-- jQuery UI 1.11.4 -->
         <script src="{{ asset('/js/jquery-ui.min.js') }}" type="text/javascript"></script>
         <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->

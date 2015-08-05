@@ -24,16 +24,11 @@ $data=(object)array(
   "labels" => $Categorie,
   "series" => [(object)$series]
 );
-
-
 ?>
 <!DOCTYPE html>
 <meta charset="utf-8">
 <html>
 <style>
-
-
-
 .d3-tip {
   line-height: 1;
   font-weight: bold;
@@ -42,7 +37,6 @@ $data=(object)array(
   color: #fff;
   border-radius: 2px;
 }
-
 /* Creates a small triangle extender for the tooltip */
 .d3-tip:after {
   box-sizing: border-box;
@@ -55,7 +49,6 @@ $data=(object)array(
   position: absolute;
   text-align: center;
 }
-
 /* Style northward tooltips differently */
 .d3-tip.n:after {
   margin: -1px 0 0 0;
@@ -68,24 +61,20 @@ $data=(object)array(
   text-anchor: start;
   font-size: 12px;
 }
-
 .chart text {
   fill: black;
   font: 12px sans-serif;
   text-anchor: end;
 }
-
 .chart .label {
   fill: grey;
   font: 11px sans-serif;
   text-anchor: end;
   font-size:xx-small;
 }
-
 .bar:hover {
   fill: #00A1DD;
 }
-
 .axis path,
 .axis line {
   fill: none;
@@ -93,7 +82,6 @@ $data=(object)array(
   shape-rendering: crispEdges;
 }
 .chart{
-  
   padding-top: 50px;
 }
 </style>
@@ -104,17 +92,13 @@ $data=(object)array(
   <script src="../../public/js/d3.min.js"></script>
   <script src="d3.tip.v0.6.3.js"></script>
   <script>
-
   var data = JSON.parse( '<?php echo json_encode($data); ?>' );
-  console.log(data);
-
   var chartWidth = 1000,
   barHeight = 15,
   groupHeight = barHeight*data.series.length,
   gapBetweenGroups = 6,
   spaceForLabels = 140,
   spaceForLegend = 140;
-
   // Zip the series data together (first values, second values, etc.)
   var zippedData = [];
   for (var i=0; i<data.labels.length; i++) {
@@ -122,15 +106,14 @@ $data=(object)array(
       zippedData.push(data.series[j].values[i]);
     }
   }
-
-var tip = d3.tip()
-  .attr('class', 'd3-tip')
-  .offset([-10, 0])
-   .style("left", (x+10) + "px")   
-   .style("top", (y+10) + "px")
-  .html(function(d) {
-    return "<strong>Avg Resolution Time:</strong> <span style='color:red'>" + parseInt(d)+ "  j "+ parseInt((d-parseInt(d))*24) +"   h   "+ parseInt((((d-parseInt(d))*24)-parseInt((d-parseInt(d))*24))*60) + "  min</span>";
-  })
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+     .style("left", (x+10) + "px")   
+     .style("top", (y+10) + "px")
+    .html(function(d) {
+      return "<strong>Avg Resolution Time:</strong> <span style='color:red'>" + parseInt(d)+ "  j "+ parseInt((d-parseInt(d))*24) +"   h   "+ parseInt((((d-parseInt(d))*24)-parseInt((d-parseInt(d))*24))*60) + "  min</span>";
+    })
 
   // Color scale
   var color = d3.scale.category20();
@@ -139,7 +122,6 @@ var tip = d3.tip()
   var x = d3.scale.linear()
   .domain([0, d3.max(zippedData)*0.067])
   .range([0, d3.max(zippedData)*4]);
-   console.log(d3.max(zippedData));
   var y = d3.scale.linear()
   .range([chartHeight + gapBetweenGroups, 0]);
 
