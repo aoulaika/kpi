@@ -97,9 +97,19 @@
 #priorityPie a{
     font-size: 0!important;
 }
+#gauge1{
+    margin: auto;
+}
+#gauge2{
+    margin: auto;
+}
 #gauge1 a{
     font-size: 0!important;
 }
 #gauge2 a{
     font-size: 0!important;
+}
+#select2{
+    margin-top: 10px;
+    margin-right: 9px;
 }
