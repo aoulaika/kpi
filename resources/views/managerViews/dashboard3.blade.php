@@ -81,6 +81,18 @@
                     <hr>
                     <div class="row">
                         <h3 class="titles">Number Of Tickets Per Time</h3>
+                        <div class="col-lg-6">
+                            <div class="form-group pull-right" id="select2">
+                                <label for="product">Filter By Product</label>
+                                <select name="product" id="product" class="form-control select2">
+                                    <option value="all">All</option>
+                                    @foreach ($tickets_all['product'] as $key => $value)
+                                        <option value="{{ $key }}">{{ $key }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div  id="ticketsChart2" style="width:100%;height:100px;"></div>
+                        </div>
                     </div>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
@@ -98,6 +110,7 @@
     </div>
 @endsection
 @section('script')
+    <script src="{{ asset('/js/amcharts.js') }}"></script>
     <!-- High Charts -->
     <script src="{{ asset('/js/highcharts.js') }}"></script>
     <script src="{{ asset('/js/highcharts-more.js') }}"></script>
@@ -279,4 +292,84 @@
         //Date range picker
         $('#reservation').daterangepicker();
     </script>
+    <!-- Tickets Per Hour Chart -->
+    <script language="JavaScript">
+        var data_temp = JSON.parse('<?php echo json_encode($tickets_all); ?>');
+        var data=data_temp.all;
+        $(".select2").change(function() {
+            var v=$(this).val();
+            if(v=='all'){
+                data=data_temp.all;
+            }else{
+                data=data_temp.product[v];
+            }
+            console.log(data);
+            draw();
+        });
+        draw();
+        function draw() {
+            var ticketsData = [];
+            for (var i = 0; i < data.length; i++) {
+                ticketsData.push({
+                    date: new Date(data[i].CreatedYear, data[i].CreatedMonth - 1, data[i].CreatedDay, data[i].CreatedHour, data[i].CreatedMinute, data[i].CreatedSecond, 0),
+                    visits: data[i].count
+                });
+            };
+            var chart1 = AmCharts.makeChart("ticketsChart2", {
+                "type": "serial",
+                "theme": "light",
+                "marginRight": 80,
+                "autoMarginOffset": 20,
+                "marginTop": 7,
+                "dataProvider": ticketsData,
+                "valueAxes": [{
+                    "axisAlpha": 0.2,
+                    "dashLength": 1,
+                    "position": "left"
+                }],
+                "mouseWheelZoomEnabled": true,
+                "graphs": [{
+                    "id": "ticketsChart2",
+                    "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
+                    "bullet": "round",
+                    "bulletBorderAlpha": 1,
+                    "bulletColor": "#FFFFFF",
+                    "hideBulletsCount": 50,
+                    "title": "red line",
+                    "valueField": "visits",
+                    "useLineColorForBulletBorder": true
+                }],
+                "chartScrollbar": {
+                    "autoGridCount": true,
+                    "graph": "g1",
+                    "scrollbarHeight": 40
+                },
+                "chartCursor": {
+                    "categoryBalloonDateFormat": "JJ h, DD MMMM",
+                    "cursorPosition": "mouse"
+                },
+                "categoryField": "date",
+                "categoryAxis": {
+                    "parseDates": true,
+                    "minPeriod": "mm",
+                    "axisColor": "#DADADA",
+                    "dashLength": 1,
+                    "minorGridEnabled": true
+                },
+                "export": {
+                    "enabled": true
+                }
+            });
+            chart1.pathToImages = '/kpi/public/img/';
+            chart1.addListener("rendered", zoomChart);
+            zoomChart();
+
+            // this method is called when chart is first inited as we listen for "dataUpdated" event
+            function zoomChart() {
+                // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+                chart1.zoomToIndexes(ticketsData.length - 40, ticketsData.length - 1);
+            }
+        }
+    </script>
+    <!-- End Tickets Per Hour Chart -->
 @endsection
