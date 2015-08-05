@@ -13,6 +13,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <!-- Ionicons -->
     <link href="{{ asset('/css/ionicons.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Select2 -->
+    <link href="{{ asset('/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- jvectormap -->
     <link href="{{ asset('/plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
@@ -374,8 +376,6 @@
         <!-- daterangepicker -->
         <script src="{{ asset('/js/moment.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('/plugins/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
-
-        <!-- Page script -->
         <script type="text/javascript">
             $('#daterange-btn').daterangepicker(
                     {
