@@ -9,10 +9,10 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div id="gauge1" style="margin:auto;height:300px;"></div>
+                            <div id="gauge1" style="height:300px;width:100%"></div>
                         </div>
                         <div class="col-lg-6">
-                            <div id="gauge2" style="margin:auto;height:300px;"></div>
+                            <div id="gauge2" style="height:300px;width:100%"></div>
                         </div>
                     </div>
                 </div><!-- /.box-body -->
@@ -74,7 +74,7 @@
                 <select name="product" id="product" class="form-control select2">
                     <option value="all">All</option>
                     @foreach ($tickets_all['product'] as $key => $value)
-                        <option value="{{ $key }}">{{ $key }}</option>
+                        <option value="{{ $key }}">{{ $key }} ({{ count($value) }})</option>
                     @endforeach
                 </select>
             </div>

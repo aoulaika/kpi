@@ -93,6 +93,7 @@
 }
 #priorityPie{
     height: 300px;
+    width: 100%;
 }
 #priorityPie a{
     font-size: 0!important;
