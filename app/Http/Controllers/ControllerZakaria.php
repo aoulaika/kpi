@@ -24,6 +24,10 @@ class ControllerZakaria extends Controller{
         return View('managerViews.dashboard2');
     }
 
+    public function dashboard3(){
+        return View('managerViews.dashboard3');
+    }
+
     public function dashboard(Request $req){
         $params = $req->except(['_token']);
         $date = Carbon::now();

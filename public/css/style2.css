@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Share+Tech);
+
 #test .arc2 {
     stroke-weight:0.1;
     fill: #3660b0;
@@ -102,4 +104,52 @@
 }
 #gauge2 a{
     font-size: 0!important;
+}
+
+/* Percentage counter */
+.percentable{
+    font-family: 'Share Tech', sans-serif;
+    line-height: 20px;
+    height: 20px;
+    width: 100%;
+    font-size: 1.8em;
+    opacity: 0.8;
+}
+.shiva{
+    color: #44A1C1;
+}
+
+/* Agent Info */
+
+.agent-image{
+    display: block;
+    width: 100px;
+    margin-left : auto;
+    margin-right : auto;
+    margin-top : 30px;
+    border-radius: 50px;
+}
+
+.agent-name {
+    text-align: center;
+    font-family: 'Share Tech', sans-serif;
+    font-size: 1.8em;
+    margin:0px;
+}
+
+.titles {
+    text-align: center;
+    font-family: 'Share Tech', sans-serif;
+    font-size: 1.8em;
+    margin:0px;
+    opacity: 0.8;
+}
+
+/* End Agent Info */
+/* hr */
+hr{
+    border: 0;
+    height: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
