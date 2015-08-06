@@ -103,7 +103,7 @@
                     <h3 class="box-title">Comparing Agents Performance</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body" style="min-height:600px">
-
+                    <iframe style="border-width: 0px;width:100%;height: 310px;" src="http://localhost/kpis/newbar2.php"></iframe>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div><!-- /.col -->
