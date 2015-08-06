@@ -81,18 +81,16 @@
                     <hr>
                     <div class="row">
                         <h3 class="titles">Number Of Tickets Per Time</h3>
-                        <div class="col-lg-6">
                             <div class="form-group pull-right" id="select2">
                                 <label for="product">Filter By Product</label>
                                 <select name="product" id="product" class="form-control select2">
                                     <option value="all">All</option>
                                     @foreach ($tickets_all['product'] as $key => $value)
-                                        <option value="{{ $key }}">{{ $key }}</option>
+                                        <option value="{{ $key }}">{{ $key }} ({{ count($value) }})</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div  id="ticketsChart2" style="width:100%;height:100px;"></div>
-                        </div>
+                            <div id="ticketsChart2" style="width:100%;height:400px;"></div>
                     </div>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
@@ -103,7 +101,6 @@
                     <h3 class="box-title">Comparing Agents Performance</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body" style="min-height:600px">
-
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div><!-- /.col -->
@@ -111,6 +108,7 @@
 @endsection
 @section('script')
     <script src="{{ asset('/js/amcharts.js') }}"></script>
+    <script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
     <!-- High Charts -->
     <script src="{{ asset('/js/highcharts.js') }}"></script>
     <script src="{{ asset('/js/highcharts-more.js') }}"></script>
@@ -286,12 +284,6 @@
     <!-- End Percentage Counter -->
     <!-- Select2 -->
     <script src="{{ asset('/plugins/select2/select2.full.min.js') }}" type="text/javascript"></script>
-    <script type="text/javascript">
-        //Applying select2
-        $(".select2").select2();
-        //Date range picker
-        $('#reservation').daterangepicker();
-    </script>
     <!-- Tickets Per Hour Chart -->
     <script language="JavaScript">
         var data_temp = JSON.parse('<?php echo json_encode($tickets_all); ?>');
@@ -303,25 +295,25 @@
             }else{
                 data=data_temp.product[v];
             }
-            console.log(data);
             draw();
         });
         draw();
         function draw() {
-            var ticketsData = [];
+            var ticketsData1 = [];
             for (var i = 0; i < data.length; i++) {
-                ticketsData.push({
+                ticketsData1.push({
                     date: new Date(data[i].CreatedYear, data[i].CreatedMonth - 1, data[i].CreatedDay, data[i].CreatedHour, data[i].CreatedMinute, data[i].CreatedSecond, 0),
                     visits: data[i].count
                 });
             };
-            var chart1 = AmCharts.makeChart("ticketsChart2", {
+
+            var chart2 = AmCharts.makeChart("ticketsChart2", {
                 "type": "serial",
                 "theme": "light",
                 "marginRight": 80,
                 "autoMarginOffset": 20,
                 "marginTop": 7,
-                "dataProvider": ticketsData,
+                "dataProvider": ticketsData1,
                 "valueAxes": [{
                     "axisAlpha": 0.2,
                     "dashLength": 1,
@@ -341,7 +333,7 @@
                 }],
                 "chartScrollbar": {
                     "autoGridCount": true,
-                    "graph": "g1",
+                    "graph": "ticketsChart2",
                     "scrollbarHeight": 40
                 },
                 "chartCursor": {
@@ -360,16 +352,22 @@
                     "enabled": true
                 }
             });
-            chart1.pathToImages = '/kpi/public/img/';
-            chart1.addListener("rendered", zoomChart);
+            chart2.pathToImages = '/kpi/public/img/';
+            chart2.addListener("rendered", zoomChart);
             zoomChart();
 
             // this method is called when chart is first inited as we listen for "dataUpdated" event
             function zoomChart() {
                 // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
-                chart1.zoomToIndexes(ticketsData.length - 40, ticketsData.length - 1);
+                chart2.zoomToIndexes(ticketsData1.length - 40, ticketsData1.length - 1);
             }
         }
     </script>
     <!-- End Tickets Per Hour Chart -->
+    <script type="text/javascript">
+        //Applying select2
+        $(".select2").select2();
+        //Date range picker
+        $('#reservation').daterangepicker();
+    </script>
 @endsection
