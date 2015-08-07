@@ -37,7 +37,8 @@
                     <div class="row">
                         <div class="col-lg-5" >
                             <img src="{{ asset('/img/default-user.png') }}" class="agent-image"/>
-                            <h3 class="agent-name">Oussama Oussama Oussama</h3>
+                            <h3 class="agent-name">Oussama Oussama</h3>
+                            <h4 style="text-align: center;font-family: 'Share Tech', sans-serif;opacity: 0.8;">Handled <span style="color: #44A1C1;">512</span> Tickets</h4>
                         </div>
                         <div class="col-lg-7" >
                             <table class="table percentable">
@@ -70,7 +71,7 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <h3 class="titles">Average Tickets Handling Time</h3>
+                        <h3 class="titles">Average Tickets Handle Time</h3>
                         <div class="col-lg-6" >
                             <div id="gauge1" style="width: 200px; height: 200px; margin: 0 auto;"></div>
                         </div>
@@ -122,13 +123,19 @@
 
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_1">
-
+                                <div style="height: 390px;overflow: auto">
+                                    <div id="container1" style="width: 400px; min-height: 1000px; margin: 0 auto"></div>
+                                </div>
                             </div><!-- /.tab-pane -->
                             <div class="tab-pane" id="tab_2">
-
+                                <div style="height: 390px;overflow: auto">
+                                    <div id="container2" style="width: 400px; min-height: 1000px; margin: 0 auto"></div>
+                                </div>
                             </div><!-- /.tab-pane -->
                             <div class="tab-pane" id="tab_3">
-
+                                <div style="height: 390px;overflow: auto">
+                                    <div id="container3" style="width: 400px; min-height: 1000px; margin: 0 auto"></div>
+                                </div>
                             </div><!-- /.tab-pane -->
                         </div><!-- /.tab-content -->
                     </div><!-- nav-tabs-custom -->
@@ -207,6 +214,7 @@
                     text: 'THT'
                 }
             },
+            exporting: { enabled: false },
             credits: {
                 enabled: false
             },
@@ -282,6 +290,7 @@
                     text: 'THT(Password Reset Closure)'
                 }
             },
+            exporting: { enabled: false },
             credits: {
                 enabled: false
             },
@@ -405,36 +414,40 @@
     <!-- EKMS Usage Chart -->
     <script type="text/javascript">
         $(function () {
-            $('#container').highcharts({
+            $('#container1').highcharts({
                 chart:{
                     type:'bar'
                 },
+
+                exporting: { enabled: false },
 
                 tooltip: {
                     valueSuffix: '%'
                 },
 
                 title: {
-                    text: 'EKMS Usage per agent'
+                    text: ' '
                 },
 
-                subtitle: {
-                    text: 'By Percentage'
+                credits: {
+                    enabled: false
                 },
+
                 xAxis: {
-                    categories: [<?php echo $names ?>]
+                    categories: [<?php echo $kb_names ?>]
                 },
                 series: [{
                     name: 'Percentage',
+                    showInLegend: false,
                     data: [
-                        <?php foreach ($count as $value){
-                                if($value<=50)
+                        <?php foreach ($kb_users as $kb){
+                                if($kb->count<=70)
                                 {
-                                    echo "{y:".(int)$value.",color:'red'},";
+                                    echo "{y:".(int)$kb->count.",color:'red'},";
                                 }
                                 else
                                 {
-                                    echo (int)$value.',';
+                                    echo (int)$kb->count.',';
                                 }
                         } ?>
                     ]
@@ -445,4 +458,98 @@
         });
     </script>
     <!-- EKMS Usage Chart -->
+    <!-- CI Usage Chart -->
+    <script type="text/javascript">
+        $(function () {
+            $('#container2').highcharts({
+                chart:{
+                    type:'bar'
+                },
+
+                exporting: { enabled: false },
+
+                tooltip: {
+                    valueSuffix: '%'
+                },
+
+                title: {
+                    text: ' '
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                xAxis: {
+                    categories: [<?php echo $ci_names ?>]
+                },
+                series: [{
+                    name: 'Percentage',
+                    showInLegend: false,
+                    data: [
+                        <?php foreach ($ci_users as $ci){
+                                if($ci->count<=50)
+                                {
+                                    echo "{y:".(int)$ci->count.",color:'red'},";
+                                }
+                                else
+                                {
+                                    echo (int)$ci->count.',';
+                                }
+                        } ?>
+                    ]
+                }]
+            });
+
+
+        });
+    </script>
+    <!-- End CI Usage Chart -->
+    <!-- FCR Chart -->
+    <script type="text/javascript">
+        $(function () {
+            $('#container3').highcharts({
+                chart:{
+                    type:'bar'
+                },
+
+                exporting: { enabled: false },
+
+                tooltip: {
+                    valueSuffix: '%'
+                },
+
+                title: {
+                    text: ' '
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                xAxis: {
+                    categories: [<?php echo $fcr_names ?>]
+                },
+                series: [{
+                    name: 'Percentage',
+                    showInLegend: false,
+                    data: [
+                        <?php foreach ($fcr_users as $fcr){
+                                if($fcr->count<=50)
+                                {
+                                    echo "{y:".(int)$fcr->count.",color:'red'},";
+                                }
+                                else
+                                {
+                                    echo (int)$fcr->count.',';
+                                }
+                        } ?>
+                    ]
+                }]
+            });
+
+
+        });
+    </script>
+    <!-- End FCR Chart -->
 @endsection

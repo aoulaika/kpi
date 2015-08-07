@@ -133,7 +133,7 @@
     width: 100px;
     margin-left : auto;
     margin-right : auto;
-    margin-top : 30px;
+    margin-top : 10px;
     border-radius: 50px;
 }
 
@@ -151,6 +151,18 @@
     margin:0px;
     opacity: 0.8;
 }
+
+#handle {
+    text-align: center;
+    font-family: 'Share Tech', sans-serif;
+    opacity: 0.8;
+    color: #44A1C1;
+}
+
+#handle span {
+
+}
+
 
 /* End Agent Info */
 /* hr */

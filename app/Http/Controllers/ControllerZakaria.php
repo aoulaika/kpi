@@ -7,7 +7,6 @@
  */
 
 namespace App\Http\Controllers;
-use Faker\Provider\DateTime;
 use \Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -21,7 +20,18 @@ class ControllerZakaria extends Controller{
     }
 
     public function dashboard2(){
-        return View('managerViews.dashboard2');
+        $ci_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, ci_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ci = ci_dim.Id GROUP BY agent_dim.Id');
+        $kb_users=DB::select('SELECT agent_dim.Id, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'%https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count FROM fact, kb_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_kb = kb_dim.Id GROUP BY agent_dim.Id');
+        $fcr_users=DB::select('SELECT agent_dim.Id, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
+        $fcr_reso_users=DB::select('SELECT agent_dim.Id, SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
+        $tht=DB::select('SELECT agent_dim.Id, AVG(Handling_time) / 60 AS tht, SEC_TO_TIME(AVG(Handling_time)) AS tht_time, IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END) / 60, 0) AS tht_password, SEC_TO_TIME(IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END), 0)) AS tht_password_time FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
+        return View('managerViews.dashboard2')->with([
+            'ci_users' => $ci_users,
+            'kb_users' => $kb_users,
+            'fcr_users' => $fcr_users,
+            'fcr_reso_users' => $fcr_reso_users,
+            'tht' => $tht
+        ]);
     }
 
     public function dashboard3(){
@@ -34,22 +44,54 @@ class ControllerZakaria extends Controller{
         $tickets_per_product=DB::table('fact')
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
             ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
-            ->whereNotNull('Categorie')
-            ->select(DB::raw('count(*) as count, Categorie, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
-            ->groupBy('Categorie','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->whereNotNull('Product')
+            ->select(DB::raw('count(*) as count, Product, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
+            ->groupBy('Product','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
         $tickets_product=array();
         foreach ($tickets_per_product as $value) {
-            if(array_key_exists($value->Categorie, $tickets_product)){
-                array_push($tickets_product[$value->Categorie], (object)array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond));
+            if(array_key_exists($value->Product, $tickets_product)){
+                array_push($tickets_product[$value->Product], (object)array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond));
             }else{
-                $tickets_product[$value->Categorie]=[array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond)];
+                $tickets_product[$value->Product]=[array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond)];
             }
         }
         $tickets_all=[
             'all'=>$tickets,
             'product'=>$tickets_product
         ];
+        $ci_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, ci_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ci = ci_dim.Id GROUP BY agent_dim.Id ORDER BY count DESC');
+        $kb_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'%https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count FROM fact, kb_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_kb = kb_dim.Id GROUP BY agent_dim.Id ORDER BY count DESC');
+        $fcr_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id ORDER BY count DESC');
+        $fcr_reso_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
+        $tht=DB::select('SELECT agent_dim.Id, agent_dim.Name, AVG(Handling_time) / 60 AS tht, SEC_TO_TIME(AVG(Handling_time)) AS tht_time, IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END) / 60, 0) AS tht_password, SEC_TO_TIME(IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END), 0)) AS tht_password_time FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
+
+        $kb_names="'".$kb_users[0]->Name."'";
+        for ($i=1; $i < sizeof($kb_users); $i++) {
+            $kb_names = $kb_names.",'".$kb_users[$i]->Name."'";
+        }
+
+        $ci_names="'".$ci_users[0]->Name."'";
+        for ($i=1; $i < sizeof($ci_users); $i++) {
+            $ci_names = $ci_names.",'".$ci_users[$i]->Name."'";
+        }
+
+        $fcr_names="'".$fcr_users[0]->Name."'";
+        for ($i=1; $i < sizeof($fcr_users); $i++) {
+            $fcr_names = $fcr_names.",'".$fcr_users[$i]->Name."'";
+        }
+
+        return View('managerViews.dashboard3')->with([
+            'ci_users' => $ci_users,
+            'kb_users' => $kb_users,
+            'fcr_users' => $fcr_users,
+            'fcr_reso_users' => $fcr_reso_users,
+            'tht' => $tht,
+            'tickets_all' => $tickets_all,
+            'kb_names'=> $kb_names,
+            'ci_names'=> $kb_names,
+            'fcr_names'=> $kb_names
+        ]);
     }
 
     public function dashboard(Request $req){
@@ -165,16 +207,16 @@ class ControllerZakaria extends Controller{
         $tickets_per_product=DB::table('fact')
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
             ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
-            ->whereNotNull('Categorie')
-            ->select(DB::raw('count(*) as count, Categorie, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
-            ->groupBy('Categorie','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->whereNotNull('Product')
+            ->select(DB::raw('count(*) as count, Product, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
+            ->groupBy('Product','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
         $tickets_product=array();
         foreach ($tickets_per_product as $value) {
-            if(array_key_exists($value->Categorie, $tickets_product)){
-                array_push($tickets_product[$value->Categorie], (object)array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond));
+            if(array_key_exists($value->Product, $tickets_product)){
+                array_push($tickets_product[$value->Product], (object)array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond));
             }else{
-                $tickets_product[$value->Categorie]=[array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond)];
+                $tickets_product[$value->Product]=[array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond)];
             }
         }
         $tickets_all=[
