@@ -30,7 +30,7 @@ class ControllerZakaria extends Controller{
             ->select(DB::raw('count(*) as count, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
             ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
-        /*Tickets Per Product*/
+        /* Tickets Per Product */
         $tickets_per_product=DB::table('fact')
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
             ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
@@ -50,7 +50,6 @@ class ControllerZakaria extends Controller{
             'all'=>$tickets,
             'product'=>$tickets_product
         ];
-        return View('managerViews.dashboard3')->with('tickets_all', $tickets_all);
     }
 
     public function dashboard(Request $req){
@@ -197,4 +196,12 @@ class ControllerZakaria extends Controller{
         return View('forgot');
     }
 
+    public function test(){
+        return View('managerViews/test');
+    }
+
+    public function jib(Request $request){
+        $params = $request->except(['_token']);
+        return response()->json(['return' => 'some data']);
+    }
 } 

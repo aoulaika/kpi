@@ -395,7 +395,7 @@ $('#gauge2').highcharts(Highcharts.merge(gaugeOptions, {
             }],
             "chartScrollbar": {
                 "autoGridCount": true,
-                "graph": "g1",
+                "graph": "ticketsChart",
                 "scrollbarHeight": 40
             },
             "chartCursor": {

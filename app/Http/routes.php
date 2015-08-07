@@ -36,3 +36,13 @@ Route::get('/forgot', [
     'uses' => 'ControllerZakaria@forgot'
 ]);
 
+Route::any('/test', [
+    'as' => 'test',
+    'uses' => 'ControllerZakaria@test'
+]);
+
+Route::any('/jib', [
+    'as' => 'jib',
+    'uses' => 'ControllerZakaria@jib'
+]);
+
