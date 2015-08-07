@@ -10,15 +10,11 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Choose Agent</label>
-                                <select class="form-control select2">
-                                    <option selected="selected">Walid Walid</option>
-                                    <option>Oussama Laouina</option>
-                                    <option>Mehdi Benaqa</option>
-                                    <option>Khalil Khalil</option>
-                                    <option>Lionel Messi</option>
-                                    <option>Dave Darrel</option>
-                                    <option>Eric Clapton</option>
+                                <label for="agent">Choose Agent</label>
+                                <select class="form-control select2" id="agent" name="agent">
+                                    @foreach ($fcr_reso_users as $key => $user)
+                                    <option value="{{ $key }}">{{ $user->Name }}</option>
+                                    @endforeach
                                 </select>
                             </div><!-- /.form-group -->
                         </div>
@@ -37,7 +33,7 @@
                     <div class="row">
                         <div class="col-lg-5" >
                             <img src="{{ asset('/img/default-user.png') }}" class="agent-image"/>
-                            <h3 class="agent-name">Oussama Oussama</h3>
+                            <h3 class="agent-name"></h3>
                             <h4 style="text-align: center;font-family: 'Share Tech', sans-serif;opacity: 0.8;">Handled <span style="color: #44A1C1;">512</span> Tickets</h4>
                         </div>
                         <div class="col-lg-7" >
@@ -45,25 +41,25 @@
                                 <tr>
                                     <td>FCR</td>
                                     <td>
-                                        <div class="shiva"><span class="count">80</span>%</div>
+                                        <div class="shiva" id="fcr"><span class="count">80</span>%</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>FCR Resolvable</td>
                                     <td>
-                                        <div class="shiva"><span class="count">55</span>%</div>
+                                        <div class="shiva" id="fcr_reso"><span class="count">55</span>%</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>EKMS Usage</td>
                                     <td>
-                                        <div class="shiva" style="color:red"><span class="count">33</span>%</div>
+                                        <div class="shiva" id="kb"><span class="count">33</span>%</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>CI Usage</td>
                                     <td>
-                                        <div class="shiva"><span class="count">23</span>%</div>
+                                        <div class="shiva" id="ci"><span class="count">23</span>%</div>
                                     </td>
                                 </tr>
                             </table>
@@ -152,11 +148,26 @@
     <script src="{{ asset('/js/highcharts-more.js') }}"></script>
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <!-- End High Charts -->
-    <!-- Gauge chart -->
-
+    <!-- Percentage Counter -->
+    <script src="{{ asset('/js/radialProgress.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/js/solid-gauge.js') }}"></script>
-    <!-- Gauge1 Chart -->
-    <script type="text/javascript">
+    <!-- End Percentage Counter -->
+    <!-- Script Change User -->
+    <script>
+        var ci_temp = JSON.parse('<?php echo json_encode($ci_users); ?>');
+        var kb_temp = JSON.parse('<?php echo json_encode($kb_users); ?>');
+        var fcr_temp = JSON.parse('<?php echo json_encode($fcr_users); ?>');
+        var fcr_reso_temp = JSON.parse('<?php echo json_encode($fcr_reso_users); ?>');
+        var tht_temp = JSON.parse('<?php echo json_encode($tht); ?>');
+        var agent_name=ci_temp[0].Name;
+        var ci=ci_temp[0].count;
+        var kb=kb_temp[0].count;
+        var fcr=fcr_temp[0].count;
+        var fcr_reso=fcr_reso_temp[0].count;
+        var tht=tht_temp[0].tht;
+        var tht_password=tht_temp[0].tht_password;
+        var tht_time=tht_temp[0].tht_time;
+        var tht_password_time=tht_temp[0].tht_password_time;
         var gaugeOptions = {
             chart: {
                 type: 'solidgauge'
@@ -180,33 +191,32 @@
             // the value axis
             yAxis: {
                 stops: [
-                    [0.1, '#337C99'], // blue
-                    [0.7, '#C9BE58'], // yellow
-                    [0.9, '#CF6E6E'] // red
-                ],
-                lineWidth: 0,
-                minorTickInterval: null,
-                tickPixelInterval: 400,
-                tickWidth: 0,
-                title: {
-                    y: -70
+                        [0.1, '#3EBBAD'], // green
+                        [0.4, '#3EBBAD'], // yellow
+                        [0.9, '#DF5353'] // red
+                    ],
+                    lineWidth: 0,
+                    minorTickInterval: null,
+                    tickPixelInterval: 400,
+                    tickWidth: 0,
+                    title: {
+                        y: -70
+                    },
+                    labels: {
+                        y: 16
+                    }
                 },
-                labels: {
-                    y: 16
-                }
-            },
-            plotOptions: {
-                solidgauge: {
-                    dataLabels: {
-                        y: 5,
-                        borderWidth: 0,
-                        useHTML: true
+                plotOptions: {
+                    solidgauge: {
+                        dataLabels: {
+                            y: 5,
+                            borderWidth: 0,
+                            useHTML: true
+                        }
                     }
                 }
-            }
-        };
-        // The speed gauge
-        $('#gauge1').highcharts(Highcharts.merge(gaugeOptions, {
+            };
+            var gData1={
             yAxis: {
                 min: 0,
                 max: 20,
@@ -220,20 +230,94 @@
             },
             series: [{
                 name: 'Speed',
-                data: [5],
+                data: tht,
                 dataLabels: {
                     format: '<div style="text-align:center"><span style="font-size:25px;color:' +
                     ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '"></span><br/>' +
-                    '<span style="font-size:14px;color:blue;font-family:Open Sans">5</span></div>'
+                    '<span style="font-size:14px;color:blue;font-family:Open Sans">'+tht_time+'</span></div>'
                 }
             }]
-        }));
-    </script>
-    <!-- End Gauge1 Chart -->
+        };
+        var gData2={
+            yAxis: {
+                min: 0,
+                max: 10,
+                title: {
+                    text: 'THT(Password Reset Closure)'
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Speed',
+                data: tht_password,
+                dataLabels: {
+                    format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '"></span><br/>' +
+                    '<span style="font-size:14px;color:blue;font-family:Open Sans">'+tht_password_time+'</span></div>'
+                }
+            }]
+        };
+        $("#agent").change(function() {
+            var v=$(this).val();
+            agent_name=ci_temp[v].Name;
+            ci=ci_temp[v].count;
+            kb=kb_temp[v].count;
+            fcr=fcr_temp[v].count;
+            fcr_reso=fcr_reso_temp[v].count;
+            tht=tht_temp[v].tht;
+            tht_password=tht_temp[v].tht_password;
+            tht_time=tht_temp[v].tht_time;
+            tht_password_time=tht_temp[v].tht_password_time;
+            doit();
+            gauge('#gauge1',0,20,'THT',[Number(tht)],tht_time);
+            gauge('#gauge2',0,10,'THT(Password Reset Closure)',[Number(tht_password)],tht_password_time);
+        });
+        doit();
+        gauge('#gauge1',0,20,'THT',[Number(tht)],tht_time);
+        gauge('#gauge2',0,10,'THT(Password Reset Closure)',[Number(tht_password)],tht_password_time);
+        function doit(){
+            if (ci<50) {
+                $("#ci").css('color','red');
+            }else{
+                $("#ci").css('color','');
+            }
+            if (kb<50) {
+                $("#kb").css('color','red');
+            }else{
+                $("#kb").css('color','');
+            }
+            if (fcr<50) {
+                $("#fcr").css('color','red');
+            }else{
+                $("#fcr").css('color','');
+            }
+            if (fcr_reso<50) {
+                $("#fcr_reso").css('color','red');
+            }else{
+                $("#fcr_reso").css('color','');
+            }
+            $('#agent_name').html(agent_name);
+            $('#ci').html('<span class="count">'+ci+'</span>%');
+            $('#kb').html('<span class="count">'+kb+'</span>%');
+            $('#fcr').html('<span class="count">'+fcr+'</span>%');
+            $('#fcr_reso').html('<span class="count">'+fcr_reso+'</span>%');
+            $('.count').each(function () {
+            $(this).prop('Counter',0).animate({
+                Counter: $(this).text()
+            }, {
+                duration: 2000,
+                easing: 'swing',
+                step: function (now) {
+                    $(this).text(Math.ceil(now));
+                }
+            });
+        });
+        }
 
-    <!-- Gauge2 Chart -->
-    <script language="JavaScript">
-        var gaugeOptions = {
+        function gauge(id,mi,mx,title,tht,tht_time){
+            var gaugeOptions = {
             chart: {
                 type: 'solidgauge'
             },
@@ -259,35 +343,34 @@
                     [0.1, '#337C99'], // blue
                     [0.7, '#C9BE58'], // yellow
                     [0.9, '#CF6E6E'] // red
-                ],
-                lineWidth: 0,
-                minorTickInterval: null,
-                tickPixelInterval: 400,
-                tickWidth: 0,
-                title: {
-                    y: -70
+                    ],
+                    lineWidth: 0,
+                    minorTickInterval: null,
+                    tickPixelInterval: 400,
+                    tickWidth: 0,
+                    title: {
+                        y: -70
+                    },
+                    labels: {
+                        y: 16
+                    }
                 },
-                labels: {
-                    y: 16
-                }
-            },
-            plotOptions: {
-                solidgauge: {
-                    dataLabels: {
-                        y: 5,
-                        borderWidth: 0,
-                        useHTML: true
+                plotOptions: {
+                    solidgauge: {
+                        dataLabels: {
+                            y: 5,
+                            borderWidth: 0,
+                            useHTML: true
+                        }
                     }
                 }
-            }
-        };
-        // The speed gauge
-        $('#gauge2').highcharts(Highcharts.merge(gaugeOptions, {
+            };
+            var gData={
             yAxis: {
-                min: 0,
-                max: 10,
+                min: mi,
+                max: mx,
                 title: {
-                    text: 'THT(Password Reset Closure)'
+                    text: title
                 }
             },
             exporting: { enabled: false },
@@ -296,40 +379,27 @@
             },
             series: [{
                 name: 'Speed',
-                data: [1.3],
+                data: tht,
                 dataLabels: {
                     format: '<div style="text-align:center"><span style="font-size:25px;color:' +
                     ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '"></span><br/>' +
-                    '<span style="font-size:14px;color:blue;font-family:Open Sans">1.3</span></div>'
+                    '<span style="font-size:14px;color:blue;font-family:Open Sans">'+tht_time+'</span></div>'
                 }
             }]
-        }));
+        };
+        // The speed gauge
+        $(id).highcharts(Highcharts.merge(gaugeOptions, gData));
+        }
     </script>
-    <!-- End Gauge2 Chart -->
-    <!-- End Gauge chart -->
-    <!-- Percentage Counter -->
-    <script src="{{ asset('/js/radialProgress.js') }}" type="text/javascript"></script>
-    <script language="JavaScript">
-        $('.count').each(function () {
-            $(this).prop('Counter',0).animate({
-                Counter: $(this).text()
-            }, {
-                duration: 3000,
-                easing: 'swing',
-                step: function (now) {
-                    $(this).text(Math.ceil(now));
-                }
-            });
-        });
-    </script>
-    <!-- End Percentage Counter -->
+    <!-- End Script Change User -->
+
     <!-- Select2 -->
     <script src="{{ asset('/plugins/select2/select2.full.min.js') }}" type="text/javascript"></script>
     <!-- Tickets Per Hour Chart -->
     <script language="JavaScript">
         var data_temp = JSON.parse('<?php echo json_encode($tickets_all); ?>');
         var data=data_temp.all;
-        $(".select2").change(function() {
+        $("#product").change(function() {
             var v=$(this).val();
             if(v=='all'){
                 data=data_temp.all;
@@ -410,6 +480,7 @@
         $(".select2").select2();
         //Date range picker
         $('#reservation').daterangepicker();
+        
     </script>
     <!-- EKMS Usage Chart -->
     <script type="text/javascript">
