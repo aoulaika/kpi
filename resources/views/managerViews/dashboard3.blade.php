@@ -33,7 +33,7 @@
                     <div class="row">
                         <div class="col-lg-5" >
                             <img src="{{ asset('/img/default-user.png') }}" class="agent-image"/>
-                            <h3 class="agent-name"></h3>
+                            <h3 class="agent-name" id="agent_name">Oussama Oussama</h3>
                             <h4 style="text-align: center;font-family: 'Share Tech', sans-serif;opacity: 0.8;">Handled <span style="color: #44A1C1;">512</span> Tickets</h4>
                         </div>
                         <div class="col-lg-7" >
