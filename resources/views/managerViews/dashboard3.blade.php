@@ -1,6 +1,28 @@
 @extends('managerViews/layout')
 @section('content')
     <div class="row">
+        <div class="col-md-12">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <!-- Date and time range -->
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="input-group" style="margin-top:10px;">
+                                <button class="btn btn-default " id="daterange-btn">
+                                    <i class="fa fa-calendar"></i> Choose a Date Range
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
+                            </div>
+                        </div><!-- /.form group -->
+                    </div>
+                    <div class="col-lg-6">
+                        <span class="pull-right" id="range">From :  <span class="date">03/08/2015</span> to : <span class="date">10/08/2015</span></span>
+                    </div>
+                </div><!-- /.box-header -->
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-6">
             <div class="box box-default">
                 <div class="box-header with-border">
@@ -18,23 +40,12 @@
                                 </select>
                             </div><!-- /.form-group -->
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Date range:</label>
-                                <div class="input-group">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right" id="reservation" />
-                                </div><!-- /.input group -->
-                            </div><!-- /.form group -->
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-5" >
                             <img src="{{ asset('/img/default-user.png') }}" class="agent-image"/>
-                            <h3 class="agent-name" id="agent_name">Oussama Oussama</h3>
-                            <h4 style="text-align: center;font-family: 'Share Tech', sans-serif;opacity: 0.8;">Handled <span style="color: #44A1C1;">512</span> Tickets</h4>
+                            <h3 class="agent-name" id="agent_name"></h3>
+                            <h4 id="handle">Handled <span style="color: #44A1C1;">512</span> Tickets</h4>
                         </div>
                         <div class="col-lg-7" >
                             <table class="table percentable">
@@ -110,27 +121,36 @@
                                     <i class="fa fa-gear"></i> <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Bar Chart</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Param1</a></li>
                                     <li role="presentation" class="divider"></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Bubble Chart</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Param2</a></li>
                                 </ul>
                             </li>
                         </ul>
 
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_1">
-                                <div style="height: 390px;overflow: auto">
-                                    <div id="container1" style="width: 400px; min-height: 1000px; margin: 0 auto"></div>
+                                <div id="container1bis" class="containerbis"></div>
+                                <hr>
+                                <h3 class="titles">All agents comparison</h3>
+                                <div class="containerscroll">
+                                    <div id="container1" class="containerbar"></div>
                                 </div>
                             </div><!-- /.tab-pane -->
                             <div class="tab-pane" id="tab_2">
-                                <div style="height: 390px;overflow: auto">
-                                    <div id="container2" style="width: 400px; min-height: 1000px; margin: 0 auto"></div>
+                                <div id="container2bis" class="containerbis"></div>
+                                <hr>
+                                <h3 class="titles">All agents comparison</h3>
+                                <div class="containerscroll">
+                                    <div id="container2" class="containerbar"></div>
                                 </div>
                             </div><!-- /.tab-pane -->
                             <div class="tab-pane" id="tab_3">
-                                <div style="height: 390px;overflow: auto">
-                                    <div id="container3" style="width: 400px; min-height: 1000px; margin: 0 auto"></div>
+                                <div id="container3bis" class="containerbis"></div>
+                                <hr>
+                                <h3 class="titles">All agents comparison</h3>
+                                <div class="containerscroll">
+                                    <div id="container3" class="containerbar"></div>
                                 </div>
                             </div><!-- /.tab-pane -->
                         </div><!-- /.tab-content -->
@@ -159,6 +179,7 @@
         var fcr_temp = JSON.parse('<?php echo json_encode($fcr_users); ?>');
         var fcr_reso_temp = JSON.parse('<?php echo json_encode($fcr_reso_users); ?>');
         var tht_temp = JSON.parse('<?php echo json_encode($tht); ?>');
+        var tickets_per_agent = JSON.parse('<?php echo json_encode($tickets_per_agent); ?>');
         var agent_name=ci_temp[0].Name;
         var ci=ci_temp[0].count;
         var kb=kb_temp[0].count;
@@ -259,6 +280,9 @@
                 }
             }]
         };
+        bar('#container1bis',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
+        bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
+        bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
         $("#agent").change(function() {
             var v=$(this).val();
             agent_name=ci_temp[v].Name;
@@ -273,6 +297,9 @@
             doit();
             gauge('#gauge1',0,20,'THT',[Number(tht)],tht_time);
             gauge('#gauge2',0,10,'THT(Password Reset Closure)',[Number(tht_password)],tht_password_time);
+            bar('#container1bis',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
+            bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
+            bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
         });
         doit();
         gauge('#gauge1',0,20,'THT',[Number(tht)],tht_time);
@@ -389,6 +416,48 @@
         };
         // The speed gauge
         $(id).highcharts(Highcharts.merge(gaugeOptions, gData));
+        }
+
+        /* Bar chart function */
+        function bar(id,name,value,max,avg,min) {
+            var val=parseInt(value)
+            var mx=parseInt(max);
+            var av=parseInt(avg);
+            var mn=parseInt(min);
+            $(id).highcharts({
+                chart:{
+                    type:'bar'
+                },
+
+                exporting: { enabled: false },
+
+                tooltip: {
+                    valueSuffix: '%'
+                },
+
+                title: {
+                    text: ' '
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                xAxis: {
+                    categories: [name,'','Maximum','Average','Minimum']
+                },
+                series: [{
+                    name: 'Percentage',
+                    showInLegend: false,
+                    data: [
+                        (val<70)?{y:val,color:'red'}:val,
+                         0,
+                        {y:mx,color:'#6DD187'},
+                        {y:av,color:'#86F0A2'},
+                        {y:mn,color:'#A3FFBC'}
+                    ]
+                }]
+            });
         }
     </script>
     <!-- End Script Change User -->
@@ -511,7 +580,7 @@
                     name: 'Percentage',
                     showInLegend: false,
                     data: [
-                        <?php foreach ($kb_users as $kb){
+                        <?php foreach ($kb_users_ord as $kb){
                                 if($kb->count<=70)
                                 {
                                     echo "{y:".(int)$kb->count.",color:'red'},";
@@ -529,6 +598,8 @@
         });
     </script>
     <!-- EKMS Usage Chart -->
+    <!-- EKMS Usage Chart2 -->
+    <!-- EKMS Usage Chart2 -->
     <!-- CI Usage Chart -->
     <script type="text/javascript">
         $(function () {
@@ -558,7 +629,7 @@
                     name: 'Percentage',
                     showInLegend: false,
                     data: [
-                        <?php foreach ($ci_users as $ci){
+                        <?php foreach ($ci_users_ord as $ci){
                                 if($ci->count<=50)
                                 {
                                     echo "{y:".(int)$ci->count.",color:'red'},";
@@ -605,7 +676,7 @@
                     name: 'Percentage',
                     showInLegend: false,
                     data: [
-                        <?php foreach ($fcr_users as $fcr){
+                        <?php foreach ($fcr_users_ord as $fcr){
                                 if($fcr->count<=50)
                                 {
                                     echo "{y:".(int)$fcr->count.",color:'red'},";

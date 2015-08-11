@@ -48,6 +48,14 @@ class ControllerZakaria extends Controller{
             ->select(DB::raw('count(*) as count, Product, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
             ->groupBy('Product','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
+        /* Tickets Per Product */
+        $tickets_per_agent=DB::table('fact')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->select(DB::raw('count(*) as count, agent_dim.Name,agent_dim.Id'))
+            ->groupBy('agent_dim.Id')
+            ->orderBy('count','desc')
+            ->get();
         $tickets_product=array();
         foreach ($tickets_per_product as $value) {
             if(array_key_exists($value->Product, $tickets_product)){
@@ -65,32 +73,63 @@ class ControllerZakaria extends Controller{
         $fcr_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
         $fcr_reso_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
         $tht=DB::select('SELECT agent_dim.Id, agent_dim.Name, AVG(Handling_time) / 60 AS tht, SEC_TO_TIME(AVG(Handling_time)) AS tht_time, IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END) / 60, 0) AS tht_password, SEC_TO_TIME(IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END), 0)) AS tht_password_time FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
+        /* Queries Ordered */
+        $ci_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, ci_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ci = ci_dim.Id GROUP BY agent_dim.Id ORDER BY count');
+        $kb_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'%https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count FROM fact, kb_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_kb = kb_dim.Id GROUP BY agent_dim.Id ORDER BY count');
+        $fcr_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id ORDER BY count');
+        /* Max and Min */
+        $kb_min = $kb_users_ord[0]->count;
+        $kb_max = $kb_users_ord[sizeof($kb_users_ord)-1]->count;
+        $ci_min = $ci_users_ord[0]->count;
+        $ci_max = $ci_users_ord[sizeof($kb_users_ord)-1]->count;
+        $fcr_min = $fcr_users_ord[0]->count;
+        $fcr_max = $fcr_users_ord[sizeof($kb_users_ord)-1]->count;
+        /*List of names for bar graph*/
+        $kb_names="'".$kb_users_ord[0]->Name."'";
+        $ci_names="'".$ci_users_ord[0]->Name."'";
+        $fcr_names="'".$fcr_users_ord[0]->Name."'";
+        $kb_sum = $kb_users_ord[0]->count;
+        $ci_sum = $ci_users_ord[0]->count;
+        $fcr_sum = $fcr_users_ord[0]->count;
 
-        $kb_names="'".$kb_users[0]->Name."'";
-        for ($i=1; $i < sizeof($kb_users); $i++) {
-            $kb_names = $kb_names.",'".$kb_users[$i]->Name."'";
+        for ($i=1; $i < sizeof($kb_users_ord); $i++) {
+            $kb_names = $kb_names.",'".$kb_users_ord[$i]->Name."'";
+            $ci_names = $ci_names.",'".$ci_users_ord[$i]->Name."'";
+            $fcr_names = $fcr_names.",'".$fcr_users_ord[$i]->Name."'";
+            /* calculating the avg at the same time */
+            $kb_sum += $kb_users_ord[$i]->count;
+            $ci_sum += $ci_users_ord[$i]->count;
+            $fcr_sum += $fcr_users_ord[$i]->count;
         }
 
-        $ci_names="'".$ci_users[0]->Name."'";
-        for ($i=1; $i < sizeof($ci_users); $i++) {
-            $ci_names = $ci_names.",'".$ci_users[$i]->Name."'";
-        }
+        $kb_avg = $kb_sum/sizeof($kb_users_ord);
+        $ci_avg = $ci_sum/sizeof($kb_users_ord);
+        $fcr_avg = $fcr_sum/sizeof($kb_users_ord);
 
-        $fcr_names="'".$fcr_users[0]->Name."'";
-        for ($i=1; $i < sizeof($fcr_users); $i++) {
-            $fcr_names = $fcr_names.",'".$fcr_users[$i]->Name."'";
-        }
 
         return View('managerViews.dashboard3')->with([
             'ci_users' => $ci_users,
             'kb_users' => $kb_users,
             'fcr_users' => $fcr_users,
+            'ci_users_ord' => $ci_users_ord,
+            'kb_users_ord' => $kb_users_ord,
+            'fcr_users_ord' => $fcr_users_ord,
             'fcr_reso_users' => $fcr_reso_users,
             'tht' => $tht,
             'tickets_all' => $tickets_all,
             'kb_names'=> $kb_names,
-            'ci_names'=> $kb_names,
-            'fcr_names'=> $kb_names
+            'ci_names'=> $ci_names,
+            'fcr_names'=> $fcr_names,
+            'kb_max' => $kb_max,
+            'kb_min' => $kb_min,
+            'kb_avg' => $kb_avg,
+            'ci_max' => $ci_max,
+            'ci_min' => $ci_min,
+            'ci_avg' => $ci_avg,
+            'fcr_max' => $fcr_max,
+            'fcr_min' => $fcr_min,
+            'fcr_avg' => $fcr_avg,
+            'tickets_per_agent' => $tickets_per_agent
         ]);
     }
 

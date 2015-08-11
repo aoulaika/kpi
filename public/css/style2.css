@@ -1,5 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Share+Tech);
 
+
 #test .arc2 {
     stroke-weight:0.1;
     fill: #3660b0;
@@ -152,17 +153,6 @@
     opacity: 0.8;
 }
 
-#handle {
-    text-align: center;
-    font-family: 'Share Tech', sans-serif;
-    opacity: 0.8;
-    color: #44A1C1;
-}
-
-#handle span {
-
-}
-
 
 /* End Agent Info */
 /* hr */
@@ -177,3 +167,7 @@ hr{
     margin-top: 10px;
     margin-right: 9px;
 }
+
+
+
+

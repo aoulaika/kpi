@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>KPI App</title>
+    <title>KPIs App</title>
     <link rel="icon" type="image/png" href="{{ asset('/img/icon.png') }}">
     <!-- Select2 -->
     <link href="{{ asset('/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -18,13 +18,10 @@
     <link href="{{ asset('/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- jvectormap -->
     <link href="{{ asset('/plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
-    <!-- Morris -->
-    <link href="{{ asset('/plugins/morris/morris.css') }}" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
     <link href="{{ asset('/dist/css/AdminLTE.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
     <link href="{{ asset('/dist/css/skins/_all-skins.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('/css/style2.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/plugins/daterangepicker/daterangepicker-bs3.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -33,6 +30,43 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <link href="{{ asset('/css/style2.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .containerbis{
+            width: 400px;
+            height: 200px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top:58px;
+        }
+        .containerbar{
+            width: 400px;
+            min-height: 1000px;
+            margin: 0 auto;
+        }
+        .containerscroll{
+            margin-top: 20px;
+            height: 390px;
+            overflow: auto
+        }
+        #handle{
+            text-align: center;
+            font-family: 'Share Tech', sans-serif;
+            opacity: 0.8;
+            color:black;
+        }
+        #range{
+            opacity: 0.8;
+            color:black;
+            font-size:1.2em;
+            margin-top:15px;
+            margin-left:15px;
+        }
+        .date{
+            color: #44A1C1;
+        }
+
+    </style>
 </head>
 <body class="skin-blue sidebar-mini">
     <div class="wrapper">
