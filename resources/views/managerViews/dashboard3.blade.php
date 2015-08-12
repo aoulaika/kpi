@@ -46,6 +46,7 @@
                             <img src="{{ asset('/img/default-user.png') }}" class="agent-image"/>
                             <h3 class="agent-name" id="agent_name"></h3>
                             <h4 class="minititle">Handled <span id="nbr" style="color: #44A1C1;"></span> Tickets</h4>
+                            <h5 class="minititle">Missed <span style="color: red;"> 13/152</span> Resolvable Tickets </h5>
                         </div>
                         <div class="col-lg-7" >
                             <table class="table percentable">
@@ -81,11 +82,11 @@
                         <h3 class="titles">Average Tickets Handle Time</h3>
                         <div class="col-lg-6" >
                             <div id="gauge1" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-                            <h5 class="minititle">THT</h5>
+                            <h5 class="minititle">Average THT</h5>
                         </div>
                         <div class="col-lg-6">
                             <div id="gauge2" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-                            <h5 class="minititle">THT Password Reset Closure</h5>
+                            <h5 class="minititle">Average THT for Password Reset Closure</h5>
                         </div>
                     </div>
                     <hr>
@@ -118,6 +119,8 @@
                             <li class="active"><a href="#tab_1" data-toggle="tab">KB Usage</a></li>
                             <li><a href="#tab_2" data-toggle="tab">CI Usage</a></li>
                             <li><a href="#tab_3" data-toggle="tab">FCR</a></li>
+                            <li><a href="#tab_4" data-toggle="tab">FCR Resolvable</a></li>
+                            <li><a href="#tab_5" data-toggle="tab">Number of tickets</a></li>
                             <li class="pull-right">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                     <i class="fa fa-gear"></i> <span class="caret"></span>
@@ -155,15 +158,190 @@
                                     <div id="container3" class="containerbar"></div>
                                 </div>
                             </div><!-- /.tab-pane -->
+                            <div class="tab-pane active" id="tab_4">
+                            </div><!-- /.tab-pane -->
+                            <div class="tab-pane active" id="tab_5">
+                            </div><!-- /.tab-pane -->
                         </div><!-- /.tab-content -->
                     </div><!-- nav-tabs-custom -->
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
             <div class="box box-default">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Top 10 tickets handlers</h3>
+                    <h3 class="box-title">Top 10 Agents</h3>
                 </div><!-- /.box-header -->
-                <div class="box-body" style="height:260px;">
+                <div class="box-body">
+                        <ul class="products-list product-list-in-box">
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">1</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Oussama Laouina </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <span class="pull-right" style="color:#CFB53B"><i class="fa fa-3x fa-trophy"></i></span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">2</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Karima Majid </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <span class="pull-right" style="color:#c0c0c0"><i class="fa fa-3x fa-trophy"></i></span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">3</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Zakaria Seghrouchni </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <span class="pull-right" style="color:#cd7f32"><i class="fa fa-3x fa-trophy"></i></span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">4</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Oubacher Mina </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">5</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Zakaria Seghrouchni </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">6</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Oussama Laouina </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">7</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Karima Majid </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">8</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Zakaria Seghrouchni </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">9</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Oubacher Mina </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                            <li class="item">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <span class="rank">10</span>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <a href="#" class="product-title">Oubacher Mina </a>
+                                        <span class="product-description" style="font-size:0.9em">
+                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                        </span>
+                                    </div>
+                                </div>
+                            </li><!-- /.item -->
+                        </ul>
                 </div>
             </div>
         </div><!-- /.col -->
@@ -219,15 +397,15 @@
             agent_nbr=tickets_per_agent[v].count;
             prc_nbr=prc_nbr_temp[v].count;
             doit();
-            gauge('#gauge1',0,20,'',[Number(tht)],tht_time);
-            gauge('#gauge2',0,10,'('+prc_nbr+' Tickets )',[Number(tht_password)],tht_password_time);
+            gauge('#gauge1',0,20,agent_nbr+' Tickets',[Number(tht)],tht_time);
+            gauge('#gauge2',0,10,prc_nbr+' Tickets ',[Number(tht_password)],tht_password_time);
             bar('#container1bis',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
             bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
             bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
         });
         doit();
-        gauge('#gauge1',0,20,'',[Number(tht)],tht_time);
-        gauge('#gauge2',0,10,'('+prc_nbr+' Tickets )',[Number(tht_password)],tht_password_time);
+        gauge('#gauge1',0,20,agent_nbr+' Tickets',[Number(tht)],tht_time);
+        gauge('#gauge2',0,10,prc_nbr+' Tickets',[Number(tht_password)],tht_password_time);
         function doit(){
             if (ci<50) {
                 $("#ci").css('color','red');

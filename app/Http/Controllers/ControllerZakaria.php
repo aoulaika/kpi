@@ -284,6 +284,7 @@ class ControllerZakaria extends Controller{
     }
 
     public function jib(Request $request){
+<<<<<<< HEAD
         $params = $request->all();
         $start=explode(" - ", $params->start);
         $ticket_debut= DB::table('fact')
@@ -302,5 +303,10 @@ class ControllerZakaria extends Controller{
             ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
         return response()->json();
+=======
+        $params = $request->except(['_token']);
+        $params['email'] = 'hhh';
+        return response()->json($params);
+>>>>>>> 0b30626f4fcf0e594adc2dafddf02bf7cc953b36
     }
 } 

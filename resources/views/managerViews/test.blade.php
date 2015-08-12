@@ -11,11 +11,11 @@
         $(document).ready(function(){
             $('#btn').click(function(){
                 $.ajax({
-                    url: 'jib',
+                    url: 'jibcd',
                     type: "post",
                     data: {'email':'zaki', '_token': $('input[name=_token]').val()},
-                    success: function(_response){
-                        alert(_response.return);
+                    success: function(response){
+                        alert(response.email);
                     }
                 });
             });
