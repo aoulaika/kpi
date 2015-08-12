@@ -1,53 +1,38 @@
 @extends('managerViews/layout')
 @section('content')
-    <div class="row">
-        <div class="col-lg-7 col-sm-12">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Average Tickets Handling Time</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div id="gauge1" style="height:300px;width:100%"></div>
+<!-- Date Picker -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <!-- Date and time range -->
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="input-group" style="margin-top:10px;">
+                            <button class="btn btn-default " id="daterange-btn">
+                                <i class="fa fa-calendar"></i> Choose a Date Range
+                                <i class="fa fa-caret-down"></i>
+                            </button>
                         </div>
-                        <div class="col-lg-6">
-                            <div id="gauge2" style="height:300px;width:100%"></div>
-                        </div>
-                    </div>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div><!-- /.col -->
+                    </div><!-- /.form group -->
+                </div>
+                <div class="col-lg-6">
+                    <span class="pull-right" id="range">From :  <span class="date">03/08/2015</span> to : <span class="date">10/08/2015</span></span>
+                </div>
+            </div><!-- /.box-header -->
+        </div>
+    </div>
+</div>
+<!-- End Date Picker -->
 
-        <div class="col-lg-5 col-sm-12">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Tickets Priority</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                    <div id="priorityPie"></div>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div><!-- /.col -->
-    </div> <!-- /.row -->
-
-    <div class="nav-tabs-custom">
-        <!-- Tabs within a box -->
-        <ul class="nav nav-tabs pull-right">
-            <li class="pull-left header"><i class="fa fa-inbox"></i> Global View</li>
-        </ul>
-        <!-- Date and time range -->
-        <div class="form-group" style="margin:5px;">
-            <div class="input-group">
-                <button class="btn btn-default " id="daterange-btn">
-                    <i class="fa fa-calendar"></i> Choose a Date
-                    <i class="fa fa-caret-down"></i>
-                </button>
+<!-- Global View -->
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Global View</h3>
             </div>
-        </div><!-- /.form group -->
-        <!-- chart zakaria -->
-        <div class="tab-content no-padding">
-            <div  class="row" style="padding-top: 20px;">
+            <div class="box-body">
                 <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                     <div  id="div1"></div>
                 </div>
@@ -62,46 +47,91 @@
                 </div>
             </div>
         </div>
-        <!-- end chart zakaria -->
-    </div><!-- /.nav-tabs-custom -->
+    </div>
+</div>
+<!-- End Global View -->
 
-    <div class="nav-tabs-custom">
-        <!-- Tabs within a box -->
-        <ul class="nav nav-tabs pull-right">
-            <li class="pull-left header"><i class="fa fa-inbox"></i>Tickets Per Hours</li>
-            <div class="form-group pull-right" id="select2">
-                <label for="product">Filter By Product</label>
-                <select name="product" id="product" class="form-control select2">
-                    <option value="all">All</option>
-                    @foreach ($tickets_all['product'] as $key => $value)
+<!-- Average Tickets Handling Time & Tickets Priority -->
+<div class="row">
+    <div class="col-lg-7 col-sm-12">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Average Tickets Handling Time</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div id="gauge1" style="height:300px;width:100%"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div id="gauge2" style="height:300px;width:100%"></div>
+                    </div>
+                </div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div><!-- /.col -->
+
+    <div class="col-lg-5 col-sm-12">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Tickets Priority</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div id="priorityPie"></div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div><!-- /.col -->
+</div> <!-- /.row -->
+<!-- End Average Tickets Handling Time & Tickets Priority -->
+
+<!-- Tickets Per Hours -->
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Tickets Per Hours</h3>
+                <div class="pull-right" id="select2">
+                    <label for="product">Filter By Product</label>
+                    <select name="product" id="product" class="form-control select2">
+                        <option value="all">All</option>
+                        @foreach ($tickets_all['product'] as $key => $value)
                         <option value="{{ $key }}">{{ $key }} ({{ count($value) }})</option>
-                    @endforeach
-                </select>
-            </div>
-        </ul>
-        <!-- chart ayoub -->
-        <div class="tab-content no-padding">
-            <div  class="row" style="padding-top: 20px;">
-                <div class="col-xs-12">
-                    <div  id="ticketsChart"></div>
+                        @endforeach
+                    </select>
                 </div>
             </div>
+            <div class="box-body">
+                <div  id="ticketsChart"></div>
+            </div>
         </div>
-        <!-- end chart ayoub -->
-    </div><!-- /.nav-tabs-custom -->
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Average Resolution Time</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body" style="height:440px">
-                    <iframe scrolling="no" src="http://localhost/kpi/Graphs/global/avg_resol_time.php" style="width:100%; height: 420px;border-width:0px;"></iframe>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div><!-- /.col -->
     </div>
+</div>
+<!-- End Tickets Per Hours -->
+
+<!-- Average Resolution Time Per Category -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Average Resolution Time Per Category</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body" style="height:440px">
+                <iframe src="http://localhost/kpi/Graphs/global/avg_resol_time.php" style="width:100%; height: 420px;border-width:0px;"></iframe>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div><!-- /.col -->
+    <div class="col-md-6">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Tickets Per Country</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body" style="height:440px">
+                <div id="regions_div" style="width: 100%; height: 100%;"></div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div><!-- /.col -->
+</div>
+<!-- End Average Resolution Time Per Category -->
 @endsection
 @section('script')
 <!-- Select2 -->
@@ -145,28 +175,28 @@
             [0.1, '#337C99'], // blue
             [0.7, '#C9BE58'], // yellow
             [0.9, '#CF6E6E'] // red
-        ],
-        lineWidth: 0,
-        minorTickInterval: null,
-        tickPixelInterval: 400,
-        tickWidth: 0,
-        title: {
-            y: -70
+            ],
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickPixelInterval: 400,
+            tickWidth: 0,
+            title: {
+                y: -70
+            },
+            labels: {
+                y: 16
+            }
         },
-        labels: {
-            y: 16
-        }
-    },
-    plotOptions: {
-        solidgauge: {
-            dataLabels: {
-                y: 5,
-                borderWidth: 0,
-                useHTML: true
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
             }
         }
-    }
-};
+    };
 // The speed gauge
 $('#gauge1').highcharts(Highcharts.merge(gaugeOptions, {
     yAxis: {
@@ -184,8 +214,8 @@ $('#gauge1').highcharts(Highcharts.merge(gaugeOptions, {
         data: [{{ $avg_tht['all'][0] }}],
         dataLabels: {
             format: '<div style="text-align:center"><span style="font-size:25px;color:' +
-                ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '"></span><br/>' +
-                '<span style="font-size:14px;color:blue;font-family:Open Sans">{{ $avg_tht['all'][1] }}</span></div>'
+            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '"></span><br/>' +
+            '<span style="font-size:14px;color:blue;font-family:Open Sans">{{ $avg_tht['all'][1] }}</span></div>'
         }
     }]
 }));
@@ -194,54 +224,54 @@ $('#gauge1').highcharts(Highcharts.merge(gaugeOptions, {
 
 <!-- Gauge2 Chart -->
 <script language="JavaScript">
-var gaugeOptions = {
-    chart: {
-        type: 'solidgauge'
-    },
-    title: null,
-    pane: {
-        center: ['50%', '85%'],
-        size: '100%',
-        startAngle: -90,
-        endAngle: 90,
-        background: {
-            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
-            innerRadius: '60%',
-            outerRadius: '100%',
-            shape: 'arc'
-        }
-    },
-    tooltip: {
-        enabled: false
-    },
+    var gaugeOptions = {
+        chart: {
+            type: 'solidgauge'
+        },
+        title: null,
+        pane: {
+            center: ['50%', '85%'],
+            size: '100%',
+            startAngle: -90,
+            endAngle: 90,
+            background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+            }
+        },
+        tooltip: {
+            enabled: false
+        },
     // the value axis
     yAxis: {
         stops: [
             [0.1, '#337C99'], // blue
             [0.7, '#C9BE58'], // yellow
             [0.9, '#CF6E6E'] // red
-        ],
-        lineWidth: 0,
-        minorTickInterval: null,
-        tickPixelInterval: 400,
-        tickWidth: 0,
-        title: {
-            y: -70
+            ],
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickPixelInterval: 400,
+            tickWidth: 0,
+            title: {
+                y: -70
+            },
+            labels: {
+                y: 16
+            }
         },
-        labels: {
-            y: 16
-        }
-    },
-    plotOptions: {
-        solidgauge: {
-            dataLabels: {
-                y: 5,
-                borderWidth: 0,
-                useHTML: true
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
             }
         }
-    }
-};
+    };
 // The speed gauge
 $('#gauge2').highcharts(Highcharts.merge(gaugeOptions, {
     yAxis: {
@@ -259,8 +289,8 @@ $('#gauge2').highcharts(Highcharts.merge(gaugeOptions, {
         data: [{{ $avg_tht['password'][0] }}],
         dataLabels: {
             format: '<div style="text-align:center"><span style="font-size:25px;color:' +
-                ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '"></span><br/>' +
-                '<span style="font-size:14px;color:blue;font-family:Open Sans">{{ $avg_tht['password'][1] }}</span></div>'
+            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '"></span><br/>' +
+            '<span style="font-size:14px;color:blue;font-family:Open Sans">{{ $avg_tht['password'][1] }}</span></div>'
         }
     }]
 }));
@@ -272,8 +302,8 @@ $('#gauge2').highcharts(Highcharts.merge(gaugeOptions, {
     // Make monochrome colors and set them as default for all pies
     Highcharts.getOptions().plotOptions.pie.colors = (function() {
         var colors = [],
-            base = Highcharts.getOptions().colors[0],
-            i;
+        base = Highcharts.getOptions().colors[0],
+        i;
 
         for (i = 0; i < 10; i += 1) {
             // Start out with a darkened base color (negative brighten), and end
@@ -324,25 +354,25 @@ $('#gauge2').highcharts(Highcharts.merge(gaugeOptions, {
 
     function start() {
         var rp1 = radialProgress(document.getElementById('div1'))
-            .label("Total CI Usage")
-            .diameter(180)
-            .value({{ $ci }})
-            .render();
+        .label("Total CI Usage")
+        .diameter(180)
+        .value({{ $ci }})
+        .render();
         var rp2 = radialProgress(document.getElementById('div2'))
-            .label("Total KB Usage")
-            .diameter(180)
-            .value({{ $kb }})
-            .render();
+        .label("Total KB Usage")
+        .diameter(180)
+        .value({{ $kb }})
+        .render();
         var rp3 = radialProgress(document.getElementById('div3'))
-            .label("Total FCR")
-            .diameter(180)
-            .value({{ $fcr['all'] }})
-            .render();
+        .label("Total FCR")
+        .diameter(180)
+        .value({{ $fcr['all'] }})
+        .render();
         var rp4 = radialProgress(document.getElementById('div4'))
-            .label("Total FCR Resolvable")
-            .diameter(180)
-            .value({{ $fcr['resolvable'] }})
-            .render();
+        .label("Total FCR Resolvable")
+        .diameter(180)
+        .value({{ $fcr['resolvable'] }})
+        .render();
     }
 </script>
 <!-- End Global View Chart -->
@@ -414,9 +444,9 @@ $('#gauge2').highcharts(Highcharts.merge(gaugeOptions, {
                 "enabled": true
             }
         });
-        chart1.pathToImages = '/kpi/public/img/';
-        chart1.addListener("rendered", zoomChart);
-        zoomChart();
+chart1.pathToImages = '/kpi/public/img/';
+chart1.addListener("rendered", zoomChart);
+zoomChart();
 
         // this method is called when chart is first inited as we listen for "dataUpdated" event
         function zoomChart() {
@@ -426,6 +456,32 @@ $('#gauge2').highcharts(Highcharts.merge(gaugeOptions, {
     }
 </script>
 <!-- End Tickets Per Hour Chart -->
+
+<!-- Map Chart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['geochart']}]}"></script>
+<script>
+    google.setOnLoadCallback(drawRegionsMap);
+
+      function drawRegionsMap() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Country', 'Popularity'],
+          ['Germany', 200],
+          ['United States', 300],
+          ['Brazil', 400],
+          ['Canada', 500],
+          ['France', 600],
+          ['ES', 700]
+        ]);
+
+        var options = {colorAxis: {colors: ['#81D4D5','#2E6E8A']}};
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+        chart.draw(data, options);
+      }
+</script>
+<!-- End Map Chart -->
 
 <!-- Others Script -->
 <script>
