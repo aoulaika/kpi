@@ -6,6 +6,8 @@
     <link rel="icon" type="image/png" href="{{ asset('/img/icon.png') }}">
     <!-- Select2 -->
     <link href="{{ asset('/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- google font -->
+    <link href='http://fonts.googleapis.com/css?family=Vollkorn' rel='stylesheet' type='text/css'>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.4 -->
@@ -31,6 +33,28 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="{{ asset('/css/style2.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .minititle{
+            text-align: center;
+            font-family: 'Share Tech', sans-serif;
+            opacity: 0.8;
+            color:black;
+        }
+        .rank {
+            font-size: 2em;
+            font-family: 'Vollkorn', serif;
+            opacity: 0.8;
+            margin-left:10px;
+            margin-right:15px;
+        }
+        .rank-img {
+            margin-top: 4px;
+        }
+        .rank-titles {
+            color :#141a1d;
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body class="skin-blue sidebar-mini sidebar-collapse">
     <div class="wrapper">

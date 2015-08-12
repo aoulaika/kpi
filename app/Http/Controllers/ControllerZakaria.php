@@ -285,6 +285,7 @@ class ControllerZakaria extends Controller{
 
     public function jib(Request $request){
         $params = $request->except(['_token']);
-        return response()->json(['return' => 'some data']);
+        $params['email'] = 'hhh';
+        return response()->json($params);
     }
 } 
