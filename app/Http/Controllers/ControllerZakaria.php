@@ -284,7 +284,23 @@ class ControllerZakaria extends Controller{
     }
 
     public function jib(Request $request){
-        $params = $request->except(['_token']);
-        return response()->json(['return' => 'some data']);
+        $params = $request->all();
+        $start=explode(" - ", $params->start);
+        $ticket_debut= DB::table('fact')
+            ->join('time_dim','fact.fk_time','=','time_dim.Id')
+            ->where('time_dim.Created','>','2015-03-15')
+            ->where('time_dim.Created','<','2015-03-21')
+            ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
+            ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+        $end=explode(" - ", $params->end);
+        $ticket_fin= DB::table('fact')
+            ->join('time_dim','fact.fk_time','=','time_dim.Id')
+            ->where('time_dim.Created','>','2015-03-15')
+            ->where('time_dim.Created','<','2015-03-21')
+            ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
+            ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+        return response()->json();
     }
 } 

@@ -89,19 +89,47 @@
     <div class="col-xs-12">
         <div class="box box-default">
             <div class="box-header with-border">
-                <h3 class="box-title">Tickets Per Hours</h3>
-                <div class="pull-right" id="select2">
-                    <label for="product">Filter By Product</label>
-                    <select name="product" id="product" class="form-control select2">
-                        <option value="all">All</option>
-                        @foreach ($tickets_all['product'] as $key => $value)
-                        <option value="{{ $key }}">{{ $key }} ({{ count($value) }})</option>
-                        @endforeach
-                    </select>
-                </div>
+                <h3 class="box-title">Tickets Per Time</h3>
             </div>
             <div class="box-body">
-                <div  id="ticketsChart"></div>
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_1" data-toggle="tab">Tickets Per Hours</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">Compare Two Weeks</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab_1">
+                            <div>
+                                <div id="select2" class="col-sm-12">
+                                    <label for="product">Filter By Product</label>
+                                    <select name="product" id="product" class="form-control select2">
+                                        <option value="all">All</option>
+                                        @foreach ($tickets_all['product'] as $key => $value)
+                                        <option value="{{ $key }}">{{ $key }} ({{ count($value) }})</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div  id="ticketsChart"></div>
+                            </div>
+                        </div><!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_2">
+                            <div>
+                                <form action="" class="form-inline">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control week-picker" name="start_date">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control week-picker" name="end_date">
+                                    </div>
+                                    <input type="hidden" value="{{ csrf_token() }}" name="_token">
+                                    <a class="btn btn-default" id="compare">valider</a>
+                                </form>
+                                <div id="weeks"></div>
+                            </div>
+                        </div><!-- /.tab-pane -->
+                    </div><!-- /.tab-content -->
+                </div><!-- nav-tabs-custom -->
             </div>
         </div>
     </div>
@@ -146,10 +174,42 @@
 <script src="{{ asset('/js/pie.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/js/radialProgress.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
+<script>
+    $('.week-picker').daterangepicker({
+        "dateLimit": {
+            "days": 7
+        }
+    }, function(start, end, label) {
+      console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+  });
+    $('#compare').click(function (argument) {
+        var start_date=$('input[name=start_date]').val();console.log(start_date);
+        var end_date=$('input[name=end_date]').val();console.log(end_date);
+        var CSRF_TOKEN=$('input[name=_token]').val();console.log(CSRF_TOKEN);
+        /*$.get('http://localhost/kpi/public/jib', { 'start': start, 'end': end, '_token': CSRF_TOKEN })
+        .done(function( data ) {
+            console.log( data );
+        });*/
+        /*var posting = $.get( 'http://localhost/kpi/public/jib', { 'start': start, 'end': end, '_token': CSRF_TOKEN } );
+        posting.done(function( data ) {
+            console.log(data);
+        });*/
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: { start: start_date, end: end_date, _token: CSRF_TOKEN },
+            url: "http://localhost/kpi/public/jib",
+            success:function (data) {
+                console.log(data);
+            }
+        });
 
+    });
+</script>
 <!-- Gauge1 Chart -->
 <script type="text/javascript">
- var gaugeOptions = {
+   var gaugeOptions = {
     chart: {
         type: 'solidgauge'
     },
@@ -462,7 +522,7 @@ zoomChart();
 <script>
     google.setOnLoadCallback(drawRegionsMap);
 
-      function drawRegionsMap() {
+    function drawRegionsMap() {
 
         var data = google.visualization.arrayToDataTable([
           ['Country', 'Popularity'],
@@ -472,14 +532,14 @@ zoomChart();
           ['Canada', 500],
           ['France', 600],
           ['ES', 700]
-        ]);
+          ]);
 
         var options = {colorAxis: {colors: ['#81D4D5','#2E6E8A']}};
 
         var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
 
         chart.draw(data, options);
-      }
+    }
 </script>
 <!-- End Map Chart -->
 
