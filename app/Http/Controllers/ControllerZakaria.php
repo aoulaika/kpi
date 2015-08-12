@@ -48,14 +48,14 @@ class ControllerZakaria extends Controller{
             ->select(DB::raw('count(*) as count, Product, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
             ->groupBy('Product','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
-        /* Tickets Per Product */
+        /* Number of tickets Per agent */
         $tickets_per_agent=DB::table('fact')
             ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
             ->select(DB::raw('count(*) as count, agent_dim.Name,agent_dim.Id'))
             ->groupBy('agent_dim.Id')
-            ->orderBy('count','desc')
             ->get();
+
         $tickets_product=array();
         foreach ($tickets_per_product as $value) {
             if(array_key_exists($value->Product, $tickets_product)){
@@ -77,6 +77,8 @@ class ControllerZakaria extends Controller{
         $ci_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, ci_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ci = ci_dim.Id GROUP BY agent_dim.Id ORDER BY count');
         $kb_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'%https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count FROM fact, kb_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_kb = kb_dim.Id GROUP BY agent_dim.Id ORDER BY count');
         $fcr_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id ORDER BY count');
+        /* Number of Password Reset Closure tickets per agent */
+        $prc_nbr = DB ::select('SELECT a.Id,a.Name,SUM(CASE WHEN t.Closure_code=\'Password Reset\' THEN 1 ELSE 0 END) as count FROM fact f,agent_dim a,tickets_dim t WHERE f.fk_agent=a.Id AND f.fk_ticket=t.Id GROUP BY a.Id');
         /* Max and Min */
         $kb_min = $kb_users_ord[0]->count;
         $kb_max = $kb_users_ord[sizeof($kb_users_ord)-1]->count;
@@ -106,7 +108,6 @@ class ControllerZakaria extends Controller{
         $ci_avg = $ci_sum/sizeof($kb_users_ord);
         $fcr_avg = $fcr_sum/sizeof($kb_users_ord);
 
-
         return View('managerViews.dashboard3')->with([
             'ci_users' => $ci_users,
             'kb_users' => $kb_users,
@@ -129,7 +130,8 @@ class ControllerZakaria extends Controller{
             'fcr_max' => $fcr_max,
             'fcr_min' => $fcr_min,
             'fcr_avg' => $fcr_avg,
-            'tickets_per_agent' => $tickets_per_agent
+            'tickets_per_agent' => $tickets_per_agent,
+            'prc_nbr' => $prc_nbr
         ]);
     }
 

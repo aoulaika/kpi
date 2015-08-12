@@ -32,40 +32,12 @@
     <![endif]-->
     <link href="{{ asset('/css/style2.css') }}" rel="stylesheet" type="text/css" />
     <style>
-        .containerbis{
-            width: 400px;
-            height: 200px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top:58px;
-        }
-        .containerbar{
-            width: 400px;
-            min-height: 1000px;
-            margin: 0 auto;
-        }
-        .containerscroll{
-            margin-top: 20px;
-            height: 390px;
-            overflow: auto
-        }
-        #handle{
+        .minititle{
             text-align: center;
             font-family: 'Share Tech', sans-serif;
             opacity: 0.8;
             color:black;
         }
-        #range{
-            opacity: 0.8;
-            color:black;
-            font-size:1.2em;
-            margin-top:15px;
-            margin-left:15px;
-        }
-        .date{
-            color: #44A1C1;
-        }
-
     </style>
 </head>
 <body class="skin-blue sidebar-mini">

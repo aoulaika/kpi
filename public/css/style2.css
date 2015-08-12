@@ -168,6 +168,34 @@ hr{
     margin-right: 9px;
 }
 
+.containerbis{
+    width: 400px;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:58px;
+}
+.containerbar{
+    width: 400px;
+    min-height: 1000px;
+    margin: 0 auto;
+}
+.containerscroll{
+    margin-top: 20px;
+    height: 390px;
+    overflow: auto
+}
+
+#range{
+    opacity: 0.8;
+    color:black;
+    font-size:1.2em;
+    margin-top:15px;
+    margin-left:15px;
+}
+.date{
+    color: #44A1C1;
+}
 
 
 
