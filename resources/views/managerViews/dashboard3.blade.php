@@ -45,7 +45,7 @@
                         <div class="col-lg-5" >
                             <img src="{{ asset('/img/default-user.png') }}" class="agent-image"/>
                             <h3 class="agent-name" id="agent_name"></h3>
-                            <h4 id="handle">Handled <span style="color: #44A1C1;">512</span> Tickets</h4>
+                            <h4 class="minititle">Handled <span id="nbr" style="color: #44A1C1;"></span> Tickets</h4>
                         </div>
                         <div class="col-lg-7" >
                             <table class="table percentable">
@@ -81,9 +81,11 @@
                         <h3 class="titles">Average Tickets Handle Time</h3>
                         <div class="col-lg-6" >
                             <div id="gauge1" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+                            <h5 class="minititle">THT</h5>
                         </div>
                         <div class="col-lg-6">
                             <div id="gauge2" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+                            <h5 class="minititle">THT Password Reset Closure</h5>
                         </div>
                     </div>
                     <hr>
@@ -157,12 +159,20 @@
                     </div><!-- nav-tabs-custom -->
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Top 10 tickets handlers</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body" style="height:260px;">
+                </div>
+            </div>
         </div><!-- /.col -->
     </div>
 @endsection
 @section('script')
     <script src="{{ asset('/js/amcharts.js') }}"></script>
     <script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('/js/light.js') }}"></script>
     <!-- High Charts -->
     <script src="{{ asset('/js/highcharts.js') }}"></script>
     <script src="{{ asset('/js/highcharts-more.js') }}"></script>
@@ -180,7 +190,9 @@
         var fcr_reso_temp = JSON.parse('<?php echo json_encode($fcr_reso_users); ?>');
         var tht_temp = JSON.parse('<?php echo json_encode($tht); ?>');
         var tickets_per_agent = JSON.parse('<?php echo json_encode($tickets_per_agent); ?>');
+        var prc_nbr_temp = JSON.parse('<?php echo json_encode($prc_nbr); ?>');
         var agent_name=ci_temp[0].Name;
+        var agent_nbr=tickets_per_agent[0].count;
         var ci=ci_temp[0].count;
         var kb=kb_temp[0].count;
         var fcr=fcr_temp[0].count;
@@ -189,6 +201,10 @@
         var tht_password=tht_temp[0].tht_password;
         var tht_time=tht_temp[0].tht_time;
         var tht_password_time=tht_temp[0].tht_password_time;
+<<<<<<< HEAD
+=======
+        var prc_nbr=prc_nbr_temp[0].count;
+>>>>>>> dfe21939ea675c62ce3e9fd4de97f37f3ec11ab3
         bar('#container1bis',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
         bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
         bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
@@ -203,16 +219,18 @@
             tht_password=tht_temp[v].tht_password;
             tht_time=tht_temp[v].tht_time;
             tht_password_time=tht_temp[v].tht_password_time;
+            agent_nbr=tickets_per_agent[v].count;
+            prc_nbr=prc_nbr_temp[v].count;
             doit();
-            gauge('#gauge1',0,20,'THT',[Number(tht)],tht_time);
-            gauge('#gauge2',0,10,'THT(Password Reset Closure)',[Number(tht_password)],tht_password_time);
+            gauge('#gauge1',0,20,'',[Number(tht)],tht_time);
+            gauge('#gauge2',0,10,'('+prc_nbr+' Tickets )',[Number(tht_password)],tht_password_time);
             bar('#container1bis',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
             bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
             bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
         });
         doit();
-        gauge('#gauge1',0,20,'THT',[Number(tht)],tht_time);
-        gauge('#gauge2',0,10,'THT(Password Reset Closure)',[Number(tht_password)],tht_password_time);
+        gauge('#gauge1',0,20,'',[Number(tht)],tht_time);
+        gauge('#gauge2',0,10,'('+prc_nbr+' Tickets )',[Number(tht_password)],tht_password_time);
         function doit(){
             if (ci<50) {
                 $("#ci").css('color','red');
@@ -239,6 +257,7 @@
             $('#kb').html('<span class="count">'+kb+'</span>%');
             $('#fcr').html('<span class="count">'+fcr+'</span>%');
             $('#fcr_reso').html('<span class="count">'+fcr_reso+'</span>%');
+            $('#nbr').html(agent_nbr);
             $('.count').each(function () {
             $(this).prop('Counter',0).animate({
                 Counter: $(this).text()
@@ -327,7 +346,7 @@
         $(id).highcharts(Highcharts.merge(gaugeOptions, gData));
         }
 
-        /* Bar chart function */
+        /* Bar chart (Max Min Avg) function */
         function bar(id,name,value,max,avg,min) {
             var val=parseInt(value)
             var mx=parseInt(max);
@@ -486,7 +505,7 @@
                     categories: [<?php echo $kb_names ?>]
                 },
                 series: [{
-                    name: 'Percentage',
+                    name: 'EKMS Usage',
                     showInLegend: false,
                     data: [
                         <?php foreach ($kb_users_ord as $kb){
@@ -507,8 +526,6 @@
         });
     </script>
     <!-- EKMS Usage Chart -->
-    <!-- EKMS Usage Chart2 -->
-    <!-- EKMS Usage Chart2 -->
     <!-- CI Usage Chart -->
     <script type="text/javascript">
         $(function () {
@@ -535,7 +552,7 @@
                     categories: [<?php echo $ci_names ?>]
                 },
                 series: [{
-                    name: 'Percentage',
+                    name: 'CI Usage',
                     showInLegend: false,
                     data: [
                         <?php foreach ($ci_users_ord as $ci){
@@ -582,7 +599,7 @@
                     categories: [<?php echo $fcr_names ?>]
                 },
                 series: [{
-                    name: 'Percentage',
+                    name: 'FCR',
                     showInLegend: false,
                     data: [
                         <?php foreach ($fcr_users_ord as $fcr){

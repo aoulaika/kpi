@@ -184,12 +184,16 @@ hr{
     height: 390px;
     overflow: auto
 }
+<<<<<<< HEAD
 #handle{
     text-align: center;
     font-family: 'Share Tech', sans-serif;
     opacity: 0.8;
     color:black;
 }
+=======
+
+>>>>>>> dfe21939ea675c62ce3e9fd4de97f37f3ec11ab3
 #range{
     opacity: 0.8;
     color:black;
@@ -200,3 +204,9 @@ hr{
 .date{
     color: #44A1C1;
 }
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> dfe21939ea675c62ce3e9fd4de97f37f3ec11ab3
