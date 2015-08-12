@@ -201,10 +201,7 @@
         var tht_password=tht_temp[0].tht_password;
         var tht_time=tht_temp[0].tht_time;
         var tht_password_time=tht_temp[0].tht_password_time;
-<<<<<<< HEAD
-=======
         var prc_nbr=prc_nbr_temp[0].count;
->>>>>>> dfe21939ea675c62ce3e9fd4de97f37f3ec11ab3
         bar('#container1bis',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
         bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
         bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
