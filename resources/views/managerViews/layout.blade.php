@@ -31,17 +31,6 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="{{ asset('/css/style2.css') }}" rel="stylesheet" type="text/css" />
-<<<<<<< HEAD
-=======
-    <style>
-        .minititle{
-            text-align: center;
-            font-family: 'Share Tech', sans-serif;
-            opacity: 0.8;
-            color:black;
-        }
-    </style>
->>>>>>> dfe21939ea675c62ce3e9fd4de97f37f3ec11ab3
 </head>
 <body class="skin-blue sidebar-mini sidebar-collapse">
     <div class="wrapper">
