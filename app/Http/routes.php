@@ -41,8 +41,8 @@ Route::any('/test', [
     'uses' => 'ControllerZakaria@test'
 ]);
 
-Route::any('/jib', [
-    'as' => 'jib',
-    'uses' => 'ControllerZakaria@jib'
+Route::any('/rangedate', [
+    'as' => 'rangedate',
+    'uses' => 'ControllerZakaria@rangedate'
 ]);
 

@@ -8,7 +8,7 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <div class="input-group" style="margin-top:10px;">
-                                <button class="btn btn-default " id="daterange-btn">
+                                <button class="btn btn-default daterange-btn" id="daterange-agent">
                                     <i class="fa fa-calendar"></i> Choose a Date Range
                                     <i class="fa fa-caret-down"></i>
                                 </button>
@@ -171,181 +171,182 @@
                     <h3 class="box-title">Top 10 Agents</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                        <ul class="products-list product-list-in-box">
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">1</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Oussama Laouina </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <span class="pull-right" style="color:#CFB53B"><i class="fa fa-3x fa-trophy"></i></span>
-                                    </div>
+                    <ul class="products-list product-list-in-box">
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">1</span>
                                 </div>
-                            </li><!-- /.item -->
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">2</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Karima Majid </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <span class="pull-right" style="color:#c0c0c0"><i class="fa fa-3x fa-trophy"></i></span>
-                                    </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
                                 </div>
-                            </li><!-- /.item -->
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">3</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Zakaria Seghrouchni </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <span class="pull-right" style="color:#cd7f32"><i class="fa fa-3x fa-trophy"></i></span>
-                                    </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Oussama Laouina </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
                                 </div>
-                            </li><!-- /.item -->
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">4</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Oubacher Mina </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
+                                <div class="col-lg-2">
+                                    <span class="pull-right" style="color:#CFB53B"><i class="fa fa-3x fa-trophy"></i></span>
                                 </div>
-                            </li><!-- /.item -->
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">5</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Zakaria Seghrouchni </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">2</span>
                                 </div>
-                            </li><!-- /.item -->
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">6</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Oussama Laouina </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
                                 </div>
-                            </li><!-- /.item -->
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">7</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Karima Majid </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Karima Majid </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
                                 </div>
-                            </li><!-- /.item -->
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">8</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Zakaria Seghrouchni </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
+                                <div class="col-lg-2">
+                                    <span class="pull-right" style="color:#c0c0c0"><i class="fa fa-3x fa-trophy"></i></span>
                                 </div>
-                            </li><!-- /.item -->
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">9</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Oubacher Mina </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">3</span>
                                 </div>
-                            </li><!-- /.item -->
-                            <li class="item">
-                                <div class="row">
-                                    <div class="col-lg-1">
-                                        <span class="rank">10</span>
-                                    </div>
-                                    <div class="col-lg-1">
-                                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <a href="#" class="product-title">Oubacher Mina </a>
-                                        <span class="product-description" style="font-size:0.9em">
-                                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                                        </span>
-                                    </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
                                 </div>
-                            </li><!-- /.item -->
-                        </ul>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Zakaria Seghrouchni </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
+                                </div>
+                                <div class="col-lg-2">
+                                    <span class="pull-right" style="color:#cd7f32"><i class="fa fa-3x fa-trophy"></i></span>
+                                </div>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">4</span>
+                                </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Oubacher Mina </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
+                                </div>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">5</span>
+                                </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Zakaria Seghrouchni </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
+                                </div>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">6</span>
+                                </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Oussama Laouina </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
+                                </div>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">7</span>
+                                </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Karima Majid </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
+                                </div>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">8</span>
+                                </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Zakaria Seghrouchni </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
+                                </div>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">9</span>
+                                </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Oubacher Mina </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
+                                </div>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">10</span>
+                                </div>
+                                <div class="col-lg-1">
+                                    <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                                </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">Oubacher Mina </a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
+                                    </span>
+                                </div>
+                            </div>
+                        </li><!-- /.item -->
+                    </ul>
                 </div>
             </div>
         </div><!-- /.col -->
     </div>
+    <input name="_token" type="hidden" value="{{ csrf_token() }}" />
 @endsection
 @section('script')
     <script src="{{ asset('/js/amcharts.js') }}"></script>
@@ -564,6 +565,31 @@
         }
     </script>
     <!-- End Script Change User -->
+
+    <!-- Change date range -->
+    <script>
+        $('#daterange-agent').on('apply.daterangepicker', function(ev, picker) {
+            $.ajax({
+                url: 'rangedate',
+                type: "post",
+                data: {
+                    '_token': $('input[name=_token]').val(),
+                    'datedeb': picker.startDate.format('YYYY-MM-DD'),
+                    'datefin': picker.endDate.format('YYYY-MM-DD'),
+                    'agent': agent_name
+                },
+                success: function(response){
+                    console.log(response.return);
+                    tickets_per_agent=response.return;
+                    /* Getting agent Id*/
+                    var v=$('#agent').val();
+                    agent_nbr=tickets_per_agent[v].count;
+                    $('#nbr').html(agent_nbr);
+                }
+            });
+         });
+    </script>
+    <!-- End Change date range -->
 
     <!-- Select2 -->
     <script src="{{ asset('/plugins/select2/select2.full.min.js') }}" type="text/javascript"></script>

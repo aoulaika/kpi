@@ -9,7 +9,7 @@
                 <div class="col-lg-6">
                     <div class="form-group">
                         <div class="input-group" style="margin-top:10px;">
-                            <button class="btn btn-default " id="daterange-btn">
+                            <button class="btn btn-default daterange-btn" id="">
                                 <i class="fa fa-calendar"></i> Choose a Date Range
                                 <i class="fa fa-caret-down"></i>
                             </button>

@@ -283,9 +283,18 @@ class ControllerZakaria extends Controller{
         return View('managerViews/test');
     }
 
-    public function jib(Request $request){
+    public function rangedate(Request $request){
         $params = $request->except(['_token']);
-        $params['email'] = 'hhh';
-        return response()->json($params);
+        /* Number of tickets Per agent */
+        $tickets_per_agent=DB::table('fact')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->join('time_dim','time_dim.Id','=','fact.fk_time')
+            ->select(DB::raw('SUM(CASE WHEN (time_dim.Created>=\''.$params['datedeb'].'\' AND time_dim.Closed<=\''.$params['datefin'].'\') THEN 1 ELSE 0 END) AS count, agent_dim.Name,agent_dim.Id'))
+            ->groupBy('agent_dim.Id')
+            ->get();
+        return response()->json([
+            'return' => $tickets_per_agent
+        ]);
     }
 } 
