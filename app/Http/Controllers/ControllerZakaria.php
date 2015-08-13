@@ -265,13 +265,27 @@ class ControllerZakaria extends Controller{
         'product'=>$tickets_product
         ];
         /*Tickets Per Product*/
+        /*Country*/
+        $country=DB::table('fact')
+            ->join('geography','geography.Id','=','fact.fk_geography')
+            ->whereNotNull('geography.country_code')
+            ->select(DB::raw('count(*) as count,geography.country_code,geography.country_name'))
+            ->groupBy('geography.country_code')
+            ->get();
+        $countryChart=array();
+        array_push($countryChart, ['Country', 'Popularity']);
+        foreach ($country as $key => $value) {
+            array_push($countryChart, [$value->country_code, $value->count]);
+        }
+        /*Country*/
         return View('managerViews/dashboard')->with([
             'kb' => $kb,
             'ci' => $ci,
             'fcr' => $fcr,
             'tickets_all' => $tickets_all,
             'priority' => $priority,
-            'avg_tht' => $avg_tht
+            'avg_tht' => $avg_tht,
+            'countryChart'=>$countryChart
         ]);
     }
 
@@ -283,18 +297,41 @@ class ControllerZakaria extends Controller{
         return View('managerViews/test');
     }
 
-    public function rangedate(Request $request){
+
+    public function rangedate(Request $request)
+    {
         $params = $request->except(['_token']);
         /* Number of tickets Per agent */
-        $tickets_per_agent=DB::table('fact')
+        $tickets_per_agent = DB::table('fact')
             ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-            ->join('time_dim','time_dim.Id','=','fact.fk_time')
-            ->select(DB::raw('SUM(CASE WHEN (time_dim.Created>=\''.$params['datedeb'].'\' AND time_dim.Closed<=\''.$params['datefin'].'\') THEN 1 ELSE 0 END) AS count, agent_dim.Name,agent_dim.Id'))
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->select(DB::raw('SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Closed<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0 END) AS count, agent_dim.Name,agent_dim.Id'))
             ->groupBy('agent_dim.Id')
             ->get();
         return response()->json([
             'return' => $tickets_per_agent
         ]);
+    }
+
+    public function jib(Request $request){
+        $params = $request->all();
+        $s=explode(' - ', $params['start_date']);
+        $e=explode(' - ', $params['end_date']);
+        $ticket_debut= DB::table('fact')
+            ->join('time_dim','fact.fk_time','=','time_dim.Id')
+            ->where('time_dim.Created','>',$s[0])
+            ->where('time_dim.Created','<',$s[1])
+            ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
+            ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+        $ticket_fin= DB::table('fact')
+            ->join('time_dim','fact.fk_time','=','time_dim.Id')
+            ->where('time_dim.Created','>',$e[0])
+            ->where('time_dim.Created','<',$e[1])
+            ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
+            ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+        return response()->json([$ticket_debut,$ticket_fin]);
     }
 } 

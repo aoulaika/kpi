@@ -439,8 +439,6 @@
         <script src="{{ asset('/dist/js/app.min.js') }}" type="text/javascript"></script>
         <!-- AdminLTE for demo purposes -->
         <script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script>
-        <!-- Morris -->
-        <script src="{{ asset('/plugins/morris/morris.min.js') }}" type="text/javascript"></script>
         @yield('script')
     </body>
 </html>
