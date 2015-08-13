@@ -265,13 +265,27 @@ class ControllerZakaria extends Controller{
         'product'=>$tickets_product
         ];
         /*Tickets Per Product*/
+        /*Country*/
+        $country=DB::table('fact')
+            ->join('geography','geography.Id','=','fact.fk_geography')
+            ->whereNotNull('geography.country_code')
+            ->select(DB::raw('count(*) as count,geography.country_code,geography.country_name'))
+            ->groupBy('geography.country_code')
+            ->get();
+        $countryChart=array();
+        array_push($countryChart, ['Country', 'Popularity']);
+        foreach ($country as $key => $value) {
+            array_push($countryChart, [$value->country_code, $value->count]);
+        }
+        /*Country*/
         return View('managerViews/dashboard')->with([
             'kb' => $kb,
             'ci' => $ci,
             'fcr' => $fcr,
             'tickets_all' => $tickets_all,
             'priority' => $priority,
-            'avg_tht' => $avg_tht
+            'avg_tht' => $avg_tht,
+            'countryChart'=>$countryChart
         ]);
     }
 
@@ -284,29 +298,23 @@ class ControllerZakaria extends Controller{
     }
 
     public function jib(Request $request){
-<<<<<<< HEAD
         $params = $request->all();
-        $start=explode(" - ", $params->start);
+        $s=explode(' - ', $params['start_date']);
+        $e=explode(' - ', $params['end_date']);
         $ticket_debut= DB::table('fact')
             ->join('time_dim','fact.fk_time','=','time_dim.Id')
-            ->where('time_dim.Created','>','2015-03-15')
-            ->where('time_dim.Created','<','2015-03-21')
+            ->where('time_dim.Created','>',$s[0])
+            ->where('time_dim.Created','<',$s[1])
             ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
             ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
-        $end=explode(" - ", $params->end);
         $ticket_fin= DB::table('fact')
             ->join('time_dim','fact.fk_time','=','time_dim.Id')
-            ->where('time_dim.Created','>','2015-03-15')
-            ->where('time_dim.Created','<','2015-03-21')
+            ->where('time_dim.Created','>',$e[0])
+            ->where('time_dim.Created','<',$e[1])
             ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
             ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
-        return response()->json();
-=======
-        $params = $request->except(['_token']);
-        $params['email'] = 'hhh';
-        return response()->json($params);
->>>>>>> 0b30626f4fcf0e594adc2dafddf02bf7cc953b36
+        return response()->json([$ticket_debut,$ticket_fin]);
     }
 } 

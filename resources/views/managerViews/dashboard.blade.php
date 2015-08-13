@@ -144,7 +144,7 @@
                 <h3 class="box-title">Average Resolution Time Per Category</h3>
             </div><!-- /.box-header -->
             <div class="box-body" style="height:440px">
-                <iframe src="http://localhost/kpi/Graphs/global/avg_resol_time.php" style="width:100%; height: 420px;border-width:0px;"></iframe>
+                <div id="top_x_div"></div>
             </div><!-- /.box-body -->
         </div><!-- /.box -->
     </div><!-- /.col -->
@@ -174,38 +174,153 @@
 <script src="{{ asset('/js/pie.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/js/radialProgress.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
+
+<!-- Ajax -->
+<script>
+
+</script>
+<!-- End Ajax -->
+
 <script>
     $('.week-picker').daterangepicker({
         "dateLimit": {
             "days": 7
-        }
+        },
+        format: 'YYYY/MM/DD'
     }, function(start, end, label) {
-      console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+      console.log("New date range selected: ' + start.format('YYYY-DD-MM') + ' to ' + end.format('YYYY-DD-MM') + ' (predefined range: ' + label + ')");
   });
-    $('#compare').click(function (argument) {
-        var start_date=$('input[name=start_date]').val();console.log(start_date);
-        var end_date=$('input[name=end_date]').val();console.log(end_date);
-        var CSRF_TOKEN=$('input[name=_token]').val();console.log(CSRF_TOKEN);
-        /*$.get('http://localhost/kpi/public/jib', { 'start': start, 'end': end, '_token': CSRF_TOKEN })
-        .done(function( data ) {
-            console.log( data );
-        });*/
-        /*var posting = $.get( 'http://localhost/kpi/public/jib', { 'start': start, 'end': end, '_token': CSRF_TOKEN } );
-        posting.done(function( data ) {
-            console.log(data);
-        });*/
-        $.ajax({
-            type: 'POST',
-            dataType: 'json',
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-            data: { start: start_date, end: end_date, _token: CSRF_TOKEN },
-            url: "http://localhost/kpi/public/jib",
-            success:function (data) {
-                console.log(data);
-            }
-        });
-
-    });
+    $(document).ready(function(){
+        $('#compare').click(function(){
+            var start_date=$('input[name=start_date]').val();console.log(start_date);
+            var end_date=$('input[name=end_date]').val();console.log(end_date);
+            $.ajax({
+                url: 'http://localhost/kpi/public/jib',
+                type: "post",
+                data: {'start_date':start_date,'end_date':end_date, '_token': $('input[name=_token]').val()},
+                success: function(response){
+                    var data=response[0];
+                    var datao=response[1];
+                    var chartData=[];
+                    if (data.length==0 && datao.length==0)
+                    {   
+                        chartData.push({
+                            date: new Date(),
+                            visits: 0,
+                            hits : 0
+                        });
+                    }
+                    if(data.length>datao.length){
+                        for (var i = 0; i < data.length; i++) {
+                            try{
+                                chartData.push({
+                                    date: new Date(data[i].CreatedYear, data[i].CreatedMonth-1, data[i].CreatedDay,data[i].CreatedHour, data[i].CreatedMinute, data[i].CreatedSecond, 0),
+                                    visits: data[i].count,
+                                    hits : datao[i].count
+                                });
+                            }catch(err){
+                                chartData.push({
+                                    date: new Date(data[i].CreatedYear, data[i].CreatedMonth-1, data[i].CreatedDay, data[i].CreatedHour, data[i].CreatedMinute, data[i].CreatedSecond, 0),
+                                    visits: data[i].count,
+                                    hits : 0
+                                });
+                            }
+                        }
+                    }else{
+                        for (var i = 0; i < datao.length; i++) {
+                            try{
+                                chartData.push({
+                                    date: new Date(datao[i].CreatedYear, datao[i].CreatedMonth-1, datao[i].CreatedDay, datao[i].CreatedHour, 0),
+                                    visits: data[i].count,
+                                    hits : datao[i].count
+                                });
+                            }catch(err){
+                                chartData.push({
+                                    date: new Date(datao[i].CreatedYear, datao[i].CreatedMonth-1, datao[i].CreatedDay, datao[i].CreatedHour, 0),
+                                    visits: 0,
+                                    hits : datao[i].count
+                                });
+                            }
+                        }
+                    }
+                    var weekday=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+                    function formatLabel(value, date, categoryAxis){
+                        if (date.getHours()==0){
+                            return weekday[date.getDay()];}
+                            else {return String(date.getHours())+":"+String(date.getMinutes())};
+                        }
+                        var chart = AmCharts.makeChart("weeks", {
+                            "type": "serial",
+                            "theme": "light",
+                            "legend": {
+                                "useGraphSettings": true
+                            },
+                            "marginRight": 80,
+                            "autoMarginOffset": 20,
+                            "marginTop": 7,
+                            "dataProvider": chartData,
+                            "valueAxes": [{
+                                "axisAlpha": 0.2,
+                                "dashLength": 1,
+                                "position": "left"
+                            }],
+                            "mouseWheelZoomEnabled": true,
+                            "graphs": [{
+                                "id": "g1",
+                                "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
+                                "bullet": "round",
+                                "bulletBorderAlpha": 1,
+                                "bulletColor": "#FFFFFF",
+                                "hideBulletsCount": 50,
+                                "title": "week<br>"+ " "+start_date ,
+                                "valueField": "visits",
+                                "useLineColorForBulletBorder": true
+                            },
+                            {
+                                "id": "g2",
+                                "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
+                                "bullet": "round",
+                                "bulletBorderAlpha": 1,
+                                "bulletColor": "#FFFFFF",
+                                "hideBulletsCount": 50,
+                                "title": "week<br>"+ " "+end_date ,
+                                "valueField": "hits",
+                                "useLineColorForBulletBorder": true
+                            }
+                            ],
+                            "chartScrollbar": {
+                                "autoGridCount": true,
+                                "graph": "g1",
+                                "scrollbarHeight": 40
+                            },
+                            "chartCursor": {
+                                "categoryBalloonDateFormat": "JJ h",
+                                "cursorPosition": "mouse"
+                            },
+                            "categoryField": "date",
+                            "categoryAxis": {
+                                "parseDates": true,
+                                "labelFunction":formatLabel,
+                                "minPeriod": "mm",
+                                "axisColor": "#DADADA",
+                                "dashLength": 1,
+                                "minorGridEnabled": true
+                            },
+                            "export": {
+                                "enabled": true
+                            }
+                        });
+                    chart.addListener("rendered", zoomChart);
+                    zoomChart();
+                        // this method is called when chart is first inited as we listen for "dataUpdated" event
+                        function zoomChart() {
+                        // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+                        chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
+                    }
+}
+});
+});
+});
 </script>
 <!-- Gauge1 Chart -->
 <script type="text/javascript">
@@ -520,28 +635,73 @@ zoomChart();
 <!-- Map Chart -->
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['geochart']}]}"></script>
 <script>
+    var dataTemp=JSON.parse('<?php echo json_encode($countryChart); ?>');
     google.setOnLoadCallback(drawRegionsMap);
-
     function drawRegionsMap() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Country', 'Popularity'],
-          ['Germany', 200],
-          ['United States', 300],
-          ['Brazil', 400],
-          ['Canada', 500],
-          ['France', 600],
-          ['ES', 700]
-          ]);
-
-        var options = {colorAxis: {colors: ['#81D4D5','#2E6E8A']}};
-
+        var data = google.visualization.arrayToDataTable(dataTemp);
+        var options = {colorAxis: {colors: ['#C9ECED', '#B03B56']}};
         var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-
         chart.draw(data, options);
     }
 </script>
 <!-- End Map Chart -->
+
+<!-- Average Resolution Time Per Category -->
+<script type="text/javascript">
+  $('#top_x_div').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Average Resolution Time Per Category'
+        },
+        xAxis: {
+            categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania', 'Africa', 'America', 'Asia', 'Europe', 'Oceania', 'Africa', 'America', 'Asia', 'Europe', 'Oceania'],
+            title: {
+                text: null
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Resolution Time (Duration)',
+                align: 'high'
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        },
+        tooltip: {
+            valueSuffix: ''
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -40,
+            y: 80,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+            shadow: true
+        },
+        credits: {
+            enabled: false
+        },
+        series: [ {
+            name: 'duration',
+            data: [133, 156, 947, 408, 6, 133, 156, 947, 408, 6, 133, 156, 947, 408, 6]
+        }]
+    });
+</script>
+<!-- Average Resolution Time Per Category -->
 
 <!-- Others Script -->
 <script>

@@ -11,11 +11,11 @@
         $(document).ready(function(){
             $('#btn').click(function(){
                 $.ajax({
-                    url: 'jibcd',
+                    url: 'http://localhost/kpi/public/jib',
                     type: "post",
                     data: {'email':'zaki', '_token': $('input[name=_token]').val()},
                     success: function(response){
-                        alert(response.email);
+                        console.log(response.email);
                     }
                 });
             });
