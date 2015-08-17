@@ -569,6 +569,8 @@
     <!-- Change date range -->
     <script>
         $('#daterange-agent').on('apply.daterangepicker', function(ev, picker) {
+            console.log(picker.startDate.format('YYYY-MM-DD'));
+            console.log(picker.endDate.format('YYYY-MM-DD'));
             $.ajax({
                 url: 'rangedate',
                 type: "post",
@@ -579,12 +581,36 @@
                     'agent': agent_name
                 },
                 success: function(response){
-                    console.log(response.return);
-                    tickets_per_agent=response.return;
+                    console.log(response.tht);
+                    /* Re-Setting the arrays of value of all agents */
+                    tickets_per_agent=response.tickets_per_agent;
+                    ci_temp=response.ci_usage;
+                    kb_temp=response.kb_usage;
+                    fcr_temp=response.fcr;
+                    fcr_reso_temp = response.fcr_reso;
+                    tht_temp = response.tht;
+                    prc_nbr_temp = response.prc_nbr;
+
                     /* Getting agent Id*/
                     var v=$('#agent').val();
-                    agent_nbr=tickets_per_agent[v].count;
-                    $('#nbr').html(agent_nbr);
+
+                    /* getting values of the current agent */
+                    agent_nbr = tickets_per_agent[v].count;
+                    ci = ci_temp[v].count;
+                    kb = kb_temp[v].count;
+                    fcr = fcr_temp[v].count;
+                    fcr_reso = fcr_reso_temp[v].count;
+                    tht = tht_temp[v].tht;
+                    tht_password = tht_temp[v].tht_password;
+                    tht_time = tht_temp[v].tht_time;
+                    tht_password_time = tht_temp[v].tht_password_time;
+                    prc_nbr = prc_nbr_temp[v].count;
+
+
+                    /* Setting html values and graphes */
+                    doit();
+                    gauge('#gauge1',0,20,agent_nbr+' Tickets',[Number(tht)],tht_time);
+                    gauge('#gauge2',0,10,prc_nbr+' Tickets',[Number(tht_password)],tht_password_time);
                 }
             });
          });

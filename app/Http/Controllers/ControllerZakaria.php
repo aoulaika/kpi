@@ -306,11 +306,66 @@ class ControllerZakaria extends Controller{
             ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
-            ->select(DB::raw('SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Closed<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0 END) AS count, agent_dim.Name,agent_dim.Id'))
+            ->select(DB::raw('agent_dim.Name,agent_dim.Id,SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0 END) AS count'))
             ->groupBy('agent_dim.Id')
             ->get();
+
+        $ci_usage = DB::table('fact')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->join('ci_dim', 'ci_dim.Id', '=', 'fact.fk_ci')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (ci_dim.Name IS NOT NULL AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END) * 100 /SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END),0) AS count'))
+            ->groupBy('agent_dim.Id')
+            ->get();
+
+        $kb_usage = DB::table('fact')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'%https://knowledge.rf.lilly.com/%\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END) * 100 /SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END),0) AS count'))
+            ->groupBy('agent_dim.Id')
+            ->get();
+
+        $fcr= DB::table('fact')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END) * 100 /SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END),0)  AS count'))
+            ->groupBy('agent_dim.Id')
+            ->get();
+
+        $fcr_reso= DB::table('fact')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END) * 100 /SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END),0) AS count'))
+            ->groupBy('agent_dim.Id')
+            ->get();
+
+        $tht= DB::table('fact')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->select(DB::raw('agent_dim.Id, agent_dim.Name, AVG(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN Handling_time ELSE 0 END) / 60 AS tht, SEC_TO_TIME(AVG(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN Handling_time ELSE 0 END)) AS tht_time, IFNULL(AVG(CASE WHEN (Closure_code = \'Password Reset\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN Handling_time ELSE 0 END) / 60, 0) AS tht_password, SEC_TO_TIME(IFNULL(AVG(CASE WHEN (Closure_code = \'Password Reset\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN Handling_time ELSE 0 END), 0)) AS tht_password_time'))
+            ->groupBy('agent_dim.Id')
+            ->get();
+
+        $prc_nbr= DB::table('fact')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->select(DB::raw('agent_dim.Id,agent_dim.Name,SUM(CASE WHEN (tickets_dim.Closure_code=\'Password Reset\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0 END) as count'))
+            ->groupBy('agent_dim.Id')
+            ->get();
+
         return response()->json([
-            'return' => $tickets_per_agent
+            'tickets_per_agent' => $tickets_per_agent,
+            'ci_usage' => $ci_usage,
+            'kb_usage' => $kb_usage,
+            'fcr' => $fcr,
+            'fcr_reso' => $fcr_reso,
+            'tht' => $tht,
+            'prc_nbr' => $prc_nbr
         ]);
     }
 
