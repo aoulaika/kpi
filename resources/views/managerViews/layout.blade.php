@@ -57,6 +57,7 @@
     </style>
 </head>
 <body class="skin-blue sidebar-mini sidebar-collapse">
+<div class="se-pre-con"></div>
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
@@ -146,7 +147,7 @@
                         </a>
                         <ul class="treeview-menu">
                             <li class="active"><a href="{{ route("dashboard") }}"><i class="fa fa-circle-o"></i> Global Dashboard</a></li>
-                            <li><a href=" {{ route("dashboard2") }} "><i class="fa fa-circle-o"></i> Agents Tracking Dashboard</a></li>
+                            <li><a href=" {{ route("dashboard3") }} "><i class="fa fa-circle-o"></i> Agents Tracking Dashboard</a></li>
                         </ul>
                     </li>
                     <li class="treeview">
@@ -439,6 +440,12 @@
         <script src="{{ asset('/dist/js/app.min.js') }}" type="text/javascript"></script>
         <!-- AdminLTE for demo purposes -->
         <script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
+        <script>
+            $(window).load(function() {
+                $(".se-pre-con").fadeOut("slow");;
+            });
+        </script>
         @yield('script')
     </body>
 </html>

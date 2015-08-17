@@ -21,11 +21,6 @@ Route::any('/dashboard', [
     'uses' => 'ControllerZakaria@dashboard'
 ]);
 
-Route::any('/dashboard2', [
-    'as' => 'dashboard2',
-    'uses' => 'ControllerZakaria@dashboard2'
-]);
-
 Route::any('/dashboard3', [
     'as' => 'dashboard3',
     'uses' => 'ControllerZakaria@dashboard3'
@@ -46,3 +41,12 @@ Route::any('/rangedate', [
     'uses' => 'ControllerZakaria@rangedate'
 ]);
 
+Route::any('reload', [
+    'as' => 'reload',
+    'uses' => 'ControllerZakaria@reload'
+]);
+
+Route::any('jib', [
+    'as' => 'jib',
+    'uses' => 'ControllerZakaria@jib'
+]);
