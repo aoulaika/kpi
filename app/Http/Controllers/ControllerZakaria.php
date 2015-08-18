@@ -572,4 +572,8 @@ class ControllerZakaria extends Controller{
             );
         return response()->json($data);
     }
+
+    public function tracker(){
+        return View('managerViews/tracker');
+    }
 } 

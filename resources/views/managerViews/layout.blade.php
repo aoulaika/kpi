@@ -18,8 +18,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <!-- Ionicons -->
     <link href="{{ asset('/css/ionicons.min.css') }}" rel="stylesheet" type="text/css" />
-    <!-- Select2 -->
-    <link href="{{ asset('/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- jvectormap -->
     <link href="{{ asset('/plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
@@ -156,7 +154,8 @@
                         </a>
                         <ul class="treeview-menu">
                             <li class="active"><a href="{{ route("dashboard") }}"><i class="fa fa-circle-o"></i> Global Dashboard</a></li>
-                            <li><a href=" {{ route("dashboard3") }} "><i class="fa fa-circle-o"></i> Agents Tracking Dashboard</a></li>
+                            <li><a href=" {{ route("dashboard3") }} "><i class="fa fa-circle-o"></i> Agents Dashboard</a></li>
+                            <li><a href=" {{ route("tracker") }} "><i class="fa fa-circle-o"></i> Errors Tracking</a></li>
                         </ul>
                     </li>
                     <li class="treeview">

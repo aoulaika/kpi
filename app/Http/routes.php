@@ -50,3 +50,8 @@ Route::any('jib', [
     'as' => 'jib',
     'uses' => 'ControllerZakaria@jib'
 ]);
+
+Route::get('tracker', [
+    'as' => 'tracker',
+    'uses' => 'ControllerZakaria@tracker'
+]);
