@@ -20,19 +20,12 @@ class ControllerZakaria extends Controller{
     }
 
     public function dashboard3(){
-        $tickets=DB::table('fact')
-        ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
-        ->select(DB::raw('count(*) as count, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
-        ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
-        ->get();
-        /* Tickets Per Product */
-        $tickets_per_product=DB::table('fact')
-        ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
-        ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
-        ->whereNotNull('Product')
-        ->select(DB::raw('count(*) as count, Product, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
-        ->groupBy('Product','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
-        ->get();
+
+        //Important
+        //THE TIME IN ALL THIS QUERIES SHOULD BE SET FOR J-1
+        // !!
+
+
         /* Number of tickets Per agent */
         $tickets_per_agent=DB::table('fact')
         ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
@@ -41,18 +34,6 @@ class ControllerZakaria extends Controller{
         ->groupBy('agent_dim.Id')
         ->get();
 
-        $tickets_product=array();
-        foreach ($tickets_per_product as $value) {
-            if(array_key_exists($value->Product, $tickets_product)){
-                array_push($tickets_product[$value->Product], (object)array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond));
-            }else{
-                $tickets_product[$value->Product]=[array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond)];
-            }
-        }
-        $tickets_all=[
-        'all'=>$tickets,
-        'product'=>$tickets_product
-        ];
         $ci_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, ci_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ci = ci_dim.Id GROUP BY agent_dim.Id');
         $kb_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'%https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count FROM fact, kb_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_kb = kb_dim.Id GROUP BY agent_dim.Id');
         $fcr_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
@@ -162,6 +143,40 @@ class ControllerZakaria extends Controller{
         $fcr_avg = $fcr_sum/sizeof($kb_users_ord);
         $fcr_reso_avg = $fcr_reso_sum/sizeof($kb_users_ord);
         $ticket_ord_avg= $ticket_ord_sum/sizeof($kb_users_ord);
+
+        /* Tickets/time for the first agent */
+        $tickets=DB::table('fact')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->where('agent_dim.Id','1')
+            ->select(DB::raw('count(*) as count, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
+            ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+
+        /* Tickets Per Product/time for the first agent */
+        $tickets_per_product=DB::table('fact')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->where('agent_dim.Id','1')
+            ->whereNotNull('Product')
+            ->select(DB::raw('count(*) as count, Product, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
+            ->groupBy('Product','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+
+        $tickets_product=array();
+        foreach ($tickets_per_product as $value) {
+            if(array_key_exists($value->Product, $tickets_product)){
+                array_push($tickets_product[$value->Product], (object)array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond));
+            }else{
+                $tickets_product[$value->Product]=[array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond)];
+            }
+        }
+        $tickets_all=[
+            'all'=>$tickets,
+            'product'=>$tickets_product
+        ];
+
 
         return View('managerViews.dashboard3')->with([
             'ci_users' => $ci_users,
@@ -336,7 +351,9 @@ class ControllerZakaria extends Controller{
     public function rangedate(Request $request)
     {
         $params = $request->except(['_token']);
+        /* Queries for all users */
         /* Number of tickets Per agent */
+
         $tickets_per_agent = DB::table('fact')
             ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
@@ -393,6 +410,40 @@ class ControllerZakaria extends Controller{
             ->groupBy('agent_dim.Id')
             ->get();
 
+        /* Tickets/time for the current agent */
+        $tickets=DB::table('fact')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->where('agent_dim.Id',$params['agent_id'])
+            ->select(DB::raw('IFNULL(SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END),0) as count, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
+            ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+
+        /* Tickets Per Product/time for the current agent */
+        $tickets_per_product=DB::table('fact')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->where('agent_dim.Id',$params['agent_id'])
+            ->whereNotNull('Product')
+            ->select(DB::raw('IFNULL(SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END),0) as count, Product, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
+            ->groupBy('Product','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
+            ->get();
+
+        $tickets_product=array();
+        foreach ($tickets_per_product as $value) {
+            if(array_key_exists($value->Product, $tickets_product)){
+                array_push($tickets_product[$value->Product], (object)array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond));
+            }else{
+                $tickets_product[$value->Product]=[array('count'=>$value->count,'CreatedYear'=>$value->CreatedYear,'CreatedMonth'=>$value->CreatedMonth,'CreatedDay'=>$value->CreatedDay,'CreatedHour'=>$value->CreatedHour,'CreatedMinute'=>$value->CreatedMinute,'CreatedSecond'=>$value->CreatedSecond)];
+            }
+        }
+
+        $tickets_all=[
+            'all'=>$tickets,
+            'product'=>$tickets_product
+        ];
+
         return response()->json([
             'tickets_per_agent' => $tickets_per_agent,
             'ci_usage' => $ci_usage,
@@ -400,7 +451,8 @@ class ControllerZakaria extends Controller{
             'fcr' => $fcr,
             'fcr_reso' => $fcr_reso,
             'tht' => $tht,
-            'prc_nbr' => $prc_nbr
+            'prc_nbr' => $prc_nbr,
+            'tickets_all' => $tickets_all
         ]);
     }
 
@@ -572,8 +624,14 @@ class ControllerZakaria extends Controller{
             );
         return response()->json($data);
     }
+<<<<<<< HEAD
 
     public function tracker(){
         return View('managerViews/tracker');
+=======
+    public function errors()
+    {
+        return View('managerViews/errors');
+>>>>>>> df2880ab7322c7fb41959fe3936569ca3eab5b5d
     }
 } 
