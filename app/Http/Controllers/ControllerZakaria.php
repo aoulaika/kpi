@@ -624,14 +624,9 @@ class ControllerZakaria extends Controller{
             );
         return response()->json($data);
     }
-<<<<<<< HEAD
 
-    public function tracker(){
-        return View('managerViews/tracker');
-=======
     public function errors()
     {
         return View('managerViews/errors');
->>>>>>> df2880ab7322c7fb41959fe3936569ca3eab5b5d
     }
 } 

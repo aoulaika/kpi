@@ -51,13 +51,7 @@ Route::any('jib', [
     'uses' => 'ControllerZakaria@jib'
 ]);
 
-<<<<<<< HEAD
-Route::get('tracker', [
-    'as' => 'tracker',
-    'uses' => 'ControllerZakaria@tracker'
-=======
 Route::any('errors', [
     'as' => 'errors',
     'uses' => 'ControllerZakaria@errors'
->>>>>>> df2880ab7322c7fb41959fe3936569ca3eab5b5d
 ]);
