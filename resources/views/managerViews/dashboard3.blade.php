@@ -167,6 +167,12 @@
                                 </div>
                             </div><!-- /.tab-pane -->
                             <div class="tab-pane active" id="tab_5">
+                                <div id="container5bis" class="containerbis"></div>
+                                <hr>
+                                <h3 class="titles">All agents comparison</h3>
+                                <div class="containerscroll">
+                                    <div id="container5" class="containerbar"></div>
+                                </div>
                             </div><!-- /.tab-pane -->
                         </div><!-- /.tab-content -->
                     </div><!-- nav-tabs-custom -->
@@ -391,7 +397,6 @@
         bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
         bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
         bar('#container4bis',agent_name,[Number(fcr_reso)],[Number({{ $fcr_reso_max }})],[Number({{ $fcr_reso_avg }})],[Number({{ $fcr_reso_min }})]);
-        bar('#container5bis',agent_name,[Number(fcr_reso)],[Number({{ $ticket_max }})],[Number({{ $tickets_users_avg }})],[Number({{ $ticket_min }})]);
         $("#agent").change(function() {
             var v=$(this).val();
             agent_name=ci_temp[v].Name;
@@ -731,6 +736,10 @@
         var fcr_reso_names=JSON.parse('<?php echo json_encode($fcr_reso_names); ?>');
         var fcr_reso_data=JSON.parse('<?php echo json_encode($fcr_reso); ?>');
         drawBar('#container4',fcr_reso_names,'FCR Resolvable',fcr_reso_data);
+
+        var ticket_ord_users=JSON.parse('<?php echo json_encode($ticket_ord_users); ?>');
+        var ticket_ord_value=JSON.parse('<?php echo json_encode($ticket_ord_value); ?>');
+        drawBar('#container5',ticket_ord_users,'Number of Ticket',ticket_ord_value);
 
         function drawBar(id,name,graphName,data){
             $(id).highcharts({
