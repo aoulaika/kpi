@@ -67,7 +67,6 @@
     </style>
 </head>
 <body class="skin-blue sidebar-mini sidebar-collapse">
-<div class="se-pre-con"></div>
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
@@ -451,11 +450,6 @@
         <!-- AdminLTE for demo purposes -->
         <script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
-        <script>
-            $(window).load(function() {
-                $(".se-pre-con").fadeOut("slow");;
-            });
-        </script>
         @yield('script')
     </body>
 </html>

@@ -58,6 +58,11 @@ class ControllerZakaria extends Controller{
         $fcr_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
         $fcr_reso_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
         $tht=DB::select('SELECT agent_dim.Id, agent_dim.Name, AVG(Handling_time) / 60 AS tht, SEC_TO_TIME(AVG(Handling_time)) AS tht_time, IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END) / 60, 0) AS tht_password, SEC_TO_TIME(IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END), 0)) AS tht_password_time FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
+        $tickets_users=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count'))
+        ->groupBy('agent_dim.Id')
+        ->get();
         /* Queries Ordered */
         $ci_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, ci_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ci = ci_dim.Id GROUP BY agent_dim.Id ORDER BY count');
         $kb_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'%https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count FROM fact, kb_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_kb = kb_dim.Id GROUP BY agent_dim.Id ORDER BY count');
@@ -65,9 +70,10 @@ class ControllerZakaria extends Controller{
         $fcr_reso_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id ORDER BY count');
         $tickets_users_ord=DB::table('fact')
         ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
-        ->select(DB::raw('agent_dim.Id, count(*) as count'))
-        >groupBy('agent_dim.Id')
-        ->orderBy('count');
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count'))
+        ->groupBy('agent_dim.Id')
+        ->orderBy('count', 'desc')
+        ->get();
         /* Number of Password Reset Closure tickets per agent */
         $prc_nbr = DB ::select('SELECT a.Id,a.Name,SUM(CASE WHEN t.Closure_code=\'Password Reset\' THEN 1 ELSE 0 END) as count FROM fact f,agent_dim a,tickets_dim t WHERE f.fk_agent=a.Id AND f.fk_ticket=t.Id GROUP BY a.Id');
         /* Max and Min */
@@ -83,8 +89,8 @@ class ControllerZakaria extends Controller{
         $fcr_reso_min = $fcr_reso_users_ord[0]->count;
         $fcr_reso_max = $fcr_reso_users_ord[sizeof($kb_users_ord)-1]->count;
 
-        $ticket_min=$tickets_users_ord[0]->count;
-        $ticket_max=$tickets_users_ord[sizeof($kb_users_ord)-1]->count;
+        $ticket_ord_min=$tickets_users_ord[0]->count;
+        $ticket_ord_max=$tickets_users_ord[sizeof($kb_users_ord)-1]->count;
         /*List of names for bar graph*/
         $kb_names=array();
         $ci_names=array();
@@ -99,17 +105,17 @@ class ControllerZakaria extends Controller{
         $fcr=array();
         $fcr_reso=array();
         
-        $ticket_sum=0;
-        $tickets_users=array();
-        $tickets_value=array();
+        $ticket_ord_sum=0;
+        $ticket_ord_users=array();
+        $ticket_ord_value=array();
 
         for ($i=0; $i < sizeof($kb_users_ord); $i++) {
             array_push($ci_names, $ci_users_ord[$i]->Name);
             array_push($kb_names, $kb_users_ord[$i]->Name);
             array_push($fcr_names, $fcr_users_ord[$i]->Name);
             array_push($fcr_reso_names, $fcr_reso_users_ord[$i]->Name);
-            array_push($tickets_users, $tickets_users_ord[$i]->Name);
-            array_push($tickets_value, (float)number_format($tickets_users_ord[$i]->count, 2, '.', ''));
+            array_push($ticket_ord_users, $tickets_users_ord[$i]->Name);
+            array_push($ticket_ord_value, (int)$tickets_users_ord[$i]->count);
             if ($ci_users_ord[$i]->count<50) {
                 array_push($ci, (object)array(
                     'y'=>(float)number_format($ci_users_ord[$i]->count, 2, '.', ''),
@@ -148,13 +154,14 @@ class ControllerZakaria extends Controller{
             $ci_sum += $ci_users_ord[$i]->count;
             $fcr_sum += $fcr_users_ord[$i]->count;
             $fcr_reso_sum += $fcr_reso_users_ord[$i]->count;
+            $ticket_ord_sum += $tickets_users_ord[$i]->count;
         }
 
         $kb_avg = $kb_sum/sizeof($kb_users_ord);
         $ci_avg = $ci_sum/sizeof($kb_users_ord);
         $fcr_avg = $fcr_sum/sizeof($kb_users_ord);
         $fcr_reso_avg = $fcr_reso_sum/sizeof($kb_users_ord);
-        $tickets_users_avg= $ticket_sum/sizeof($kb_users_ord);
+        $ticket_ord_avg= $ticket_ord_sum/sizeof($kb_users_ord);
 
         return View('managerViews.dashboard3')->with([
             'ci_users' => $ci_users,
@@ -185,11 +192,11 @@ class ControllerZakaria extends Controller{
             'fcr_reso_avg' => $fcr_reso_avg,
             'tickets_per_agent' => $tickets_per_agent,
             'prc_nbr' => $prc_nbr,
-            'ticket_min'=>$ticket_min,
-            'ticket_max'=>$ticket_max,
-            'tickets_users_avg'=>$tickets_users_avg,
-            'tickets_users'=>$tickets_users,
-            'tickets_value'=>$tickets_value
+            'ticket_ord_min'=>$ticket_ord_min,
+            'ticket_ord_max'=>$ticket_ord_max,
+            'ticket_ord_avg'=>$ticket_ord_avg,
+            'ticket_ord_users'=>$ticket_ord_users,
+            'ticket_ord_value'=>$ticket_ord_value
             ]);
     }
 
