@@ -355,6 +355,16 @@
         });
         }
 
+        function reloadSelect (data,id) {
+            var str='<option value="all">All</option>';
+            for (var property in data) {
+                if (data.hasOwnProperty(property)) {
+                    str+='<option value='+property+'>'+property+'</option>';
+                }
+            }
+            $(id).html(str);
+        }
+
         function gauge(id,mi,mx,title,tht,tht_time){
             var gaugeOptions = {
             chart: {
@@ -474,74 +484,23 @@
     </script>
     <!-- End Script Change User -->
 
-    <!-- Change date range -->
-    <script>
-        $('#daterange-agent').on('apply.daterangepicker', function(ev, picker) {
-            console.log(picker.startDate.format('YYYY-MM-DD'));
-            console.log(picker.endDate.format('YYYY-MM-DD'));
-            $.ajax({
-                url: 'rangedate',
-                type: "post",
-                data: {
-                    '_token': $('input[name=_token]').val(),
-                    'datedeb': picker.startDate.format('YYYY-MM-DD'),
-                    'datefin': picker.endDate.format('YYYY-MM-DD'),
-                    'agent': agent_name
-                },
-                success: function(response){
-                    console.log(response.tht);
-                    /* Re-Setting the arrays of value of all agents */
-                    tickets_per_agent=response.tickets_per_agent;
-                    ci_temp=response.ci_usage;
-                    kb_temp=response.kb_usage;
-                    fcr_temp=response.fcr;
-                    fcr_reso_temp = response.fcr_reso;
-                    tht_temp = response.tht;
-                    prc_nbr_temp = response.prc_nbr;
-
-                    /* Getting agent Id*/
-                    var v=$('#agent').val();
-
-                    /* getting values of the current agent */
-                    agent_nbr = tickets_per_agent[v].count;
-                    ci = ci_temp[v].count;
-                    kb = kb_temp[v].count;
-                    fcr = fcr_temp[v].count;
-                    fcr_reso = fcr_reso_temp[v].count;
-                    tht = tht_temp[v].tht;
-                    tht_password = tht_temp[v].tht_password;
-                    tht_time = tht_temp[v].tht_time;
-                    tht_password_time = tht_temp[v].tht_password_time;
-                    prc_nbr = prc_nbr_temp[v].count;
-
-
-                    /* Setting html values and graphes */
-                    doit();
-                    gauge('#gauge1',0,20,agent_nbr+' Tickets',[Number(tht)],tht_time);
-                    gauge('#gauge2',0,10,prc_nbr+' Tickets',[Number(tht_password)],tht_password_time);
-                }
-            });
-         });
-    </script>
-    <!-- End Change date range -->
-
     <!-- Select2 -->
     <script src="{{ asset('/plugins/select2/select2.full.min.js') }}" type="text/javascript"></script>
     <!-- Tickets Per Hour Chart -->
     <script language="JavaScript">
         var data_temp = JSON.parse('<?php echo json_encode($tickets_all); ?>');
-        var data=data_temp.all;
+
         $("#product").change(function() {
             var v=$(this).val();
             if(v=='all'){
-                data=data_temp.all;
+                draw(data_temp.all);
             }else{
-                data=data_temp.product[v];
+                draw(data_temp.product[v]);
             }
-            draw();
+
         });
-        draw();
-        function draw() {
+        draw(data_temp.all);
+        function draw(data) {
             var ticketsData1 = [];
             for (var i = 0; i < data.length; i++) {
                 ticketsData1.push({
@@ -606,6 +565,60 @@
             }
         }
     </script>
+    <!-- Ajax Reloading data when Changing date range -->
+    <script>
+        $('#daterange-agent').on('apply.daterangepicker', function(ev, picker) {
+            //console.log(picker.startDate.format('YYYY-MM-DD'));
+            //console.log(picker.endDate.format('YYYY-MM-DD'));
+            $.ajax({
+                url: 'rangedate',
+                type: "post",
+                data: {
+                    '_token': $('input[name=_token]').val(),
+                    'datedeb': picker.startDate.format('YYYY-MM-DD'),
+                    'datefin': picker.endDate.format('YYYY-MM-DD'),
+                    'agent_id': $('#agent').val()+1
+                },
+                success: function(response){
+                    /* Re-Setting the arrays of value of all agents */
+                    tickets_per_agent=response.tickets_per_agent;
+                    ci_temp=response.ci_usage;
+                    kb_temp=response.kb_usage;
+                    fcr_temp=response.fcr;
+                    fcr_reso_temp = response.fcr_reso;
+                    tht_temp = response.tht;
+                    prc_nbr_temp = response.prc_nbr;
+
+                    /* Getting agent Id*/
+                    var v=$('#agent').val();
+
+                    /* getting values of the current agent */
+                    agent_nbr = tickets_per_agent[v].count;
+                    ci = ci_temp[v].count;
+                    kb = kb_temp[v].count;
+                    fcr = fcr_temp[v].count;
+                    fcr_reso = fcr_reso_temp[v].count;
+                    tht = tht_temp[v].tht;
+                    tht_password = tht_temp[v].tht_password;
+                    tht_time = tht_temp[v].tht_time;
+                    tht_password_time = tht_temp[v].tht_password_time;
+                    prc_nbr = prc_nbr_temp[v].count;
+
+
+                    /* Setting html values and graphes */
+                    doit();
+                    gauge('#gauge1',0,20,agent_nbr+' Tickets',[Number(tht)],tht_time);
+                    gauge('#gauge2',0,10,prc_nbr+' Tickets',[Number(tht_password)],tht_password_time);
+                    /* Setting values for tickets chart */
+                    data_temp = response.tickets_all;
+                    reloadSelect(data_temp.product,'#product');
+                    console.log(data_temp);
+                    draw(data_temp.all);
+                }
+            });
+        });
+    </script>
+    <!-- End Change date range -->
     <!-- End Tickets Per Hour Chart -->
     <script type="text/javascript">
         //Applying select2
