@@ -72,7 +72,7 @@ class ControllerZakaria extends Controller{
         ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
         ->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count'))
         ->groupBy('agent_dim.Id')
-        ->orderBy('count', 'desc')
+        ->orderBy('count')
         ->get();
         /* Number of Password Reset Closure tickets per agent */
         $prc_nbr = DB ::select('SELECT a.Id,a.Name,SUM(CASE WHEN t.Closure_code=\'Password Reset\' THEN 1 ELSE 0 END) as count FROM fact f,agent_dim a,tickets_dim t WHERE f.fk_agent=a.Id AND f.fk_ticket=t.Id GROUP BY a.Id');
@@ -192,6 +192,7 @@ class ControllerZakaria extends Controller{
             'fcr_reso_avg' => $fcr_reso_avg,
             'tickets_per_agent' => $tickets_per_agent,
             'prc_nbr' => $prc_nbr,
+            'tickets_users' => $tickets_users,
             'ticket_ord_min'=>$ticket_ord_min,
             'ticket_ord_max'=>$ticket_ord_max,
             'ticket_ord_avg'=>$ticket_ord_avg,

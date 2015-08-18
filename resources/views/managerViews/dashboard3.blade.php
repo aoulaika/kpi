@@ -158,7 +158,7 @@
                                     <div id="container3" class="containerbar"></div>
                                 </div>
                             </div><!-- /.tab-pane -->
-                            <div class="tab-pane active" id="tab_4">
+                            <div class="tab-pane" id="tab_4">
                                 <div id="container4bis" class="containerbis"></div>
                                 <hr>
                                 <h3 class="titles">All agents comparison</h3>
@@ -166,7 +166,7 @@
                                     <div id="container4" class="containerbar"></div>
                                 </div>
                             </div><!-- /.tab-pane -->
-                            <div class="tab-pane active" id="tab_5">
+                            <div class="tab-pane" id="tab_5">
                                 <div id="container5bis" class="containerbis"></div>
                                 <hr>
                                 <h3 class="titles">All agents comparison</h3>
@@ -271,6 +271,7 @@
         var tht_temp = JSON.parse('<?php echo json_encode($tht); ?>');
         var tickets_per_agent = JSON.parse('<?php echo json_encode($tickets_per_agent); ?>');
         var prc_nbr_temp = JSON.parse('<?php echo json_encode($prc_nbr); ?>');
+        var tickets_users_temp = JSON.parse('<?php echo json_encode($tickets_users); ?>');
         var agent_name=ci_temp[0].Name;
         var agent_nbr=tickets_per_agent[0].count;
         var ci=ci_temp[0].count;
@@ -281,11 +282,13 @@
         var tht_password=tht_temp[0].tht_password;
         var tht_time=tht_temp[0].tht_time;
         var tht_password_time=tht_temp[0].tht_password_time;
+        var tickets_users=tickets_users_temp[0].count;
         var prc_nbr=prc_nbr_temp[0].count;
-        bar('#container1bis',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
-        bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
-        bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
-        bar('#container4bis',agent_name,[Number(fcr_reso)],[Number({{ $fcr_reso_max }})],[Number({{ $fcr_reso_avg }})],[Number({{ $fcr_reso_min }})]);
+        bar('#container1bis','%','Percentage',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
+        bar('#container2bis','%','Percentage',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
+        bar('#container3bis','%','Percentage',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
+        bar('#container4bis','%','Percentage',agent_name,[Number(fcr_reso)],[Number({{ $fcr_reso_max }})],[Number({{ $fcr_reso_avg }})],[Number({{ $fcr_reso_min }})]);
+        bar('#container5bis','','Number of Tickets',agent_name,[Number(tickets_users)],[Number({{ $ticket_ord_max }})],[Number({{ $ticket_ord_avg }})],[Number({{ $ticket_ord_min }})]);
         $("#agent").change(function() {
             var v=$(this).val();
             agent_name=ci_temp[v].Name;
@@ -293,6 +296,7 @@
             kb=kb_temp[v].count;
             fcr=fcr_temp[v].count;
             fcr_reso=fcr_reso_temp[v].count;
+            tickets_users=tickets_users_temp[v].count;
             tht=tht_temp[v].tht;
             tht_password=tht_temp[v].tht_password;
             tht_time=tht_temp[v].tht_time;
@@ -302,9 +306,11 @@
             doit();
             gauge('#gauge1',0,20,agent_nbr+' Tickets',[Number(tht)],tht_time);
             gauge('#gauge2',0,10,prc_nbr+' Tickets ',[Number(tht_password)],tht_password_time);
-            bar('#container1bis',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
-            bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
-            bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
+            bar('#container1bis','%','Percentage',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
+            bar('#container2bis','%','Percentage',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
+            bar('#container3bis','%','Percentage',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
+            bar('#container4bis','%','Percentage',agent_name,[Number(fcr_reso)],[Number({{ $fcr_reso_max }})],[Number({{ $fcr_reso_avg }})],[Number({{ $fcr_reso_min }})]);
+            bar('#container5bis','','Number of Tickets',agent_name,[Number(tickets_users)],[Number({{ $ticket_ord_max }})],[Number({{ $ticket_ord_avg }})],[Number({{ $ticket_ord_min }})]);
         });
         doit();
         gauge('#gauge1',0,20,agent_nbr+' Tickets',[Number(tht)],tht_time);
@@ -425,7 +431,7 @@
         }
 
         /* Bar chart (Max Min Avg) function */
-        function bar(id,name,value,max,avg,min) {
+        function bar(id,suffix,label,name,value,max,avg,min) {
             var val=parseInt(value)
             var mx=parseInt(max);
             var av=parseInt(avg);
@@ -438,7 +444,7 @@
                 exporting: { enabled: false },
 
                 tooltip: {
-                    valueSuffix: '%'
+                    valueSuffix: suffix
                 },
 
                 title: {
@@ -453,7 +459,7 @@
                     categories: [name,'','Maximum','Average','Minimum']
                 },
                 series: [{
-                    name: 'Percentage',
+                    name: label,
                     showInLegend: false,
                     data: [
                         (val<70)?{y:val,color:'red'}:val,
@@ -612,32 +618,32 @@
     <script type="text/javascript">
         var ci_names=JSON.parse('<?php echo json_encode($ci_names); ?>');
         var ci_data=JSON.parse('<?php echo json_encode($ci); ?>');
-        drawBar('#container2',ci_names,'CI Usage',ci_data);
+        drawBar('#container2',ci_names,'CI Usage','%',ci_data);
 
         var kb_names=JSON.parse('<?php echo json_encode($kb_names); ?>');
         var kb_data=JSON.parse('<?php echo json_encode($kb); ?>');
-        drawBar('#container1',kb_names,'EKMS Usage',kb_data);
+        drawBar('#container1',kb_names,'EKMS Usage','%',kb_data);
 
         var fcr_names=JSON.parse('<?php echo json_encode($fcr_names); ?>');
         var fcr_data=JSON.parse('<?php echo json_encode($fcr); ?>');
-        drawBar('#container3',fcr_names,'FCR',fcr_data);
+        drawBar('#container3',fcr_names,'FCR','%',fcr_data);
 
         var fcr_reso_names=JSON.parse('<?php echo json_encode($fcr_reso_names); ?>');
         var fcr_reso_data=JSON.parse('<?php echo json_encode($fcr_reso); ?>');
-        drawBar('#container4',fcr_reso_names,'FCR Resolvable',fcr_reso_data);
+        drawBar('#container4',fcr_reso_names,'FCR Resolvable','%',fcr_reso_data);
 
         var ticket_ord_users=JSON.parse('<?php echo json_encode($ticket_ord_users); ?>');
         var ticket_ord_value=JSON.parse('<?php echo json_encode($ticket_ord_value); ?>');
-        drawBar('#container5',ticket_ord_users,'Number of Ticket',ticket_ord_value);
+        drawBar('#container5',ticket_ord_users,'Number of Ticket','',ticket_ord_value);
 
-        function drawBar(id,name,graphName,data){
+        function drawBar(id,name,graphName,suffix,data){
             $(id).highcharts({
                 chart:{
                     type:'bar'
                 },
                 exporting: { enabled: false },
                 tooltip: {
-                    valueSuffix: '%'
+                    valueSuffix: suffix
                 },
                 title: {
                     text: ' '
