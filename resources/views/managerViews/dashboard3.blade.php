@@ -159,6 +159,12 @@
                                 </div>
                             </div><!-- /.tab-pane -->
                             <div class="tab-pane active" id="tab_4">
+                                <div id="container4bis" class="containerbis"></div>
+                                <hr>
+                                <h3 class="titles">All agents comparison</h3>
+                                <div class="containerscroll">
+                                    <div id="container4" class="containerbar"></div>
+                                </div>
                             </div><!-- /.tab-pane -->
                             <div class="tab-pane active" id="tab_5">
                             </div><!-- /.tab-pane -->
@@ -273,6 +279,8 @@
         bar('#container1bis',agent_name,[Number(kb)],[Number({{ $kb_max }})],[Number({{ $kb_avg }})],[Number({{ $kb_min }})]);
         bar('#container2bis',agent_name,[Number(ci)],[Number({{ $ci_max }})],[Number({{ $ci_avg }})],[Number({{ $ci_min }})]);
         bar('#container3bis',agent_name,[Number(fcr)],[Number({{ $fcr_max }})],[Number({{ $fcr_avg }})],[Number({{ $fcr_min }})]);
+        bar('#container4bis',agent_name,[Number(fcr_reso)],[Number({{ $fcr_reso_max }})],[Number({{ $fcr_reso_avg }})],[Number({{ $fcr_reso_min }})]);
+        bar('#container5bis',agent_name,[Number(fcr_reso)],[Number({{ $ticket_max }})],[Number({{ $tickets_users_avg }})],[Number({{ $ticket_min }})]);
         $("#agent").change(function() {
             var v=$(this).val();
             agent_name=ci_temp[v].Name;
@@ -595,145 +603,49 @@
         $('#reservation').daterangepicker();
         
     </script>
-    <!-- EKMS Usage Chart -->
+    <!-- Bar Chart -->
     <script type="text/javascript">
-        $(function () {
-            $('#container1').highcharts({
+        var ci_names=JSON.parse('<?php echo json_encode($ci_names); ?>');
+        var ci_data=JSON.parse('<?php echo json_encode($ci); ?>');
+        drawBar('#container2',ci_names,'CI Usage',ci_data);
+
+        var kb_names=JSON.parse('<?php echo json_encode($kb_names); ?>');
+        var kb_data=JSON.parse('<?php echo json_encode($kb); ?>');
+        drawBar('#container1',kb_names,'EKMS Usage',kb_data);
+
+        var fcr_names=JSON.parse('<?php echo json_encode($fcr_names); ?>');
+        var fcr_data=JSON.parse('<?php echo json_encode($fcr); ?>');
+        drawBar('#container3',fcr_names,'FCR',fcr_data);
+
+        var fcr_reso_names=JSON.parse('<?php echo json_encode($fcr_reso_names); ?>');
+        var fcr_reso_data=JSON.parse('<?php echo json_encode($fcr_reso); ?>');
+        drawBar('#container4',fcr_reso_names,'FCR Resolvable',fcr_reso_data);
+
+        function drawBar(id,name,graphName,data){
+            $(id).highcharts({
                 chart:{
                     type:'bar'
                 },
-
                 exporting: { enabled: false },
-
                 tooltip: {
                     valueSuffix: '%'
                 },
-
                 title: {
                     text: ' '
                 },
-
                 credits: {
                     enabled: false
                 },
-
                 xAxis: {
-                    categories: [<?php echo $kb_names ?>]
+                    categories: name
                 },
                 series: [{
-                    name: 'EKMS Usage',
+                    name: graphName,
                     showInLegend: false,
-                    data: [
-                        <?php foreach ($kb_users_ord as $kb){
-                                if($kb->count<=70)
-                                {
-                                    echo "{y:".(int)$kb->count.",color:'red'},";
-                                }
-                                else
-                                {
-                                    echo (int)$kb->count.',';
-                                }
-                        } ?>
-                    ]
+                    data: data
                 }]
             });
-
-
-        });
+        }
     </script>
-    <!-- EKMS Usage Chart -->
-    <!-- CI Usage Chart -->
-    <script type="text/javascript">
-        $(function () {
-            $('#container2').highcharts({
-                chart:{
-                    type:'bar'
-                },
-
-                exporting: { enabled: false },
-
-                tooltip: {
-                    valueSuffix: '%'
-                },
-
-                title: {
-                    text: ' '
-                },
-
-                credits: {
-                    enabled: false
-                },
-
-                xAxis: {
-                    categories: [<?php echo $ci_names ?>]
-                },
-                series: [{
-                    name: 'CI Usage',
-                    showInLegend: false,
-                    data: [
-                        <?php foreach ($ci_users_ord as $ci){
-                                if($ci->count<=50)
-                                {
-                                    echo "{y:".(int)$ci->count.",color:'red'},";
-                                }
-                                else
-                                {
-                                    echo (int)$ci->count.',';
-                                }
-                        } ?>
-                    ]
-                }]
-            });
-
-
-        });
-    </script>
-    <!-- End CI Usage Chart -->
-    <!-- FCR Chart -->
-    <script type="text/javascript">
-        $(function () {
-            $('#container3').highcharts({
-                chart:{
-                    type:'bar'
-                },
-
-                exporting: { enabled: false },
-
-                tooltip: {
-                    valueSuffix: '%'
-                },
-
-                title: {
-                    text: ' '
-                },
-
-                credits: {
-                    enabled: false
-                },
-
-                xAxis: {
-                    categories: [<?php echo $fcr_names ?>]
-                },
-                series: [{
-                    name: 'FCR',
-                    showInLegend: false,
-                    data: [
-                        <?php foreach ($fcr_users_ord as $fcr){
-                                if($fcr->count<=50)
-                                {
-                                    echo "{y:".(int)$fcr->count.",color:'red'},";
-                                }
-                                else
-                                {
-                                    echo (int)$fcr->count.',';
-                                }
-                        } ?>
-                    ]
-                }]
-            });
-
-
-        });
-    </script>
-    <!-- End FCR Chart -->
+    <!-- End Bar Chart -->
 @endsection
