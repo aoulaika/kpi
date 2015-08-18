@@ -50,3 +50,8 @@ Route::any('jib', [
     'as' => 'jib',
     'uses' => 'ControllerZakaria@jib'
 ]);
+
+Route::any('errors', [
+    'as' => 'errors',
+    'uses' => 'ControllerZakaria@errors'
+]);

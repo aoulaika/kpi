@@ -564,4 +564,8 @@ class ControllerZakaria extends Controller{
             );
         return response()->json($data);
     }
+    public function errors()
+    {
+        return View('managerViews/errors');
+    }
 } 
