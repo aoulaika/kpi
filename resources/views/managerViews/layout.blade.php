@@ -35,6 +35,11 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="{{ asset('/css/style2.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/css/bootstrap-editable.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('plugins/datatables/extensions/Buttons/css/buttons.dataTables.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('plugins/datatables/extensions/Buttons/css/buttons.bootstrap.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('plugins/iCheck/all.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .minititle{
             text-align: center;
@@ -63,7 +68,9 @@
             opacity:0.5;
             cursor:pointer;
         }
-
+        .center {
+            text-align: center;
+        }
     </style>
 </head>
 <body class="skin-blue sidebar-mini sidebar-collapse">
@@ -246,7 +253,7 @@
                 <h3 class="control-sidebar-heading">Recent Activity</h3>
                 <ul class="control-sidebar-menu">
                     <li>
-                        <a href="javascript::;">
+                        <a href="#">
                             <i class="menu-icon fa fa-birthday-cake bg-red"></i>
                             <div class="menu-info">
                                 <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
@@ -255,7 +262,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="javascript::;">
+                        <a href="#">
                             <i class="menu-icon fa fa-user bg-yellow"></i>
                             <div class="menu-info">
                                 <h4 class="control-sidebar-subheading">Frodo Updated His Profile</h4>
@@ -264,7 +271,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="javascript::;">
+                        <a href="#">
                             <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
                             <div class="menu-info">
                                 <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
@@ -273,7 +280,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="javascript::;">
+                        <a href="#">
                             <i class="menu-icon fa fa-file-code-o bg-green"></i>
                             <div class="menu-info">
                                 <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
@@ -286,7 +293,7 @@
                 <h3 class="control-sidebar-heading">Tasks Progress</h3>
                 <ul class="control-sidebar-menu">
                     <li>
-                        <a href="javascript::;">
+                        <a href="#">
                             <h4 class="control-sidebar-subheading">
                                 Custom Template Design
                                 <span class="label label-danger pull-right">70%</span>
@@ -297,7 +304,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="javascript::;">
+                        <a href="#">
                             <h4 class="control-sidebar-subheading">
                                 Update Resume
                                 <span class="label label-success pull-right">95%</span>
@@ -308,7 +315,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="javascript::;">
+                        <a href="#">
                             <h4 class="control-sidebar-subheading">
                                 Laravel Integration
                                 <span class="label label-warning pull-right">50%</span>
@@ -319,7 +326,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="javascript::;">
+                        <a href="#">
                             <h4 class="control-sidebar-subheading">
                                 Back End Framework
                                 <span class="label label-primary pull-right">68%</span>
@@ -387,7 +394,7 @@
                     <div class="form-group">
                         <label class="control-sidebar-subheading">
                             Delete chat history
-                            <a href="javascript::;" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
+                            <a href="#" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
                         </label>
                     </div><!-- /.form-group -->
                 </form>
@@ -449,7 +456,6 @@
         <script src="{{ asset('/dist/js/app.min.js') }}" type="text/javascript"></script>
         <!-- AdminLTE for demo purposes -->
         <script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
         @yield('script')
     </body>
 </html>

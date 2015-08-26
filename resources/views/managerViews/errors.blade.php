@@ -1,7 +1,214 @@
 @extends('managerViews/layout')
 @section('content')
-
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Errors Tracking</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div class="col-lg-1" style="margin-right: 60px;">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <button class="dt-button" data-toggle="modal" data-target="#myModal">
+                                <i class="fa fa-search"></i> Advanced Filter
+                            </button>
+                        </div>
+                    </div><!-- /.form group -->
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <button class="dt-button daterange-btn" id="daterange-btn">
+                                <i class="fa fa-calendar"></i> Choose a Date Range
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+                    </div><!-- /.form group -->
+                </div>
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="no-sort" >
+                                <i class="fa fa-check"></i>
+                            </th>
+                            <th class="no-sort">Number</th>
+                            <th>Date</th>
+                            <th class="no-sort">Short_Descr</th>
+                            <th class="no-sort">Ag_ID</th>
+                            <th >Ag_Name</th>
+                            <th>THT</th>
+                            <th class="no-sort">Err_Type</th>
+                            <th class="no-sort">RCA/Ag_Comment</th>
+                            <th class="no-sort">Action</th>
+                            <th class="no-sort">Remarks</th>
+                            <th class="no-sort">TES</th>
+                            <th class="no-sort">Team</th>
+                            <th class="no-sort">Accounted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($errors as $v)
+                        <tr>
+                            <input type="hidden" class="id" value="{{ $v->Id }}">
+                            <td>
+                                <input type="checkbox" class="check" {{ ($v->checked)?'checked':'' }}>
+                            </td>
+                            <td>{{ $v->Number }}</td>
+                            <td>{{ $v->Created }}</td>
+                            <td>{{ $v->Short_Description }}</td>
+                            <td>{{ $v->Code }}</td>
+                            <td>{{ $v->Name }}</td>
+                            <td>{{ $v->hdl_time }}</td>
+                            <td>{{ $v->error_type }}</td>
+                            <td><a href="#" class="edit" >{{ $v->rca_ag_comment }}</a></td>
+                            <td><a href="#" class="edit">{{ $v->action }}</a></td>
+                            <td><a href="#" class="edit">{{ $v->remarks }}</a></td>
+                            <td><a href="#" class="edit">{{ $v->tes }}</a></td>
+                            <td>Sadki, Rania</td>
+                            <td class="center">
+                                <input type="checkbox" class="accounted" {{ ($v->checked)?'checked':'' }}>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document" style="width:300px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Advanced Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group text-center">
+                            <p><label>Error type :</label></p>
+                            <select class="form-control">
+                                <option>All</option>
+                                <option>FCR</option>
+                                <option>CI</option>
+                                <option>KB</option>
+                            </select>
+                        </div>
+                        <div class="form-group text-center">
+                            <p><label>Team :</label></p>
+                            <select class="form-control">
+                                <option>All</option>
+                                <option>Sadki, Rania</option>
+                            </select>
+                        </div>
+                        <div class="form-group text-center">
+                            <p><label>Checked :</label></p>
+                            <label class="radio-inline">
+                                <input type="radio" name="checked" id="yes" value="yes" class="check">
+                                Yes
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="checked" id="no" value="no" class="check">
+                                No
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="checked" id="all" value="all" class="check" checked>
+                                All
+                            </label>
+                        </div>
+                        <div class="form-group text-center">
+                            <p><label>Accounted :</label></p>
+                            <label class="radio-inline">
+                                <input type="radio" name="accounted" id="yes" value="yes" class="accounted">
+                                Yes
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="accounted" id="no" value="no" class="accounted">
+                                No
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="accounted" id="all" value="all" class="accounted" checked>
+                                All
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="update-id" value="">
 @endsection
 @section('script')
+    <script src="{{ asset('js/bootstrap-editable.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('plugins/datatables/jquery.dataTables.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('plugins/datatables/dataTables.bootstrap.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('plugins/datatables/extensions/Buttons/js/dataTables.buttons.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('plugins/datatables/extensions/Buttons/js/buttons.colVis.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('plugins/iCheck/icheck.js') }}" type="text/javascript"></script>
+    <script>
+        $('.edit').click(function(){
+            var id = $(this).closest('tr').children('input.id').val();
+            $('#update-id').val(id);
+        });
+        $('.edit').editable({
+            type: 'textarea',
+            title: 'Enter text',
+            rows: 6,
+            showbuttons : 'bottom',
+            success: function(response, newValue) {
 
+            }
+        });
+
+
+        $('.accounted').iCheck({
+            checkboxClass: 'icheckbox_flat-red',
+            radioClass: 'iradio_flat-red'
+        });
+
+        $('.check').iCheck({
+            checkboxClass: 'icheckbox_flat-blue',
+            radioClass: 'iradio_flat-blue'
+        });
+
+        var table = $('#example1').DataTable({
+            dom : 'Bfrtlip',
+            "aaSorting": [],
+            "aoColumnDefs" : [ {
+                "bSortable" : false,
+                "aTargets" : [ "no-sort" ]
+            } ],
+            buttons: [
+                'colvis'
+            ]
+        });
+
+        $('#daterange-btn').daterangepicker(
+                {
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(29, 'days'),
+                    endDate: moment()
+                },
+                function (start, end) {
+                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                }
+        );
+        // Apply the search
+        /*table.columns().every( function () {
+            var that = this;
+
+            $( 'input', this.header() ).on( 'keyup change', function () {
+                that
+                        .search( this.value )
+                        .draw();
+            } );
+        } );*/
+    </script>
 @endsection

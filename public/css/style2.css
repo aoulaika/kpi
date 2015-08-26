@@ -1,5 +1,10 @@
 @import url(http://fonts.googleapis.com/css?family=Share+Tech);
 
+@font-face {
+    font-family: myFirstFont;
+    src: url(../fonts/glyphicons-halflings-regular.woff);
+}
+
 
 #test .arc2 {
     stroke-weight:0.1;
