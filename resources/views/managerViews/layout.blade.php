@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>KPIs App</title>
+    <title>KPIs App - @yield('title')</title>
     <link rel="icon" type="image/png" href="{{ asset('/img/icon.png') }}">
     <!-- Select2 -->
     <link href="{{ asset('/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -15,11 +15,9 @@
     <!-- Hover.css -->
     <link href="{{ asset('/css/hover.css') }}" rel="stylesheet" type="text/css" />
     <!-- Font Awesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Ionicons -->
     <link href="{{ asset('/css/ionicons.min.css') }}" rel="stylesheet" type="text/css" />
-    <!-- Select2 -->
-    <link href="{{ asset('/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- jvectormap -->
     <link href="{{ asset('/plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
@@ -40,6 +38,7 @@
     <link href="{{ asset('plugins/datatables/extensions/Buttons/css/buttons.dataTables.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('plugins/datatables/extensions/Buttons/css/buttons.bootstrap.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('plugins/iCheck/all.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/css/style3.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .minititle{
             text-align: center;
@@ -163,7 +162,9 @@
                         </a>
                         <ul class="treeview-menu">
                             <li class="active"><a href="{{ route("dashboard") }}"><i class="fa fa-circle-o"></i> Global Dashboard</a></li>
-                            <li><a href=" {{ route("dashboard3") }} "><i class="fa fa-circle-o"></i> Agents Tracking Dashboard</a></li>
+                            <li><a href=" {{ route("dashboard3") }} "><i class="fa fa-circle-o"></i> Agents Dashboard</a></li>
+                            <li><a href=" {{ route("errors") }} "><i class="fa fa-circle-o"></i> Errors Tracking</a></li>
+                            <li><a href=" {{ route("users1") }} "><i class="fa fa-circle-o"></i> Manage Users</a></li>
                         </ul>
                     </li>
                     <li class="treeview">
@@ -222,7 +223,7 @@
                 <small>Control panel</small>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
                 <li class="active">Dashboard</li>
             </ol>
         </section>

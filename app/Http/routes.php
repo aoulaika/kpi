@@ -46,6 +46,11 @@ Route::any('reload', [
     'uses' => 'ControllerZakaria@reload'
 ]);
 
+Route::any('changeAgent', [
+    'as' => 'changeAgent',
+    'uses' => 'ControllerZakaria@changeAgent'
+]);
+
 Route::any('jib', [
     'as' => 'jib',
     'uses' => 'ControllerZakaria@jib'
@@ -56,7 +61,23 @@ Route::any('errors', [
     'uses' => 'ControllerZakaria@errors'
 ]);
 
+
 Route::any('updateErrors', [
     'as' => 'updateErrors',
     'uses' => 'ControllerZakaria@updateErrors'
+]);
+
+Route::get('/users1', [
+    'as' => 'users1',
+    'uses' => 'ControllerZakaria@users1'
+]);
+
+Route::any('getUsers', [
+    'as' => 'getUsers',
+    'uses' => 'ControllerZakaria@getUsers'
+]);
+
+Route::any('polarData', [
+    'as' => 'polarData',
+    'uses' => 'ControllerZakaria@polarData'
 ]);
