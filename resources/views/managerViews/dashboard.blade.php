@@ -19,7 +19,7 @@
 				</div>
 
 				<div class="col-lg-6">
-					<span class="pull-right" id="range"><span class="date total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span class="date" id="debut">03/08/2015</span> and : <span class="date" id="fin">10/08/2015</span></span>
+					<span class="pull-right" id="range"><span class="date total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span class="date" id="debut">1900-01-01</span> and : <span class="date" id="fin">2015-08-19</span></span>
 				</div>
 			</div><!-- /.box-header -->
 		</div>
@@ -75,7 +75,7 @@
 					</table>
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-					<div  id="div4"></div>
+					<div id="div4"></div>
 					<table class="table" style="width:80%;margin:auto;">
 						<tr>
 							<th>Volume</th>
@@ -100,13 +100,15 @@
 			<div class="box-header with-border">
 				<h3 class="box-title">Average Tickets Handling Time</h3>
 			</div><!-- /.box-header -->
-			<div class="box-body">
+			<div class="box-body" style="height:394px">
 				<div class="row">
 					<div class="col-lg-6">
 						<div id="gauge1" style="height:300px;width:100%"></div>
+						<h5 class="minititle">Average THT</h5>
 					</div>
 					<div class="col-lg-6">
 						<div id="gauge2" style="height:300px;width:100%"></div>
+						<h5 class="minititle">Average THT for Password Reset Closure</h5>
 					</div>
 				</div>
 			</div><!-- /.box-body -->
@@ -120,6 +122,22 @@
 			</div><!-- /.box-header -->
 			<div class="box-body">
 				<div id="priorityPie"></div>
+				<table class="table text-center" style="width:100%;margin:auto;">
+					<tr>
+						<th>Critical</th>
+						<th>High</th>
+						<th>Medium</th>
+						<th>Low</th>
+						<th>Low/Planning</th>
+					</tr>
+					<tr id="pr">
+						<td>{{ $critical }}</td>
+						<td>{{ $high }}</td>
+						<td>{{ $medium }}</td>
+						<td>{{ $low }}</td>
+						<td>{{ $planning }}</td>
+					</tr>
+				</table>
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
 	</div><!-- /.col -->
@@ -242,6 +260,7 @@
 					drawGauge('#gauge2', [response.avg_tht.password[0]], 0, 10, 'THT(Password Reset Closure)', response.avg_tht.password[1]);
 					drawPie('#priorityPie',response.priority);
 					drawBar('#categoryPie',response.category);
+					reloadPriority(response.critical,response.high,response.medium,response.low,response.planning);
 					data_temp=response.ticket_all;
 					reloadSelect(data_temp.product,'#product');
 					draw(data_temp.all,'ticketsChart');
@@ -249,8 +268,15 @@
 					reloadMissed(response.total_ticket, response.ci_missed, response.kb_missed, response.fcr_missed, response.fcr_reso_missed, response.fcr_reso_total);
 				}
 			});
-		});	
+});	
 });
+function reloadPriority (critical,high,medium,low,planning) {
+	$('#pr').children().eq(0).text(critical)
+	$('#pr').children().eq(1).text(high)
+	$('#pr').children().eq(2).text(medium)
+	$('#pr').children().eq(3).text(low)
+	$('#pr').children().eq(4).text(planning)
+}
 function reloadSelect (data,id) {
 	var str='<option value="all">All</option>';
 	for (var property in data) {
@@ -695,31 +721,31 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 <!-- End Others Script -->
 
 <script type="text/javascript">
-drawBar('#categoryPie',JSON.parse('<?php echo json_encode($category); ?>'));
-function drawBar(id,dataBar){
-	$(id).highcharts({
-		chart:{
-			type:'bar'
-		},
-		exporting: { enabled: false },
-		tooltip: {
-			valueSuffix: ' ticket'
-		},
-		title: {
-			text: ' '
-		},
-		credits: {
-			enabled: false
-		},
-		xAxis: {
-			categories: dataBar[0]
-		},
-		series: [{
-			name: 'EKMS Usage',
-			showInLegend: false,
-			data: dataBar[1]
-		}]
-	});
-}
+	drawBar('#categoryPie',JSON.parse('<?php echo json_encode($category); ?>'));
+	function drawBar(id,dataBar){
+		$(id).highcharts({
+			chart:{
+				type:'bar'
+			},
+			exporting: { enabled: false },
+			tooltip: {
+				valueSuffix: ' ticket'
+			},
+			title: {
+				text: ' '
+			},
+			credits: {
+				enabled: false
+			},
+			xAxis: {
+				categories: dataBar[0]
+			},
+			series: [{
+				name: 'EKMS Usage',
+				showInLegend: false,
+				data: dataBar[1]
+			}]
+		});
+	}
 </script>
 @endsection

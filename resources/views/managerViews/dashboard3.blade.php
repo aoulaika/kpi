@@ -17,7 +17,7 @@
                     </div><!-- /.form group -->
                 </div>
                 <div class="col-lg-6">
-                    <span class="pull-right" id="range">From :  <span class="date" id="datedeb">1900-01-01</span> to : <span class="date" id="datefin">2015-08-19</span></span>
+                    <span class="pull-right" id="range"><span class="date" id="total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span class="date" id="debut">1900-01-01</span> and : <span class="date" id="fin">2015-08-19</span></span>
                 </div>
             </div><!-- /.box-header -->
         </div>
@@ -337,8 +337,8 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
     $('#daterange-agent').on('apply.daterangepicker', function(ev, picker) {
             //console.log(picker.startDate.format('YYYY-MM-DD'));
             //console.log(picker.endDate.format('YYYY-MM-DD'));
-            $('#datedeb').html(picker.startDate.format('YYYY-MM-DD'));
-            $('#datefin').html(picker.endDate.format('YYYY-MM-DD'));
+            $('#debut').html(picker.startDate.format('YYYY-MM-DD'));
+            $('#fin').html(picker.endDate.format('YYYY-MM-DD'));
             $.ajax({
                 url: 'rangedate',
                 type: "post",
@@ -380,6 +380,7 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
                     drawBar('#container5',response.ticket_ord_users,'Number of Ticket','',response.ticket_ord_value);
                     reloadSelect(response.tickets_all.product,'#product');
                     draw(response.tickets_all.all);
+                    $('#total_ticket').text(response.total_ticket);
                     $('#missed_resolvable').html(response.fcr_reso_missed+"/"+response.fcr_reso_total);
                 }
             });

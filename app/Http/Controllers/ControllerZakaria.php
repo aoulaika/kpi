@@ -26,7 +26,8 @@ class ControllerZakaria extends Controller
         //Important
         //THE TIME IN ALL THIS QUERIES SHOULD BE SET FOR J-1
         // !!
-
+        $total_ticket=DB::table('fact')
+        ->count();
 
         /* Number of tickets Per agent */
         $tickets_per_agent=DB::table('fact')
@@ -306,7 +307,8 @@ class ControllerZakaria extends Controller
             'ticket_ord_users'=>$ticket_ord_users,
             'ticket_ord_value'=>$ticket_ord_value,
             'fcr_reso_total'=>$fcr_reso_total,
-            'fcr_reso_missed'=>$fcr_reso_missed
+            'fcr_reso_missed'=>$fcr_reso_missed,
+            'total_ticket'=>$total_ticket
         ]);
     }
 
@@ -377,11 +379,33 @@ class ControllerZakaria extends Controller
             ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
 
-        $priority=DB::table('fact')
+        $critical=DB::table('fact')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-            ->select(DB::raw('count(*) as y, priority as name'))
-            ->groupBy('Priority')
-            ->get();
+            ->where('Priority','like','Critical')
+            ->count();
+        $high=DB::table('fact')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->where('Priority','like','High')
+            ->count();
+        $medium=DB::table('fact')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->where('Priority','like','Medium')
+            ->count();
+        $low=DB::table('fact')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->where('Priority','like','Low')
+            ->count();
+        $planning=DB::table('fact')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->where('Priority','like','Low/Planning')
+            ->count();
+        $priority=array(
+            (object)array('y'=>$critical,'name'=>'critical'),
+            (object)array('y'=>$high,'name'=>'high'),
+            (object)array('y'=>$medium,'name'=>'medium'),
+            (object)array('y'=>$low,'name'=>'low'),
+            (object)array('y'=>$planning,'name'=>'planning'),
+            );
 
         $category=DB::table('fact')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
@@ -462,7 +486,12 @@ class ControllerZakaria extends Controller
             'category' => [$categoryName,$categoryValue],
             'avg_tht' => $avg_tht,
             'countryChart'=>$countryChart,
-            'total_ticket_phone'=>$total_ticket_phone
+            'total_ticket_phone'=>$total_ticket_phone,
+            'critical'=>$critical,
+            'high'=>$high,
+            'medium'=>$medium,
+            'low'=>$low,
+            'planning'=>$planning
         ]);
     }
 
@@ -481,6 +510,12 @@ class ControllerZakaria extends Controller
         $params = $request->except(['_token']);
         /* Queries for all users */
         /* Number of tickets Per agent */
+
+        $total_ticket=DB::table('fact')
+            ->join('time_dim','fact.fk_time','=','time_dim.Id')
+            ->where('time_dim.Created','>=',$params['datedeb'])
+            ->where('time_dim.Created','<=',$params['datefin'])
+            ->count();
 
         $tickets_per_agent = DB::table('fact')
             ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
@@ -736,7 +771,7 @@ class ControllerZakaria extends Controller
             'fcr_reso_ord'=>$fcr_reso_ord,
             'ticket_ord_users'=>$ticket_ord_users,
             'ticket_ord_value'=>$ticket_ord_value,
-
+            'total_ticket'=>$total_ticket
         ]);
     }
 
@@ -810,14 +845,48 @@ class ControllerZakaria extends Controller
             ->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
             ->get();
 
-        $priority=DB::table('fact')
+        $critical=DB::table('fact')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
             ->where('time_dim.Created','>=',$params['datedeb'])
             ->where('time_dim.Created','<=',$params['datefin'])
-            ->select(DB::raw('count(*) as y, priority as name'))
-            ->groupBy('Priority')
-            ->get();
+            ->where('Priority','like','Critical')
+            ->count();
+        $high=DB::table('fact')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->where('time_dim.Created','>=',$params['datedeb'])
+            ->where('time_dim.Created','<=',$params['datefin'])
+            ->where('Priority','like','High')
+            ->count();
+        $medium=DB::table('fact')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->where('time_dim.Created','>=',$params['datedeb'])
+            ->where('time_dim.Created','<=',$params['datefin'])
+            ->where('Priority','like','Medium')
+            ->count();
+        $low=DB::table('fact')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->where('time_dim.Created','>=',$params['datedeb'])
+            ->where('time_dim.Created','<=',$params['datefin'])
+            ->where('Priority','like','Low')
+            ->count();
+        $planning=DB::table('fact')
+            ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+            ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+            ->where('time_dim.Created','>=',$params['datedeb'])
+            ->where('time_dim.Created','<=',$params['datefin'])
+            ->where('Priority','like','Low/Planning')
+            ->count();
+        $priority=array(
+            (object)array('y'=>$critical,'name'=>'critical'),
+            (object)array('y'=>$high,'name'=>'high'),
+            (object)array('y'=>$medium,'name'=>'medium'),
+            (object)array('y'=>$low,'name'=>'low'),
+            (object)array('y'=>$planning,'name'=>'planning'),
+            );
 
         $category=DB::table('fact')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
@@ -978,7 +1047,12 @@ class ControllerZakaria extends Controller
             'fcr_reso_total'=>$fcr_reso_total,
             'fcr_reso_missed'=>$fcr_reso_missed,
             'countryChart'=>$countryChart,
-            'total_ticket_phone' => $total_ticket_phone
+            'total_ticket_phone' => $total_ticket_phone,
+            'critical'=>$critical,
+            'high'=>$high,
+            'medium'=>$medium,
+            'low'=>$low,
+            'planning'=>$planning
         );
         return response()->json($data);
     }
