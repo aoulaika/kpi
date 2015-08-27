@@ -1,4 +1,5 @@
 @extends('managerViews/layout')
+@section('title', ' Global Dashboard')
 @section('content')
 <!-- Date Picker -->
 <div class="row">
@@ -16,8 +17,9 @@
 						</div>
 					</div><!-- /.form group -->
 				</div>
+
 				<div class="col-lg-6">
-					<span class="pull-right" id="range">From :  <span class="date" id="debut">03/08/2015</span> to : <span class="date" id="fin">10/08/2015</span></span>
+					<span class="pull-right" id="range"><span class="date total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span class="date" id="debut">03/08/2015</span> and : <span class="date" id="fin">10/08/2015</span></span>
 				</div>
 			</div><!-- /.box-header -->
 		</div>
@@ -33,17 +35,57 @@
 				<h3 class="box-title">Global View</h3>
 			</div>
 			<div class="box-body">
-				<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+				<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin:auto;">
 					<div  id="div1"></div>
+					<table class="table" style="width:80%;margin:auto;">
+						<tr>
+							<th>Volume</th>
+							<th class="pull-right">Missed</th>
+						</tr>
+						<tr>
+							<td class="total_ticket">{{ $total_ticket }}</td>
+							<td class="pull-right" id="ci_missed">{{ $ci_missed }}</td>
+						</tr>
+					</table>
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 ">
 					<div  id="div2"></div>
+					<table class="table" style="width:80%;margin:auto;">
+						<tr>
+							<th>Volume</th>
+							<th class="pull-right">Missed</th>
+						</tr>
+						<tr>
+							<td class="total_ticket">{{ $total_ticket }}</td>
+							<td class="pull-right" id="kb_missed">{{ $kb_missed }}</td>
+						</tr>
+					</table>
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
 					<div  id="div3"></div>
+					<table class="table" style="width:80%;margin:auto;">
+						<tr>
+							<th>Volume</th>
+							<th class="pull-right">Missed</th>
+						</tr>
+						<tr>
+							<td class="total_ticket">{{ $total_ticket }}</td>
+							<td class="pull-right" id="fcr_missed">{{ $fcr_missed }}</td>
+						</tr>
+					</table>
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
 					<div  id="div4"></div>
+					<table class="table" style="width:80%;margin:auto;">
+						<tr>
+							<th>Volume</th>
+							<th class="pull-right">Missed</th>
+						</tr>
+						<tr>
+							<td id="fcr_reso_total">{{ $fcr_reso_total }}</td>
+							<td class="pull-right" id="fcr_reso_missed">{{ $fcr_reso_missed }}</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -192,10 +234,10 @@
 				},
 				success: function(response){
 					console.log(response);
-					globalView('div1', "Total CI Usage", response.ci[0].count);
-					globalView('div2', "Total KB Usage", response.kb[0].count);
-					globalView('div3', "Total FCR", response.fcr[0].count);
-					globalView('div4', "Total FCR Resolvable", response.fcr_reso[0].count);
+					globalView('div1', "Total CI Usage", 100*(1-response.ci_missed/response.total_ticket));
+					globalView('div2', "Total KB Usage", 100*(1-response.kb_missed/response.total_ticket));
+					globalView('div3', "Total FCR", 100*(1-response.fcr_missed/response.total_ticket));
+					globalView('div4', "Total FCR Resolvable", 100*(1-response.fcr_reso_missed/response.fcr_reso_total));
 					drawGauge('#gauge1', [response.avg_tht.all[0]], 0, 20, 'THT', response.avg_tht.all[1]);
 					drawGauge('#gauge2', [response.avg_tht.password[0]], 0, 10, 'THT(Password Reset Closure)', response.avg_tht.password[1]);
 					drawPie('#priorityPie',response.priority);
@@ -204,6 +246,7 @@
 					reloadSelect(data_temp.product,'#product');
 					draw(data_temp.all,'ticketsChart');
 					drawMap(response.countryChart);
+					reloadMissed(response.total_ticket, response.ci_missed, response.kb_missed, response.fcr_missed, response.fcr_reso_missed, response.fcr_reso_total);
 				}
 			});
 		});	
@@ -216,6 +259,14 @@ function reloadSelect (data,id) {
 		}
 	}
 	$(id).html(str);
+}
+function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_missed, fcr_reso_total) {
+	$('.total_ticket').html(total_ticket);
+	$('#ci_missed').html(ci_missed);
+	$('#kb_missed').html(kb_missed);
+	$('#fcr_missed').html(fcr_missed);
+	$('#fcr_reso_missed').html(fcr_reso_missed);
+	$('#fcr_reso_total').html(fcr_reso_total);
 }
 </script>
 <!-- End Ajax -->
@@ -307,7 +358,7 @@ zoomChart();
 		},
 		format: 'YYYY/MM/DD'
 	}, function(start, end, label) {
-		console.log("New date range selected: ' + start.format('YYYY-DD-MM') + ' to ' + end.format('YYYY-DD-MM') + ' (predefined range: ' + label + ')");
+		/*console.log("New date range selected: ' + start.format('YYYY-DD-MM') + ' to ' + end.format('YYYY-DD-MM') + ' (predefined range: ' + label + ')");*/
 	});
 	$(document).ready(function(){
 		$('#compare').click(function(){
@@ -471,9 +522,9 @@ zoomChart();
 // the value axis
 yAxis: {
 	stops: [
-		[0.1, '#337C99'], // blue
-		[0.7, '#C9BE58'], // yellow
-		[0.9, '#CF6E6E'] // red
+		[0.1, '#A0D9FF'], // blue
+		[0.5, '#7CB5EC'], // yellow
+		[0.9, '#346DA4'] // red
 		],
 		lineWidth: 0,
 		minorTickInterval: null,
@@ -577,11 +628,14 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 
 <!-- Global View Chart -->
 <script language="JavaScript">
-	globalView('div1', "Total CI Usage", {{ $ci }});
-	globalView('div2', "Total KB Usage", {{ $kb }});
-	globalView('div3', "Total FCR", {{ $fcr['all'] }});
-	globalView('div4', "Total FCR Resolvable", {{ $fcr['resolvable'] }});
+	globalView('div1', "Total CI Usage", 100*(1-{{ $ci_missed/$total_ticket }}));
+	globalView('div2', "Total KB Usage", 100*(1-{{ $kb_missed/$total_ticket }}));
+	globalView('div3', "Total FCR", 100*(1-{{ $fcr_missed/$total_ticket }}));
+	globalView('div4', "Total FCR Resolvable", 100*(1-{{ $fcr_reso_missed/$fcr_reso_total }}));
 	function globalView(id, title, value) {
+		if (isNaN(value)) {
+			value=0;
+		};
 		var rp1 = radialProgress(document.getElementById(id))
 		.label(title)
 		.diameter(180)
@@ -592,10 +646,10 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 <!-- End Global View Chart -->
 
 <!-- Map Chart -->
-<script src="http://code.highcharts.com/maps/modules/map.js"></script>
-<script src="http://code.highcharts.com/maps/modules/data.js"></script>
-<script src="http://code.highcharts.com/maps/modules/exporting.js"></script>
-<script src="http://code.highcharts.com/mapdata/custom/world.js"></script>
+<script src="{{ asset('/js/map.js') }}"></script>
+<script src="{{ asset('/js/data.js') }}"></script>
+<script src="{{ asset('/js/exporting.js') }}"></script>
+<script src="{{ asset('/js/world.js') }}"></script>
 <script>
 	var dataTemp=<?php echo json_encode($countryChart); ?>;
 	drawMap(dataTemp);
@@ -643,26 +697,20 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 <script type="text/javascript">
 drawBar('#categoryPie',JSON.parse('<?php echo json_encode($category); ?>'));
 function drawBar(id,dataBar){
-	console.log(dataBar);
 	$(id).highcharts({
 		chart:{
 			type:'bar'
 		},
-
 		exporting: { enabled: false },
-
 		tooltip: {
 			valueSuffix: ' ticket'
 		},
-
 		title: {
 			text: ' '
 		},
-
 		credits: {
 			enabled: false
 		},
-
 		xAxis: {
 			categories: dataBar[0]
 		},

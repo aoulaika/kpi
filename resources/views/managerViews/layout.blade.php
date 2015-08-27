@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>KPIs App</title>
+    <title>KPIs App - @yield('title')</title>
     <link rel="icon" type="image/png" href="{{ asset('/img/icon.png') }}">
     <!-- Select2 -->
     <link href="{{ asset('/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -15,7 +15,7 @@
     <!-- Hover.css -->
     <link href="{{ asset('/css/hover.css') }}" rel="stylesheet" type="text/css" />
     <!-- Font Awesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Ionicons -->
     <link href="{{ asset('/css/ionicons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- jvectormap -->
@@ -33,6 +33,7 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="{{ asset('/css/style2.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/css/style3.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .minititle{
             text-align: center;
@@ -155,7 +156,8 @@
                         <ul class="treeview-menu">
                             <li class="active"><a href="{{ route("dashboard") }}"><i class="fa fa-circle-o"></i> Global Dashboard</a></li>
                             <li><a href=" {{ route("dashboard3") }} "><i class="fa fa-circle-o"></i> Agents Dashboard</a></li>
-                            <li><a href=" {{ route("tracker") }} "><i class="fa fa-circle-o"></i> Errors Tracking</a></li>
+                            <li><a href=" {{ route("errors") }} "><i class="fa fa-circle-o"></i> Errors Tracking</a></li>
+                            <li><a href=" {{ route("users1") }} "><i class="fa fa-circle-o"></i> Manage Users</a></li>
                         </ul>
                     </li>
                     <li class="treeview">
@@ -214,7 +216,7 @@
                 <small>Control panel</small>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
                 <li class="active">Dashboard</li>
             </ol>
         </section>
@@ -448,7 +450,6 @@
         <script src="{{ asset('/dist/js/app.min.js') }}" type="text/javascript"></script>
         <!-- AdminLTE for demo purposes -->
         <script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
         @yield('script')
     </body>
 </html>
