@@ -719,4 +719,21 @@ class ControllerZakaria extends Controller
             'errors' => $errors
         ]);
     }
+    public function updateErrors(Request $request)
+    {
+        $params = $request->except(['_token']);
+        try {
+            DB::table('errors')->insert([
+                'fk_fact' => $params['id'],
+                'error_type' => $params['errorType'],
+                $params['column'] => $params['newValue']
+            ]);
+        }
+        catch(\Exception $e) {
+            DB::table('users')
+                ->where('fk_fact', $params['id'])
+                ->where('error_type',$params['errorType'])
+                ->update([$params['column'] => $params['newValue']]);
+        }
+    }
 }

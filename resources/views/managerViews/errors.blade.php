@@ -58,11 +58,23 @@
                             <td>{{ $v->Code }}</td>
                             <td>{{ $v->Name }}</td>
                             <td>{{ $v->hdl_time }}</td>
-                            <td>{{ $v->error_type }}</td>
-                            <td><a href="#" class="edit" >{{ $v->rca_ag_comment }}</a></td>
-                            <td><a href="#" class="edit">{{ $v->action }}</a></td>
-                            <td><a href="#" class="edit">{{ $v->remarks }}</a></td>
-                            <td><a href="#" class="edit">{{ $v->tes }}</a></td>
+                            <td class="errType">{{ $v->error_type }}</td>
+                            <td>
+                                <input type="hidden" value="rca_ag_comment">
+                                <a href="#" class="edit">{{ $v->rca_ag_comment }}</a>
+                            </td>
+                            <td>
+                                <input type="hidden" value="action">
+                                <a href="#" class="edit">{{ $v->action }}</a>
+                            </td>
+                            <td>
+                                <input type="hidden" value="remarks">
+                                <a href="#" class="edit">{{ $v->remarks }}</a>
+                            </td>
+                            <td>
+                                <input type="hidden" value="tes">
+                                <a href="#" class="edit">{{ $v->tes }}</a>
+                            </td>
                             <td>Sadki, Rania</td>
                             <td class="center">
                                 <input type="checkbox" class="accounted" {{ ($v->checked)?'checked':'' }}>
@@ -137,6 +149,8 @@
             </div>
         </div>
         <input type="hidden" id="update-id" value="">
+        <input type="hidden" id="update-column" value="">
+        <input type="hidden" id="errorType" value="">
 @endsection
 @section('script')
     <script src="{{ asset('js/bootstrap-editable.min.js') }}" type="text/javascript"></script>
@@ -148,7 +162,12 @@
     <script>
         $('.edit').click(function(){
             var id = $(this).closest('tr').children('input.id').val();
+            var column = $(this).prev().val();
+            var errorType = $(this).closest('tr').children('td.errType').text();
             $('#update-id').val(id);
+            $('#update-column').val(column);
+            $('#errorType').val(errorType);
+            alert($('#errorType').val())
         });
         $('.edit').editable({
             type: 'textarea',
@@ -156,7 +175,19 @@
             rows: 6,
             showbuttons : 'bottom',
             success: function(response, newValue) {
+                $.ajax({
+                    url: 'updateErrors',
+                    type: "get",
+                    data: {
+                        'id': $('#update-id').val(),
+                        'column': $('#update-column').val(),
+                        'newValue':newValue,
+                        'errorType': $('#errorType').val()
+                    },
+                    success: function (response) {
 
+                    }
+                });
             }
         });
 

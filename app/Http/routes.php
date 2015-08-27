@@ -55,3 +55,8 @@ Route::any('errors', [
     'as' => 'errors',
     'uses' => 'ControllerZakaria@errors'
 ]);
+
+Route::any('updateErrors', [
+    'as' => 'updateErrors',
+    'uses' => 'ControllerZakaria@updateErrors'
+]);
