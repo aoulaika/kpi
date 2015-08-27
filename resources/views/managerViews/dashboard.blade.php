@@ -236,7 +236,7 @@
 					console.log(response);
 					globalView('div1', "Total CI Usage", 100*(1-response.ci_missed/response.total_ticket));
 					globalView('div2', "Total KB Usage", 100*(1-response.kb_missed/response.total_ticket));
-					globalView('div3', "Total FCR", 100*(1-response.fcr_missed/response.total_ticket));
+					globalView('div3', "Total FCR", 100*(1-response.fcr_missed/response.total_ticket_phone));
 					globalView('div4', "Total FCR Resolvable", 100*(1-response.fcr_reso_missed/response.fcr_reso_total));
 					drawGauge('#gauge1', [response.avg_tht.all[0]], 0, 20, 'THT', response.avg_tht.all[1]);
 					drawGauge('#gauge2', [response.avg_tht.password[0]], 0, 10, 'THT(Password Reset Closure)', response.avg_tht.password[1]);
