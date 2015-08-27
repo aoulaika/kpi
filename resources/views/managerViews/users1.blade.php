@@ -1,5 +1,8 @@
 @extends('managerViews/layout')
 @section('title', ' Manage Users')
+@section('style')
+<link href="{{ asset('/css/style3.css') }}" rel="stylesheet" type="text/css" />
+@endsection
 @section('content')
 <div ng-app="app" ng-controller="ctrl">
 	<div class="box box-default">

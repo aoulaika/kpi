@@ -38,7 +38,6 @@
     <link href="{{ asset('plugins/datatables/extensions/Buttons/css/buttons.dataTables.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('plugins/datatables/extensions/Buttons/css/buttons.bootstrap.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('plugins/iCheck/all.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('/css/style3.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .minititle{
             text-align: center;
@@ -71,6 +70,7 @@
             text-align: center;
         }
     </style>
+    @yield('style')
 </head>
 <body class="skin-blue sidebar-mini sidebar-collapse">
     <div class="wrapper">
