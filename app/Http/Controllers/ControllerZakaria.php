@@ -314,7 +314,12 @@ class ControllerZakaria extends Controller
         $today = explode(' ',$date);
 
         $total_ticket=DB::table('fact')
-            ->count();
+        ->count();
+
+        $total_ticket_phone=DB::table('fact')
+        ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+        ->where('Contact_type','like','Phone')
+        ->count();
 
         $kb_missed= DB::table('fact')
             ->join('time_dim','fact.fk_time','=','time_dim.Id')
@@ -454,7 +459,8 @@ class ControllerZakaria extends Controller
             'priority' => $priority,
             'category' => [$categoryName,$categoryValue],
             'avg_tht' => $avg_tht,
-            'countryChart'=>$countryChart
+            'countryChart'=>$countryChart,
+            'total_ticket_phone'=>$total_ticket_phone
         ]);
     }
 
