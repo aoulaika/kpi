@@ -36,21 +36,92 @@ class ControllerZakaria extends Controller
             ->groupBy('agent_dim.Id')
             ->get();
 
-        $ci_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, ci_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ci = ci_dim.Id GROUP BY agent_dim.Id');
-        $kb_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count FROM fact, kb_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_kb = kb_dim.Id GROUP BY agent_dim.Id');
-        $fcr_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
-        $fcr_reso_users=DB::select('SELECT agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
-        $tht=DB::select('SELECT agent_dim.Id, agent_dim.Name, AVG(Handling_time) / 60 AS tht, SEC_TO_TIME(AVG(Handling_time)) AS tht_time, IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END) / 60, 0) AS tht_password, SEC_TO_TIME(IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END), 0)) AS tht_password_time FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id');
+        $ci_users=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->join('ci_dim', 'fact.fk_ci', '=', 'ci_dim.Id')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count'))
+        ->groupBy('agent_dim.Id')
+        ->get();
+
+        $kb_users=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->where('Category','not like','Service Catalog')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count'))
+        ->groupBy('agent_dim.Id')
+        ->get();
+
+        $fcr_users=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->where('Contact_type','like','Phone')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count'))
+        ->groupBy('agent_dim.Id')
+        ->get();
+
+        $fcr_reso_users=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->where('Contact_type','like','Phone')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS count'))
+        ->groupBy('agent_dim.Id')
+        ->get();
+
+        $tht=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, AVG(Handling_time) / 60 AS tht, SEC_TO_TIME(AVG(Handling_time)) AS tht_time, IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END) / 60, 0) AS tht_password, SEC_TO_TIME(IFNULL(AVG(CASE WHEN Closure_code = \'Password Reset\' THEN Handling_time END), 0)) AS tht_password_time'))
+        ->groupBy('agent_dim.Id')
+        ->get();
+
         $tickets_users=DB::table('fact')
             ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
             ->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count'))
             ->groupBy('agent_dim.Id')
             ->get();
         /* Queries Ordered */
-        $ci_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, ci_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ci = ci_dim.Id GROUP BY agent_dim.Id ORDER BY count');
-        $kb_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count FROM fact, kb_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_kb = kb_dim.Id GROUP BY agent_dim.Id ORDER BY count');
-        $fcr_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id ORDER BY count');
-        $fcr_reso_users_ord=DB::select('SELECT agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS count FROM fact, tickets_dim, agent_dim WHERE fact.fk_agent = agent_dim.Id AND fact.fk_ticket = tickets_dim.Id GROUP BY agent_dim.Id ORDER BY count');
+        
+        $ci_users_ord=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->join('ci_dim', 'fact.fk_ci', '=', 'ci_dim.Id')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count'))
+        ->groupBy('agent_dim.Id')
+        ->orderBy('count','desc')
+        ->get();
+
+        $kb_users_ord=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->where('Category','not like','Service Catalog')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count'))
+        ->groupBy('agent_dim.Id')
+        ->orderBy('count','desc')
+        ->get();
+
+        $fcr_users_ord=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->where('Contact_type','like','Phone')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count'))
+        ->groupBy('agent_dim.Id')
+        ->orderBy('count','desc')
+        ->get();
+
+        $fcr_reso_users_ord=DB::table('fact')
+        ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+        ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->where('Contact_type','like','Phone')
+        ->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS count'))
+        ->groupBy('agent_dim.Id')
+        ->orderBy('count','desc')
+        ->get();
+
         $tickets_users_ord=DB::table('fact')
             ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
             ->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count'))
@@ -181,9 +252,9 @@ class ControllerZakaria extends Controller
 
         /*resolvable missed*/
         $fcr_reso_total=DB::table('fact')
-            ->join('time_dim','fact.fk_time','=','time_dim.Id')
+            ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
             ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-            ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->where('Contact_type','like','Phone')
             ->where('tickets_dim.fcr_resolvable','=','Yes')
             ->where('agent_dim.Id','1')
             ->count();
@@ -192,6 +263,7 @@ class ControllerZakaria extends Controller
             ->join('time_dim','fact.fk_time','=','time_dim.Id')
             ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
             ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+            ->where('Contact_type','like','Phone')
             ->where('agent_dim.Id','1')
             ->where('tickets_dim.fcr_resolvable','=','Yes')
             ->where('tickets_dim.fcr_resolved','=','0')
