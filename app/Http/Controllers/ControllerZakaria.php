@@ -905,9 +905,18 @@ class ControllerZakaria extends Controller
             ->where('time_dim.Created','>=',$params['datedeb'])
             ->where('time_dim.Created','<=',$params['datefin'])
             ->count();
+        $total_ticket_phone=DB::table('fact')
+            ->join('time_dim','fact.fk_time','=','time_dim.Id')
+            ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+            ->where('Contact_type','like','Phone')
+            ->where('time_dim.Created','>=',$params['datedeb'])
+            ->where('time_dim.Created','<=',$params['datefin'])
+            ->count();
         $kb_missed= DB::table('fact')
             ->join('time_dim','fact.fk_time','=','time_dim.Id')
             ->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
+            ->join('tickets_dim','fact.fk_ticket', '=', 'tickets_dim.Id')
+            ->where('Category','not like','Service Catalog')
             ->where('time_dim.Created','>=',$params['datedeb'])
             ->where('time_dim.Created','<=',$params['datefin'])
             ->where(function ($query) {
@@ -925,6 +934,8 @@ class ControllerZakaria extends Controller
         $fcr_missed=DB::table('fact')
             ->join('time_dim','fact.fk_time','=','time_dim.Id')
             ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+            ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+            ->where('Contact_type','like','Phone')
             ->where('time_dim.Created','>=',$params['datedeb'])
             ->where('time_dim.Created','<=',$params['datefin'])
             ->where('tickets_dim.fcr_resolved','=','0')
@@ -932,6 +943,8 @@ class ControllerZakaria extends Controller
         $fcr_reso_total=DB::table('fact')
             ->join('time_dim','fact.fk_time','=','time_dim.Id')
             ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+            ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+            ->where('Contact_type','like','Phone')
             ->where('time_dim.Created','>=',$params['datedeb'])
             ->where('time_dim.Created','<=',$params['datefin'])
             ->where('tickets_dim.fcr_resolvable','=','Yes')
@@ -939,6 +952,8 @@ class ControllerZakaria extends Controller
         $fcr_reso_missed=DB::table('fact')
             ->join('time_dim','fact.fk_time','=','time_dim.Id')
             ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+            ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+            ->where('Contact_type','like','Phone')
             ->where('time_dim.Created','>=',$params['datedeb'])
             ->where('time_dim.Created','<=',$params['datefin'])
             ->where('tickets_dim.fcr_resolvable','=','Yes')
@@ -960,7 +975,8 @@ class ControllerZakaria extends Controller
             'fcr_missed'=>$fcr_missed,
             'fcr_reso_total'=>$fcr_reso_total,
             'fcr_reso_missed'=>$fcr_reso_missed,
-            'countryChart'=>$countryChart
+            'countryChart'=>$countryChart,
+            'total_ticket_phone' => $total_ticket_phone
         );
         return response()->json($data);
     }
