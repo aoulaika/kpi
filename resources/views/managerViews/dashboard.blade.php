@@ -630,7 +630,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 <script language="JavaScript">
 	globalView('div1', "Total CI Usage", 100*(1-{{ $ci_missed/$total_ticket }}));
 	globalView('div2', "Total KB Usage", 100*(1-{{ $kb_missed/$total_ticket }}));
-	globalView('div3', "Total FCR", 100*(1-{{ $fcr_missed/$$total_ticket_phone }}));
+	globalView('div3', "Total FCR", 100*(1-{{ $fcr_missed/$total_ticket_phone }}));
 	globalView('div4', "Total FCR Resolvable", 100*(1-{{ $fcr_reso_missed/$fcr_reso_total }}));
 	function globalView(id, title, value) {
 		if (isNaN(value)) {
