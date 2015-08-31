@@ -429,8 +429,6 @@ zoomChart();
 									date: new Date(data[i].CreatedYear, data[i].CreatedMonth-1, data[i].CreatedDay, data[i].CreatedHour, data[i].CreatedMinute, data[i].CreatedSecond, 0),
 									visits: data[i].count,
 									hits : 0,
-									
-
 								});
 							}
 						}
