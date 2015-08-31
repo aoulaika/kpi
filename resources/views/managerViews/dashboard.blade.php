@@ -18,7 +18,6 @@
 						</div>
 					</div><!-- /.form group -->
 				</div>
-
 				<div class="col-lg-6">
 					<span class="pull-right" id="range"><span class="date total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span class="date" id="debut">1900-01-01</span> and : <span class="date" id="fin">2015-08-19</span></span>
 				</div>

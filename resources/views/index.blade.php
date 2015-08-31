@@ -3,7 +3,8 @@
 @section('content')
     <!-- Main Form -->
     <div class="login-form-1">
-        <form id="login-form" class="text-left" action="{{ route('dashboard') }}">
+        <form id="login-form" class="text-left" action="{{ route('dashboard') }}" method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token()}}">
             <div class="login-form-main-message"></div>
             <div class="main-login-form">
                 <div class="login-group">
