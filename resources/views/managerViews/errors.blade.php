@@ -5,25 +5,20 @@
                 <h3 class="box-title">Errors Tracking</h3>
             </div><!-- /.box-header -->
             <div class="box-body">
-                <div class="col-lg-1" style="margin-right: 60px;">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <button class="dt-button" data-toggle="modal" data-target="#myModal">
-                                <i class="fa fa-search"></i> Advanced Filter
-                            </button>
-                        </div>
-                    </div><!-- /.form group -->
-                </div>
-                <div class="col-lg-2">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <button class="dt-button daterange-btn" id="daterange-btn">
-                                <i class="fa fa-calendar"></i> Choose a Date Range
-                                <i class="fa fa-caret-down"></i>
-                            </button>
-                        </div>
-                    </div><!-- /.form group -->
-                </div>
+                <div class="form-group form-inline">
+                    <div class="input-group">
+                        <button class="dt-button" data-toggle="modal" data-target="#myModal">
+                            <i class="fa fa-search"></i> Advanced Filter
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <button class="dt-button daterange-btn" id="daterange-btn">
+                            <i class="fa fa-calendar"></i> Choose a Date Range
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                    </div>
+                </div><!-- /.form group -->
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -40,7 +35,6 @@
                             <th class="no-sort">RCA/Ag_Comment</th>
                             <th class="no-sort">Action</th>
                             <th class="no-sort">Remarks</th>
-                            <th class="no-sort">TES</th>
                             <th class="no-sort">Team</th>
                             <th class="no-sort">Accounted</th>
                         </tr>
@@ -70,10 +64,6 @@
                             <td>
                                 <input type="hidden" value="remarks">
                                 <a href="#" class="edit">{{ $v->remarks }}</a>
-                            </td>
-                            <td>
-                                <input type="hidden" value="tes">
-                                <a href="#" class="edit">{{ $v->tes }}</a>
                             </td>
                             <td>Sadki, Rania</td>
                             <td class="center">
@@ -158,6 +148,9 @@
     <script src="{{ asset('plugins/datatables/dataTables.bootstrap.js') }}" type="text/javascript"></script>
     <script src="{{ asset('plugins/datatables/extensions/Buttons/js/dataTables.buttons.js') }}" type="text/javascript"></script>
     <script src="{{ asset('plugins/datatables/extensions/Buttons/js/buttons.colVis.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('plugins/datatables/extensions/Buttons/js/buttons.flash.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('plugins/datatables/extensions/Buttons/js/buttons.html5.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('plugins/datatables/extensions/jszip.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('plugins/iCheck/icheck.js') }}" type="text/javascript"></script>
     <script>
         $('.edit').click(function(){
@@ -167,7 +160,6 @@
             $('#update-id').val(id);
             $('#update-column').val(column);
             $('#errorType').val(errorType);
-            alert($('#errorType').val())
         });
         $('.edit').editable({
             type: 'textarea',
@@ -210,7 +202,7 @@
                 "aTargets" : [ "no-sort" ]
             } ],
             buttons: [
-                'colvis'
+                'colvis','excel'
             ]
         });
 
@@ -231,15 +223,5 @@
                     $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
                 }
         );
-        // Apply the search
-        /*table.columns().every( function () {
-            var that = this;
-
-            $( 'input', this.header() ).on( 'keyup change', function () {
-                that
-                        .search( this.value )
-                        .draw();
-            } );
-        } );*/
     </script>
 @endsection
