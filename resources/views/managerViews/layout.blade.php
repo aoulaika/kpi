@@ -156,58 +156,35 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu">
                     <li class="header">MAIN NAVIGATION</li>
-                    <li class="active treeview">
+                    <li class="{{ (Request::is('dashboard') || Request::is('dashboard3'))? 'active' : '' }} treeview">
                         <a href="#">
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span> <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li class="active"><a href="{{ route("dashboard") }}"><i class="fa fa-circle-o"></i> Global Dashboard</a></li>
-                            <li><a href=" {{ route("dashboard3") }} "><i class="fa fa-circle-o"></i> Agents Dashboard</a></li>
-                            <li><a href=" {{ route("errors") }} "><i class="fa fa-circle-o"></i> Errors Tracking</a></li>
-                            <li><a href=" {{ route("users1") }} "><i class="fa fa-circle-o"></i> Manage Users</a></li>
+                            <li class="{{ Request::is('dashboard') ? 'active' : '' }}"><a href="{{ route("dashboard") }}"><i class="fa fa-circle-o"></i> Global Dashboard</a></li>
+                            <li class="{{ Request::is('dashboard3') ? 'active' : '' }}"><a href=" {{ route("dashboard3") }} "><i class="fa fa-circle-o"></i> Agents Dashboard</a></li>
                         </ul>
                     </li>
-                    <li class="treeview">
+                    <li class="{{ Request::is('errors') ? 'active' : '' }} treeview">
                         <a href="#">
-                            <i class="fa fa-files-o"></i>
-                            <span>Button 2</span>
+                            <i class="fa fa-exclamation-circle"></i>
+                            <span>Errors</span>
                             <span class="label label-primary pull-right">4</span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
+                            <li><a href=" {{ route("errors") }} "><i class="fa fa-circle-o"></i> Errors Tracking</a></li>
                         </ul>
                     </li>
-                    <li>
+                    <li class="{{ (Request::is('errors') || Request::is('language') || Request::is('project'))? 'active' : '' }} treeview">
                         <a href="#">
-                            <i class="fa fa-th"></i> <span>Button 3</span> <small class="label pull-right bg-green">new</small>
-                        </a>
-                    </li>
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-pie-chart"></i>
-                            <span>Button 4</span>
+                            <i class="fa fa-cogs"></i>
+                            <span>Managing</span>
                             <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
-                        </ul>
-                    </li>
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-laptop"></i>
-                            <span>Button 4</span>
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> sub-button</a></li>
+                            <li class="{{ Request::is('users1') ? 'active' : '' }}"><a href=" {{ route("users1") }} "><i class="fa fa-circle-o"></i> Users</a></li>
+                            <li class="{{ Request::is('project') ? 'active' : '' }}"><a href="{{ route("project") }}"><i class="fa fa-circle-o"></i> Projects</a></li>
+                            <li class="{{ Request::is('language') ? 'active' : '' }}"><a href="{{ route("language") }}"><i class="fa fa-circle-o"></i> Languages</a></li>
                         </ul>
                     </li>
                 </ul>

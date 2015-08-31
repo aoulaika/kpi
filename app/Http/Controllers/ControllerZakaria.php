@@ -1081,7 +1081,7 @@ class ControllerZakaria extends Controller
             ->where('FCR_resolved', '=', '0')
             ->where('FCR_resolvable', '=', 'Yes')
             ->whereNotIn('fact.Id', $arrayError)
-            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,\'FCR\' as error_type,\'\' as rca_ag_comment,\'\' as action,\'\' as remarks,\'\' as tes,0 as accounted,0 as checked'));
+            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,\'FCR\' as error_type,\'\' as rca_ag_comment,\'\' as action,\'\' as remarks,0 as accounted,0 as checked'));
 
         $fcr = DB::table('fact')
             ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
@@ -1090,7 +1090,7 @@ class ControllerZakaria extends Controller
             ->join('errors', 'errors.fk_fact', '=', 'fact.Id')
             ->where('Created', '2015-07-31')
             ->where('error_type','=','FCR')
-            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,errors.error_type as error_type,errors.rca_ag_comment as rca_ag_comment,errors.action as action,errors.remarks as remarks,errors.tes as tes,errors.accounted as accounted,errors.checked as checked'))
+            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,errors.error_type as error_type,errors.rca_ag_comment as rca_ag_comment,errors.action as action,errors.remarks as remarks,errors.accounted as accounted,errors.checked as checked'))
             ->union($post_fcr)
             ->get();
 
@@ -1114,7 +1114,7 @@ class ControllerZakaria extends Controller
                     ->orWhere('EKMS_knowledge_Id', 'not like', '%https://knowledge.rf.lilly.com/%');
             })
             ->whereNotIn('fact.Id', $arrayError)
-            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,\'KB\' as error_type,\'\' as rca_ag_comment,\'\' as action,\'\' as remarks,\'\' as tes,0 as accounted,0 as checked'));
+            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,\'KB\' as error_type,\'\' as rca_ag_comment,\'\' as action,\'\' as remarks,0 as accounted,0 as checked'));
 
         $kb = DB::table('fact')
             ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
@@ -1124,7 +1124,7 @@ class ControllerZakaria extends Controller
             ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
             ->where('Created', '2015-07-31')
             ->where('error_type','=','KB')
-            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,errors.error_type as error_type,errors.rca_ag_comment as rca_ag_comment,errors.action as action,errors.remarks as remarks,errors.tes as tes,errors.accounted as accounted,errors.checked as checked'))
+            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,errors.error_type as error_type,errors.rca_ag_comment as rca_ag_comment,errors.action as action,errors.remarks as remarks,errors.accounted as accounted,errors.checked as checked'))
             ->union($post_kb)
             ->get();
 
@@ -1144,7 +1144,7 @@ class ControllerZakaria extends Controller
             ->where('Created','2015-07-31')
             ->whereNull('ci_dim.name')
             ->whereNotIn('fact.Id',$arrayError)
-            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,\'CI\' as error_type,\'\' as rca_ag_comment,\'\' as action,\'\' as remarks,\'\' as tes,0 as accounted,0 as checked'));
+            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,\'CI\' as error_type,\'\' as rca_ag_comment,\'\' as action,\'\' as remarks,0 as accounted,0 as checked'));
 
         $ci = DB::table('fact')
             ->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
@@ -1154,7 +1154,7 @@ class ControllerZakaria extends Controller
             ->join('ci_dim', 'ci_dim.Id', '=', 'fact.fk_ci')
             ->where('Created','2015-07-31')
             ->where('error_type','=','CI')
-            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,errors.error_type as error_type,errors.rca_ag_comment as rca_ag_comment,errors.action as action,errors.remarks as remarks,errors.tes as tes,errors.accounted as accounted,errors.checked as checked'))
+            ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,errors.error_type as error_type,errors.rca_ag_comment as rca_ag_comment,errors.action as action,errors.remarks as remarks,errors.accounted as accounted,errors.checked as checked'))
             ->union($post_ci)
             ->get();
 
