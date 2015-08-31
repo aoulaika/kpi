@@ -18,6 +18,20 @@
 		<div class="box-body" id="directory-user">
 			<div class="container-fluid">
 				<header class="clearfix">
+					<div class="form-inline pull-left">
+						<select name="projects" id="projects" class="form-control filter">
+							<option value="Eli Lilly">Project Eli Lilly</option>
+							<option value="Eli Lilly">Project Eli Lilly</option>
+							<option value="Eli Lilly">Project Eli Lilly</option>
+							<option value="Eli Lilly">Project Eli Lilly</option>
+						</select>
+						<select name="team" id="team" class="form-control filter">
+							<option value="SADKI Rania">Team SADKI Rania</option>
+							<option value="SADKI Rania">Team SADKI Rania</option>
+							<option value="SADKI Rania">Team SADKI Rania</option>
+							<option value="SADKI Rania">Team SADKI Rania</option>
+						</select>
+					</div>
 					<div class="form-inline pull-right">
 						<div class="form-group">
 							<div class="input-group">
