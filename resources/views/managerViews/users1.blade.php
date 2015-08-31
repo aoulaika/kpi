@@ -2,6 +2,7 @@
 @section('title', ' Manage Users')
 @section('style')
 <link href="{{ asset('/css/style3.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('/css/bootstrap-select.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('content')
 <div ng-app="app" ng-controller="ctrl">
@@ -117,53 +118,68 @@
 		</div><!-- /.box-body -->
 		<div class="box-body" id="add-user" style="display:none;">
 			<div class="container-fluid">
-				<form method="post" action="Add_User.php" class="form-horizontal">
+				<form method="post" action="{{ route('adduser') }}" class="form-horizontal" enctype="multipart/form-data">
+					<input type="hidden" name="_token" value="{{ csrf_token() }}">
 					<legend>Personnal details</legend>
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
 								<label for="Employee_id">Employe id</label>
-								<input required type="text"  name="employee_id" placeholder="Employe id" class="form-control" >
+								<input required type="text" name="employee_id" placeholder="Employe id" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="lastName">Last Name</label>
-								<input required type="text"  name="lastname" placeholder="Last Name" class="form-control"  >
+								<input required type="text" name="lastname" placeholder="Last Name" class="form-control"  >
 							</div>
 							<div class="form-group">
 								<label for="email">Email</label>
-								<input required type="email"  name="email" placeholder="Email" class="form-control" >
+								<input required type="email" name="email" placeholder="Email" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="adresse">Adresse</label>
-								<input type="adresse"  name="adresse" placeholder="Adresse" class="form-control" >
+								<input type="adresse" name="adresse" placeholder="Adresse" class="form-control" >
+							</div>
+							<div class="form-group">
+								<label for="photo">Photo</label>
+								<input type="file" name="file" class="form-control" >
 							</div>
 						</div>
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
 								<label for="matricule">Matricule</label>
-								<input required type="text"  name="matricule" placeholder="Matricule" class="form-control" >
+								<input required type="text" name="matricule" placeholder="Matricule" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="firstname">First Name</label>
-								<input required type="text"  name="firstname" placeholder="First Name" class="form-control" >
+								<input required type="text" name="firstname" placeholder="First Name" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="phone">Phone</label>
-								<input type="phone"  name="phone" placeholder="phone" class="form-control" >
+								<input type="phone" name="phone" placeholder="phone" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="city">City</label>
-								<input type="city"  name="city" placeholder="City" class="form-control" >
-							</div> 
+								<input type="city" name="city" placeholder="City" class="form-control" >
+							</div>
 						</div>
 					</div>
 					<legend>Professional details</legend>
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="seniority_level">Seniority_level</label>
+								<label for="team">Team</label>
+								<select name="team" id="team" class="form-control">
+									<option value="1" selected>1</option>
+									<option value="2">3</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="seniority_level">Seniority level</label>
 								<select name="seniority_level" id="seniority_level" class="form-control">
-									<option value="1">1</option>
+									<option value="1" selected>1</option>
+									<option value="2">2</option>
 									<option value="3">3</option>
 									<option value="4">4</option>
 								</select>
@@ -171,7 +187,7 @@
 							<div class="form-group">
 								<label for="role">Role</label>
 								<select name="role" id="role" class="form-control">
-									<option value="Admin">Admin</option>
+									<option value="Admin" selected>Admin</option>
 									<option value="Coach">Coach</option>
 									<option value="Quality analyst">Quality analyst</option>
 									<option value="SME">SME</option>
@@ -189,7 +205,7 @@
 							<div class="form-group">
 								<label for="job">Job</label>
 								<select name="job" id="job" class="form-control">
-									<option value="Director">Director</option>
+									<option value="Director" selected>Director</option>
 									<option value="OPS Manager">OPS Manager</option>
 									<option value="SDS">SDS</option>
 									<option value="SME">SME</option>
@@ -199,13 +215,13 @@
 							<div class="form-group">
 								<label for="status">Status</label>
 								<select name="status" id="status" class="form-control">
-									<option value="Active">Active</option>
+									<option value="Active" selected>Active</option>
 									<option value="Inactive">Inactive</option>
 								</select>
 							</div>
 							<div class="form-group">
 								<label for="language">Language</label><br>
-								<select name="language" multiple="multiple" class="select2 form-control">   
+								<select name="language[]" multiple class="selectpicker">   
 									<option value="FRA">Français</option>
 									<option value="GER">Germany</option>
 									<option value="ARA">Arabe</option>
@@ -305,26 +321,28 @@
 							</div>
 							<div class="form-group">
 								<label for="tools">Tools</label><br>
-								<select name="tools" multiple="multiple" class="select2 form-control">   
-									<option value="global_id_request">global_id_request</option>
-									<option value="nt_password">nt_password</option>
-									<option value="lilly_system_id">lilly_system_id</option>
-									<option value="lilly_onbaording_request">lilly_onbaording_request</option>
-									<option value="acces_lillynet_search">acces_lillynet_search</option>
-									<option value="computer">computer</option>
-									<option value="citrix">citrix</option>
-									<option value="vmware">vmware</option>
-									<option value="safeboot">safeboot</option>
-									<option value="boxstone">boxstone</option>
-									<option value="ekms">ekms</option>
-									<option value="lync">lync</option>
-									<option value="ad">ad</option>
-									<option value="sn">sn</option>
-									<option value="ldap">ldap</option>
-									<option value="mi">mi</option>            
-									<option value="aicid">aicid</option>
-									<option value="aic_installed">aic_installed</option>  
+								<div class="row">
+									<select name="tools[]" multiple class="selectpicker">   
+									<option value="global_id_request" selected>Global id request</option>
+									<option value="nt_password">Nt password</option>
+									<option value="lilly_system_id">Lilly system id</option>
+									<option value="lilly_onbaording_request">Lilly onbaording request</option>
+									<option value="acces_lillynet_search">Acces lillynet search</option>
+									<option value="computer">Computer</option>
+									<option value="citrix">Citrix</option>
+									<option value="vmware">Vmware</option>
+									<option value="safeboot">Safeboot</option>
+									<option value="boxstone">Boxstone</option>
+									<option value="ekms">Ekms</option>
+									<option value="lync">Lync</option>
+									<option value="ad">Ad</option>
+									<option value="sn">Sn</option>
+									<option value="ldap">Ldap</option>
+									<option value="mi">Mi</option>            
+									<option value="aicid">Aicid</option>
+									<option value="aic_installed">Aic installed</option>  
 								</select>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -347,11 +365,10 @@
 <script src="{{ asset('/js/highcharts-more.js') }}"></script>
 <script src="{{ asset('/js/exporting.js') }}"></script>
 <script src="{{ asset('/js/showRadar.js') }}"></script>
-<script src="{{ asset('/js/showRadar.js') }}"></script>
-<script src="{{ asset('/plugins/select2/select2.full.min.js') }}"></script>
+<script src="{{ asset('/js/bootstrap-select.min.js') }}"></script>
 <script>
+	$('.selectpicker').selectpicker();
 	$(document).ready(function(){
-		$('.select2').select2();
 		$('#btn-add').click(function() {
 			$('#directory-user').toggle();
 			$('#add-user').toggle();
@@ -368,6 +385,7 @@
 		$('.input_control').click(function(){
 			if($('input[name='+ $(this).attr('value')+']').prop('disabled') == false){
 				$('input[name='+ $(this).attr('value')+']').prop('disabled', true);
+				$('input[name='+ $(this).attr('value')+']').val('');
 			}else{
 				$('input[name='+ $(this).attr('value')+']').prop('disabled', false);
 			}

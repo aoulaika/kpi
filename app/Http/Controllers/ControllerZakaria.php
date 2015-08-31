@@ -782,6 +782,8 @@ class ControllerZakaria extends Controller
         $e = explode(' - ', $params['end_date']);
         $ticket_debut = DB::table('fact')
             ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
+            ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+            ->where('product','=',$params['product'])
             ->where('time_dim.Created', '>', $s[0])
             ->where('time_dim.Created', '<', $s[1])
             ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
@@ -789,6 +791,8 @@ class ControllerZakaria extends Controller
             ->get();
         $ticket_fin = DB::table('fact')
             ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
+            ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+            ->where('product','=',$params['product'])
             ->where('time_dim.Created', '>', $e[0])
             ->where('time_dim.Created', '<', $e[1])
             ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
@@ -1264,8 +1268,41 @@ class ControllerZakaria extends Controller
     public function polarData(Request $request)
     {
         $params=$request->all();
+        /*$data = [
+        {
+          className: 'Agent',
+          axes: [
+          {axis: "FCR", value: 0.8}, 
+          {axis: "FCR Resolvable", value: 0.9},
+          {axis: "Resolvable Missed", value: 0.4},
+          {axis: "CI Usage", value: 0.76},  
+          {axis: "EKMS Usage", value: 0.75}
+          ]
+        },
+        {
+          className: 'Average',
+          axes: [
+          {axis: "FCR", value: 0.76}, 
+          {axis: "FCR Resolvable", value: 0.92},
+          {axis: "Resolvable Missed", value: 0.2},
+          {axis: "CI Usage", value: 0.7},  
+          {axis: "EKMS Usage", value: 0.8}
+          ]
+        }
+        ];*/
         return response()->json([
             'params' => $params
             ]);
+    }
+
+    public function adduser(Request $request)
+    {
+        $params=$request->all();
+        var_dump($params);die;
+        /*DB::table('users')->insert([
+            ['email' => 'taylor@example.com', 'votes' => 0],
+            ['email' => 'dayle@example.com', 'votes' => 0]
+            ]);*/
+        return response()->json($params);
     }
 }
