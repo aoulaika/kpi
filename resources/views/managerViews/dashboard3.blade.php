@@ -316,9 +316,6 @@
                 'agent_id': parseInt($('#agent').val())+1
             },
             success: function(response){
-                console.log($('#datedeb').text());
-                console.log($('#datefin').text());
-                console.log(parseInt($('#agent').val())+1);
                 /* Setting values for tickets chart */
                 reloadSelect(response.tickets_all.product,'#product');
                 draw(response.tickets_all.all);

@@ -1320,4 +1320,8 @@ class ControllerZakaria extends Controller
             'languages'=>$languages
             ]);
     }
+
+    public function project(){
+        return View('managerViews.project');
+    }
 }
