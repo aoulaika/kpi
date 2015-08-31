@@ -86,3 +86,13 @@ Route::post('adduser', [
     'as' => 'adduser',
     'uses' => 'ControllerZakaria@adduser'
 ]);
+
+Route::get('/language', [
+    'as' => 'language',
+    'uses' => 'ControllerZakaria@language'
+]);
+
+Route::get('/project', [
+    'as' => 'project',
+    'uses' => 'ControllerZakaria@project'
+]);

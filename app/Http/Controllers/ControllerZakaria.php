@@ -1310,4 +1310,12 @@ class ControllerZakaria extends Controller
             ]);*/
         return response()->json($params);
     }
+
+    public function language(){
+        $languages=DB::table('languages')
+        ->get();
+        return View('managerViews.languages')->with([
+            'languages'=>$languages
+            ]);
+    }
 }
