@@ -1,5 +1,6 @@
 @extends('managerViews/layout')
 @section('title', ' Global Dashboard')
+
 @section('content')
 <!-- Date Picker -->
 <div class="row">
@@ -177,6 +178,14 @@
 							<div>
 								<form action="" class="form-inline">
 									<div class="form-group">
+										<select name="product_week" id="product-week" class="form-control select2">
+											<option value="all">All</option>
+											@foreach ($tickets_all['product'] as $key => $value)
+											<option value="{{ $key }}">{{ $key }}</option>
+											@endforeach
+										</select>
+									</div>
+									<div class="form-group">
 										<input type="text" class="form-control week-picker" name="start_date">
 									</div>
 									<div class="form-group">
@@ -315,7 +324,8 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 		for (var i = 0; i < d.length; i++) {
 			ticketsData.push({
 				date: new Date(d[i].CreatedYear, d[i].CreatedMonth - 1, d[i].CreatedDay, d[i].CreatedHour, d[i].CreatedMinute, d[i].CreatedSecond, 0),
-				visits: d[i].count
+				visits: d[i].count,
+
 			});
 		};
 		var chart1 = AmCharts.makeChart(id, {
@@ -380,7 +390,7 @@ zoomChart();
 <script>
 	$('.week-picker').daterangepicker({
 		"dateLimit": {
-			"days": 7
+			"days": 30
 		},
 		format: 'YYYY/MM/DD'
 	}, function(start, end, label) {
@@ -390,10 +400,11 @@ zoomChart();
 		$('#compare').click(function(){
 			var start_date=$('input[name=start_date]').val();
 			var end_date=$('input[name=end_date]').val();
+			console.log($('#product-week').val());
 			$.ajax({
 				url: 'jib',
 				type: "post",
-				data: {'start_date':start_date,'end_date':end_date, '_token': $('input[name=_token]').val()},
+				data: {'start_date':start_date,'end_date':end_date,'product':$('#product-week').val(), '_token': $('input[name=_token]').val()},
 				success: function(response){
 					var data=response[0];
 					var datao=response[1];
@@ -418,7 +429,9 @@ zoomChart();
 								chartData.push({
 									date: new Date(data[i].CreatedYear, data[i].CreatedMonth-1, data[i].CreatedDay, data[i].CreatedHour, data[i].CreatedMinute, data[i].CreatedSecond, 0),
 									visits: data[i].count,
-									hits : 0
+									hits : 0,
+									
+
 								});
 							}
 						}
@@ -428,13 +441,16 @@ zoomChart();
 								chartData.push({
 									date: new Date(datao[i].CreatedYear, datao[i].CreatedMonth-1, datao[i].CreatedDay, datao[i].CreatedHour, 0),
 									visits: data[i].count,
-									hits : datao[i].count
+									hits : datao[i].count,
+									
+
 								});
 							}catch(err){
 								chartData.push({
 									date: new Date(datao[i].CreatedYear, datao[i].CreatedMonth-1, datao[i].CreatedDay, datao[i].CreatedHour, 0),
 									visits: 0,
-									hits : datao[i].count
+									hits : datao[i].count,
+									
 								});
 							}
 						}

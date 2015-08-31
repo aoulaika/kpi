@@ -47,6 +47,13 @@ app.controller('ctrl', function($scope,$http) {
         ];
         showRadar();
       }
+
+      $scope.adduser = function (user) {
+        console.log(user);
+        $http.post('adduser', {user:user}).then(function (response) {
+          console.log(response);
+        });
+      }
     // if edit is canceled, we want to revert to the value we stored in editItem(). Aren't we clever!?
     $scope.cancelEdit = function(){
         // revert each one indivdually so we don't loose our watch & data bindings

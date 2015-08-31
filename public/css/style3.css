@@ -76,14 +76,6 @@ header{
   fill: #AC3949;
   stroke: none;
 }
-.select2-container--default .select2-selection--multiple {
-  width: 417px;
-}
-.select2-container--default .select2-results>.select2-results__options {
-  width: 416px;
-}
-.select2-container--default .select2-results>.select2-results__options {
-  width: 416px;
-  background-color: #EFEFEF;
-  overflow-x: hidden;
+.selectpicker {
+    width: 100%;
 }

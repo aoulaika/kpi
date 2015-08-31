@@ -81,3 +81,8 @@ Route::any('polarData', [
     'as' => 'polarData',
     'uses' => 'ControllerZakaria@polarData'
 ]);
+
+Route::post('adduser', [
+    'as' => 'adduser',
+    'uses' => 'ControllerZakaria@adduser'
+]);
