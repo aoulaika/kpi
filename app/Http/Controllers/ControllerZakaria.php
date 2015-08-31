@@ -315,7 +315,7 @@ class ControllerZakaria extends Controller
     public function dashboard(Request $req){
         $params = $req->except(['_token']);
         if($params['lg_username']!='mohamed-yassin.el-harruchi@hp.com' || $params['lg_password']!='123456')
-            return redirect()-route('index')->with('error','error');
+            return redirect()->route('index')->with('error','error');
         $date = Carbon::now();
         $today = explode(' ',$date);
 
