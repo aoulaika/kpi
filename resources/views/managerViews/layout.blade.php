@@ -172,10 +172,10 @@
                             <span class="label label-primary pull-right">4</span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href=" {{ route("errors") }} "><i class="fa fa-circle-o"></i> Errors Tracking</a></li>
+                            <li class="{{ Request::is('errors') ? 'active' : ''}}" }}><a href=" {{ route("errors") }} "><i class="fa fa-circle-o"></i> Errors Tracking</a></li>
                         </ul>
                     </li>
-                    <li class="{{ (Request::is('errors') || Request::is('language') || Request::is('project'))? 'active' : '' }} treeview">
+                    <li class="{{ (Request::is('users1') || Request::is('language') || Request::is('project'))? 'active' : '' }} treeview">
                         <a href="#">
                             <i class="fa fa-cogs"></i>
                             <span>Managing</span>
