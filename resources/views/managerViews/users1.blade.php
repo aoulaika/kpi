@@ -124,7 +124,7 @@
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="Employee_id">Employe id</label>
+								<label for="Employee_id">Employe ID</label>
 								<input required type="text" name="employee_id" placeholder="Employe id" class="form-control" >
 							</div>
 							<div class="form-group">
@@ -132,34 +132,41 @@
 								<input required type="text" name="lastname" placeholder="Last Name" class="form-control"  >
 							</div>
 							<div class="form-group">
+								<label for="firstname">First Name</label>
+								<input required type="text" name="firstname" placeholder="First Name" class="form-control" >
+							</div>
+							<div class="form-group">
 								<label for="email">Email</label>
 								<input required type="email" name="email" placeholder="Email" class="form-control" >
+							</div>
+							<div class="form-group">
+								<label for="gender">Gender</label>
+								<select name="gender" id="gender" class="form-control">
+									<option value="Male" selected>Male</option>
+									<option value="Female">Female</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-4 col-lg-offset-1">
+							<div class="form-group">
+								<label for="matricule">AgirhID/Matricule</label>
+								<input required type="text" name="matricule" placeholder="AgirhID/Matricule" class="form-control" >
+							</div>
+							<div class="form-group">
+								<label for="city">City</label>
+								<input type="city" name="city" placeholder="City" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="adresse">Adresse</label>
 								<input type="adresse" name="adresse" placeholder="Adresse" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="photo">Photo</label>
-								<input type="file" name="file" class="form-control" >
-							</div>
-						</div>
-						<div class="col-lg-4 col-lg-offset-1">
-							<div class="form-group">
-								<label for="matricule">Matricule</label>
-								<input required type="text" name="matricule" placeholder="Matricule" class="form-control" >
-							</div>
-							<div class="form-group">
-								<label for="firstname">First Name</label>
-								<input required type="text" name="firstname" placeholder="First Name" class="form-control" >
-							</div>
-							<div class="form-group">
 								<label for="phone">Phone</label>
 								<input type="phone" name="phone" placeholder="phone" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="city">City</label>
-								<input type="city" name="city" placeholder="City" class="form-control" >
+								<label for="photo">Photo</label>
+								<input type="file" name="file" class="form-control" >
 							</div>
 						</div>
 					</div>
@@ -167,21 +174,13 @@
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="team">Team</label>
-								<select name="team" id="team" class="form-control">
-									<option value="1" selected>1</option>
-									<option value="2">3</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-								</select>
-							</div>
-							<div class="form-group">
-								<label for="seniority_level">Seniority level</label>
-								<select name="seniority_level" id="seniority_level" class="form-control">
-									<option value="1" selected>1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
+								<label for="job">Job</label>
+								<select name="job" id="job" class="form-control">
+									<option value="Director" selected>Director</option>
+									<option value="OPS Manager">OPS Manager</option>
+									<option value="SDS">SDS</option>
+									<option value="SME">SME</option>
+									<option value="Agent">Agent</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -197,20 +196,28 @@
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="integration_date">Integration date</label>
-								<input type="date" name="integration_date" placeholder="integration_date" class="form-control"/>
+								<label for="team">Team</label>
+								<select name="team" id="team" class="form-control">
+									<option value="" selected></option>
+									@foreach($team as $t)
+									<option value="{{ $t->Id }}">{{ $t->lastname.' '.$t->firstname }}</option>
+									@endforeach
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="seniority_level">Seniority level</label>
+								<select name="seniority_level" id="seniority_level" class="form-control">
+									<option value="1" selected>1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+								</select>
 							</div>
 						</div>
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="job">Job</label>
-								<select name="job" id="job" class="form-control">
-									<option value="Director" selected>Director</option>
-									<option value="OPS Manager">OPS Manager</option>
-									<option value="SDS">SDS</option>
-									<option value="SME">SME</option>
-									<option value="Agent">Agent</option>
-								</select>
+								<label for="integration_date">Integration date</label>
+								<input type="date" name="integration_date" placeholder="integration_date" class="form-control"/>
 							</div>
 							<div class="form-group">
 								<label for="status">Status</label>
@@ -237,112 +244,65 @@
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="lilly_id">Lilly Code</label>
-								<div class="input-group">
-									<span class="input-group-addon">
-										<input type="checkbox" class="input_control" value="lilly_id">
-									</span>
-									<input type="text" name="lilly_id" class="form-control" disabled>
-								</div>
+								<label for="computer">Computer</label><br>
+								<select name="computer" class="form-control">
+									<option value="Desktop">Desktop</option>   
+									<option value="Both">Both</option>
+									<option value="Laptop">Laptop</option>
+								</select>
 							</div>
 							<div class="form-group">
-								<label for="global_id">Global Id</label>
-								<div class="input-group">
-									<span class="input-group-addon">
-										<input type="checkbox" class="input_control" value="global_id">
-									</span>
-									<input type="text" name="global_id" class="form-control" disabled>
-								</div>
+								<label for="lilly_id">Lilly ID</label>
+								<input type="text" name="lilly_id" class="form-control" placeholder="Lilly ID">
 							</div>
 							<div class="form-group">
-								<label for="avaya_id">Avaya Id</label>
-								<div class="input-group">
-									<span class="input-group-addon">
-										<input type="checkbox" class="input_control" value="avaya_id">
-									</span>
-									<input type="text" name="avaya_id" class="form-control" disabled>
-								</div>
+								<label for="global_id">Global ID</label>
+								<input type="text" name="global_id" class="form-control" placeholder="Global ID">
 							</div>
 							<div class="form-group">
-								<label for="computer">Computer</label>
-								<div class="input-group">
-									<span class="input-group-addon">
-										<input type="checkbox" class="input_control" value="computer">
-									</span>
-									<input type="text" name="computer" class="form-control" disabled>
-								</div>
+								<label for="avaya_id">Avaya ID</label>
+								<input type="text" name="avaya_id" class="form-control" placeholder="Avaya ID">
 							</div>
 							<div class="form-group">
-								<label for="seniority">Seniority</label>
-								<div class="input-group">
-									<span class="input-group-addon">
-										<input type="checkbox" class="input_control" value="seniority">
-									</span>
-									<input type="text" name="seniority" class="form-control" disabled>
-								</div>
+								<label for="item_type">Item Type</label>
+								<input type="text" name="item_type" class="form-control" placeholder="Item Type">
 							</div>
 						</div>
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="item_type">Item Type</label>
-								<div class="input-group">
-									<span class="input-group-addon">
-										<input type="checkbox" class="input_control" value="item_type">
-									</span>
-									<input type="text" name="item_type" class="form-control" disabled>
-								</div>
-							</div>
-							<div class="form-group">
 								<label for="path">Path</label>
-								<div class="input-group">
-									<span class="input-group-addon">
-										<input type="checkbox" class="input_control" value="path">
-									</span>
-									<input type="text" name="path" class="form-control" disabled>
-								</div>
+								<input type="text" name="path" class="form-control" placeholder="Path">
 							</div>
 							<div class="form-group">
 								<label for="account">Account</label>
-								<div class="input-group">
-									<span class="input-group-addon">
-										<input type="checkbox" class="input_control" value="account">
-									</span>
-									<input type="text" name="account" class="form-control" disabled>
-								</div>
+								<input type="text" name="account" class="form-control" placeholder="Account">
 							</div>
 							<div class="form-group">
 								<label for="bcp">bcp</label>
-								<div class="input-group">
-									<span class="input-group-addon">
-										<input type="checkbox" class="input_control" value="bcp">
-									</span>
-									<input type="text" name="bcp" class="form-control" disabled>
-								</div>
+								<input type="text" name="bcp" class="form-control" placeholder="bcp">
 							</div>
 							<div class="form-group">
 								<label for="tools">Tools</label><br>
-								<div class="row">
-									<select name="tools[]" multiple class="selectpicker">   
-									<option value="global_id_request" selected>Global id request</option>
-									<option value="nt_password">Nt password</option>
-									<option value="lilly_system_id">Lilly system id</option>
-									<option value="lilly_onbaording_request">Lilly onbaording request</option>
-									<option value="acces_lillynet_search">Acces lillynet search</option>
+								<select name="tools[]" multiple class="selectpicker">   
+									<option value="global_id_request">Global ID Request</option>
+									<option value="nt_password">NT Password</option>
+									<option value="lilly_system_id">Lilly System ID</option>
+									<option value="lilly_onbaording_request">Lilly Onbaording Request</option>
+									<option value="acces_lillynet_search">Acces Lillynet Search</option>
 									<option value="computer">Computer</option>
 									<option value="citrix">Citrix</option>
 									<option value="vmware">Vmware</option>
 									<option value="safeboot">Safeboot</option>
 									<option value="boxstone">Boxstone</option>
-									<option value="ekms">Ekms</option>
+									<option value="ekms">EKMS</option>
 									<option value="lync">Lync</option>
-									<option value="ad">Ad</option>
-									<option value="sn">Sn</option>
-									<option value="ldap">Ldap</option>
-									<option value="mi">Mi</option>            
-									<option value="aicid">Aicid</option>
-									<option value="aic_installed">Aic installed</option>  
+									<option value="ad">AD</option>
+									<option value="sn">SN</option>
+									<option value="ldap">LDAP</option>
+									<option value="mi">MI</option>            
+									<option value="aicid">AICID</option>
+									<option value="aic_installed">AIC installed</option>  
 								</select>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -381,7 +341,7 @@
 			$('#btn-add').show();
 			$('#title').text('Employee Directory');
 		});
-		$('.input_control').attr('checked', false);
+/*		$('.input_control').attr('checked', false);
 		$('.input_control').click(function(){
 			if($('input[name='+ $(this).attr('value')+']').prop('disabled') == false){
 				$('input[name='+ $(this).attr('value')+']').prop('disabled', true);
@@ -389,7 +349,7 @@
 			}else{
 				$('input[name='+ $(this).attr('value')+']').prop('disabled', false);
 			}
-		});
+		});*/
 	});
 </script>
 @endsection

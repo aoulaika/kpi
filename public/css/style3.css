@@ -10,6 +10,7 @@ span.rollover {
   position: absolute;
   z-index: 10;
   opacity: 0;
+  border-radius: 10%;
 }
 span.rollover:hover {
   opacity: 0.3;
@@ -23,6 +24,7 @@ span.rollover:hover {
 .imgborder{
   height: 130px;
   width: 130px;
+  border-radius: 10%;
 }
 .user-name{
   height: 50px;

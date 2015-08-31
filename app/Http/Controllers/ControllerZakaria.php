@@ -1253,7 +1253,12 @@ class ControllerZakaria extends Controller
     }
 
     public function users1(){
-        return View('managerViews.users1');
+        $team=DB::table('users')
+        ->where('job','=','SME')
+        ->get();
+        return View('managerViews.users1')->with([
+            'team'=>$team
+            ]);
     }
 
     public function getUsers()
