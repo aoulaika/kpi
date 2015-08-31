@@ -69,6 +69,10 @@
         .center {
             text-align: center;
         }
+        .label{
+            color:black;
+        }
+
     </style>
     @yield('style')
 </head>

@@ -2,13 +2,16 @@
 
 @section('content')
     <!-- Main Form -->
+    @if(Session::has('error'))
+        <script> alert('Incorrect email or password ')</script>
+    @endif
     <div class="login-form-1">
         <form id="login-form" class="text-left" action="{{ route('dashboard') }}">
             <div class="login-form-main-message"></div>
             <div class="main-login-form">
                 <div class="login-group">
                     <div class="form-group">
-                        <label for="lg_username" class="sr-only">Username</label>
+                        <label for="lg_username" class="sr-only">HP email</label>
                         <input type="text" class="form-control" id="lg_username" name="lg_username" placeholder="username">
                     </div>
                     <div class="form-group">
