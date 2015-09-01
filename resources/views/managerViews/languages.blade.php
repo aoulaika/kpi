@@ -27,8 +27,8 @@
 							</tr>
 							<tr ng-repeat="language in languages">
 								<td><% language.Id %></td>
-								<td><a editable-text="language.language" onbeforesave="edit($data,language.Id)"><% language.language || 'Empty' %></a></td>
-								<td><% language.language %></td>
+								<td><a editable-text="language.name" onbeforesave="edit($data,language.Id)"><% language.name || 'Empty' %></a></td>
+								<td><% language.name %></td>
 								<td>
 									<button class="btn btn-danger" ng-click="deleteLanguage(language.Id)">
 										<i class="fa fa-trash"></i>

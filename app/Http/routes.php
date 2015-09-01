@@ -67,35 +67,24 @@ Route::any('updateErrors', [
     'uses' => 'ControllerZakaria@updateErrors'
 ]);
 
-Route::get('/users1', [
-    'as' => 'users1',
-    'uses' => 'ControllerZakaria@users1'
+Route::get('/users', [
+    'as' => 'users',
+    'uses' => 'UsersController@users'
 ]);
 
 Route::any('getUsers', [
     'as' => 'getUsers',
-    'uses' => 'ControllerZakaria@getUsers'
+    'uses' => 'UsersController@getUsers'
 ]);
 
 Route::any('polarData', [
     'as' => 'polarData',
-    'uses' => 'ControllerZakaria@polarData'
+    'uses' => 'UsersController@polarData'
 ]);
 
 Route::post('adduser', [
     'as' => 'adduser',
-    'uses' => 'ControllerZakaria@adduser'
-]);
-
-
-Route::get('/language', [
-    'as' => 'language',
-    'uses' => 'ControllerZakaria@language'
-]);
-
-Route::get('/getLanguages', [
-    'as' => 'getLanguages',
-    'uses' => 'ControllerZakaria@getLanguages'
+    'uses' => 'UsersController@adduser'
 ]);
 
 Route::get('/project', [
@@ -103,17 +92,27 @@ Route::get('/project', [
     'uses' => 'ControllerZakaria@project'
 ]);
 
+Route::get('/language', [
+    'as' => 'language',
+    'uses' => 'LanguagesController@language'
+]);
+
+Route::get('/getLanguages', [
+    'as' => 'getLanguages',
+    'uses' => 'LanguagesController@getLanguages'
+]);
+
 Route::post('addlanguage', [
     'as' => 'addlanguage',
-    'uses' => 'ControllerZakaria@addlanguage'
+    'uses' => 'LanguagesController@addlanguage'
 ]);
 
 Route::post('deletelanguage', [
     'as' => 'deletelanguage',
-    'uses' => 'ControllerZakaria@deletelanguage'
+    'uses' => 'LanguagesController@deletelanguage'
 ]);
 
 Route::post('editlanguage', [
     'as' => 'editlanguage',
-    'uses' => 'ControllerZakaria@editlanguage'
+    'uses' => 'LanguagesController@editlanguage'
 ]);

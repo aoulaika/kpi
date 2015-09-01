@@ -18,7 +18,7 @@ app.controller('languageCtrl', function($scope, $http){
 
 	$scope.addLanguage = function (language) {
 		console.log(language);
-		$http.post('addlanguage', {'_token': language.token, 'language': language.name})
+		$http.post('addlanguage', {'_token': language.token, 'name': language.name})
 		.success(function(data, status, headers, config) {
 			console.log(data);
 			$scope.languages=data.languages;
@@ -37,7 +37,7 @@ app.controller('languageCtrl', function($scope, $http){
 		if (data == '') {
 			return "language shouldn't be `empty`";
 		}else{
-			$http.post('editlanguage', {'id': id, 'language': data})
+			$http.post('editlanguage', {'id': id, 'name': data})
 			.success(function(data, status, headers, config) {
 				console.log(data);
 			});

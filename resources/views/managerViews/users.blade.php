@@ -26,10 +26,9 @@
 							<option value="Eli Lilly">Project Eli Lilly</option>
 						</select>
 						<select name="team" id="team" class="form-control filter">
-							<option value="SADKI Rania">Team SADKI Rania</option>
-							<option value="SADKI Rania">Team SADKI Rania</option>
-							<option value="SADKI Rania">Team SADKI Rania</option>
-							<option value="SADKI Rania">Team SADKI Rania</option>
+							@foreach($team as $t)
+							<option value="{{ $t->Id }}">{{ 'Team '.$t->lastname.' '.$t->firstname }}</option>
+							@endforeach
 						</select>
 					</div>
 					<div class="form-inline pull-right">
@@ -139,7 +138,7 @@
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
 								<label for="Employee_id">Employe ID</label>
-								<input required type="text" name="employee_id" placeholder="Employe id" class="form-control" >
+								<input required type="text" name="employe_id" placeholder="Employe id" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="lastName">Last Name</label>
@@ -171,16 +170,16 @@
 								<input type="city" name="city" placeholder="City" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="adresse">Adresse</label>
-								<input type="adresse" name="adresse" placeholder="Adresse" class="form-control" >
+								<label for="adress">Adress</label>
+								<input type="adress" name="adress" placeholder="adress" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="phone">Phone</label>
-								<input type="phone" name="phone" placeholder="phone" class="form-control" >
+								<input type="text" name="phone" placeholder="phone" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="photo">Photo</label>
-								<input type="file" name="file" class="form-control" >
+								<label for="picture">Picture</label>
+								<input type="file" name="picture" class="form-control" >
 							</div>
 						</div>
 					</div>
@@ -241,23 +240,6 @@
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="language">Language</label><br>
-								<select name="language[]" multiple class="selectpicker">   
-									<option value="FRA">Français</option>
-									<option value="GER">Germany</option>
-									<option value="ARA">Arabe</option>
-									<option value="ANG">Anglais</option>
-									<option value="SPA">Spain</option>
-									<option value="ITA">Italy</option>
-									<option value="POR">Portogal</option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<legend>IDs and Tools</legend>
-					<div class="row">
-						<div class="col-lg-4 col-lg-offset-1">
-							<div class="form-group">
 								<label for="computer">Computer</label><br>
 								<select name="computer" class="form-control">
 									<option value="Desktop">Desktop</option>   
@@ -265,6 +247,19 @@
 									<option value="Laptop">Laptop</option>
 								</select>
 							</div>
+							<div class="form-group">
+								<label for="language">Language</label><br>
+								<select name="language[]" multiple class="selectpicker">   
+									@foreach($languages as $language)
+									<option value="{{ $language->Id }}">{{ $language->name }}</option>
+									@endforeach
+								</select>
+							</div>
+						</div>
+					</div>
+					<legend>IDs and Tools</legend>
+					<div class="row">
+						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
 								<label for="lilly_id">Lilly ID</label>
 								<input type="text" name="lilly_id" class="form-control" placeholder="Lilly ID">
@@ -293,24 +288,9 @@
 							<div class="form-group">
 								<label for="tools">Tools</label><br>
 								<select name="tools[]" multiple class="selectpicker">   
-									<option value="global_id_request">Global ID Request</option>
-									<option value="nt_password">NT Password</option>
-									<option value="lilly_system_id">Lilly System ID</option>
-									<option value="lilly_onbaording_request">Lilly Onbaording Request</option>
-									<option value="acces_lillynet_search">Acces Lillynet Search</option>
-									<option value="computer">Computer</option>
-									<option value="citrix">Citrix</option>
-									<option value="vmware">Vmware</option>
-									<option value="safeboot">Safeboot</option>
-									<option value="boxstone">Boxstone</option>
-									<option value="ekms">EKMS</option>
-									<option value="lync">Lync</option>
-									<option value="ad">AD</option>
-									<option value="sn">SN</option>
-									<option value="ldap">LDAP</option>
-									<option value="mi">MI</option>            
-									<option value="aicid">AICID</option>
-									<option value="aic_installed">AIC installed</option>  
+									@foreach($tools as $tool)
+									<option value="{{ $tool->Id }}">{{ $tool->name }}</option>
+									@endforeach
 								</select>
 							</div>
 						</div>
