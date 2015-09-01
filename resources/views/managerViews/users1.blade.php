@@ -219,12 +219,12 @@
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="seniority_level">Seniority level</label>
-								<select name="seniority_level" id="seniority_level" class="form-control">
-									<option value="1" selected>1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
+								<label for="grade">Grade</label>
+								<select name="grade" id="grade" class="form-control">
+									<option value="A" selected>A</option>
+									<option value="B">B</option>
+									<option value="C">C</option>
+									<option value="D">D</option>
 								</select>
 							</div>
 						</div>
@@ -277,23 +277,18 @@
 								<label for="avaya_id">Avaya ID</label>
 								<input type="text" name="avaya_id" class="form-control" placeholder="Avaya ID">
 							</div>
-							<div class="form-group">
-								<label for="item_type">Item Type</label>
-								<input type="text" name="item_type" class="form-control" placeholder="Item Type">
-							</div>
 						</div>
 						<div class="col-lg-4 col-lg-offset-1">
-							<div class="form-group">
-								<label for="path">Path</label>
-								<input type="text" name="path" class="form-control" placeholder="Path">
-							</div>
 							<div class="form-group">
 								<label for="account">Account</label>
 								<input type="text" name="account" class="form-control" placeholder="Account">
 							</div>
 							<div class="form-group">
-								<label for="bcp">bcp</label>
-								<input type="text" name="bcp" class="form-control" placeholder="bcp">
+								<label for="bcp">bcp</label><br>
+								<select name="bcp" class="form-control">
+									<option value="Yes" selected>Yes</option>   
+									<option value="No">No</option>
+								</select>
 							</div>
 							<div class="form-group">
 								<label for="tools">Tools</label><br>
@@ -364,6 +359,6 @@
 				$('input[name='+ $(this).attr('value')+']').prop('disabled', false);
 			}
 		});*/
-	});
+});
 </script>
 @endsection

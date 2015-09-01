@@ -87,12 +87,33 @@ Route::post('adduser', [
     'uses' => 'ControllerZakaria@adduser'
 ]);
 
+
 Route::get('/language', [
     'as' => 'language',
     'uses' => 'ControllerZakaria@language'
 ]);
 
+Route::get('/getLanguages', [
+    'as' => 'getLanguages',
+    'uses' => 'ControllerZakaria@getLanguages'
+]);
+
 Route::get('/project', [
     'as' => 'project',
     'uses' => 'ControllerZakaria@project'
+]);
+
+Route::post('addlanguage', [
+    'as' => 'addlanguage',
+    'uses' => 'ControllerZakaria@addlanguage'
+]);
+
+Route::post('deletelanguage', [
+    'as' => 'deletelanguage',
+    'uses' => 'ControllerZakaria@deletelanguage'
+]);
+
+Route::post('editlanguage', [
+    'as' => 'editlanguage',
+    'uses' => 'ControllerZakaria@editlanguage'
 ]);

@@ -1314,14 +1314,57 @@ class ControllerZakaria extends Controller
     }
 
     public function language(){
+        return View('managerViews.languages');
+    }
+
+    public function getLanguages(){
         $languages=DB::table('languages')
         ->get();
-        return View('managerViews.languages')->with([
+        return response()->json([
             'languages'=>$languages
             ]);
     }
 
     public function project(){
         return View('managerViews.project');
+    }
+
+    public function addlanguage(Request $request){
+        $params=$request->all();
+
+        DB::table('languages')
+        ->insert(['language' => $params['language']]);
+
+        $languages=DB::table('languages')
+        ->get();
+
+        return response()->json([
+            'languages'=>$languages
+            ]);
+    }
+
+    public function deletelanguage(Request $request){
+        $params=$request->all();
+        
+        DB::table('languages')
+        ->where('Id','=',$params['id'])
+        ->delete();
+        
+        $languages=DB::table('languages')
+        ->get();
+        
+        return response()->json([
+            'languages'=>$languages
+            ]);
+    }
+
+    public function editlanguage(Request $request){
+        $params=$request->all();
+        DB::table('languages')
+        ->where('Id', $params['id'])
+        ->update(['language' => $params['language']]);
+        return response()->json([
+            'data'=>'data'
+            ]);
     }
 }
