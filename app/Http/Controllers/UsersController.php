@@ -111,7 +111,6 @@ class UsersController extends Controller{
 
       public function adduser(Request $request) {
        $params=$request->all();
-       var_dump($params);die;
        $filename = '';
        if ($request->hasFile('picture')) {
         if ($request->file('picture')->isValid()) {
@@ -163,7 +162,7 @@ class UsersController extends Controller{
        }
      }
    }
-   if (isset($params['languages'])) {
+   if (isset($params['language'])) {
     foreach ($params['language'] as $l) {
       DB::table('user_language')
       ->insert([

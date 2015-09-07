@@ -108,14 +108,14 @@
 										<strong><% selectedItem.firstname+' '+selectedItem.lastname %></strong>
 									</h4>
 									<h5>
-										<% selectedItem.role %> at <small>Eli lilly</small>
+										<% selectedItem.role %>
 									</h5>
 								</div>
 							</div>
 						</div>
 						<div class="modal-body">
 							<div class="row">
-								<div class="col-lg-6">
+								<div class="col-lg-12">
 									<div class="nav-tabs-custom">
 										<ul class="nav nav-tabs">
 											<li class="active"><a href="#tab_1-1" data-toggle="tab" aria-expanded="true">Personal details</a></li>
@@ -274,9 +274,9 @@
 										</div><!-- /.tab-content -->
 									</div>
 								</div>
-								<div class="col-lg-6">
+								<!-- <div class="col-lg-6">
 									<div id="chart-container" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto"></div>
-								</div>
+								</div> -->
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -294,20 +294,20 @@
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="Employee_id">Employe ID</label>
-								<input type="text" name="employe_id" placeholder="Employe id" class="form-control" >
+								<label for="Employee_id">Employe ID <span class="text-danger">*</span></label>
+								<input required type="text" name="employe_id" placeholder="Employe id" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="lastName">Last Name</label>
-								<input type="text" name="lastname" placeholder="Last Name" class="form-control"  >
+								<label for="lastName">Last Name <span class="text-danger">*</span></label>
+								<input required type="text" name="lastname" placeholder="Last Name" class="form-control"  >
 							</div>
 							<div class="form-group">
-								<label for="firstname">First Name</label>
-								<input type="text" name="firstname" placeholder="First Name" class="form-control" >
+								<label for="firstname">First Name <span class="text-danger">*</span></label>
+								<input required type="text" name="firstname" placeholder="First Name" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="email">Email</label>
-								<input type="email" name="email" placeholder="Email" class="form-control" >
+								<label for="email">Email <span class="text-danger">*</span></label>
+								<input required type="email" name="email" placeholder="Email" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="gender">Gender</label>
@@ -319,20 +319,20 @@
 						</div>
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="matricule">AgirhID/Matricule</label>
-								<input type="text" name="matricule" placeholder="AgirhID/Matricule" class="form-control" >
+								<label for="matricule">AgirhID/Matricule <span class="text-danger">*</span></label>
+								<input required type="text" name="matricule" placeholder="AgirhID/Matricule" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="city">City</label>
-								<input type="city" name="city" placeholder="City" class="form-control" >
+								<label for="city">City <span class="text-danger">*</span></label>
+								<input required type="city" name="city" placeholder="City" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="adress">Adress</label>
-								<input type="adress" name="adress" placeholder="adress" class="form-control" >
+								<label for="adress">Adress <span class="text-danger">*</span></label>
+								<input required type="adress" name="adress" placeholder="adress" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="phone">Phone</label>
-								<input type="text" name="phone" placeholder="phone" class="form-control" >
+								<label for="phone">Phone <span class="text-danger">*</span></label>
+								<input required type="text" name="phone" placeholder="phone" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="picture">Picture</label>
@@ -348,24 +348,28 @@
 						<div class="frm-element">
 							<div class="row">
 								<div class="col-lg-1">
-								<span class="span pull-right"># <span class="number">1</span></span>
+									<span class="span pull-right"># <span class="number">1</span></span>
 								</div>
 								<div class="col-lg-3">
 									<div class="form-group">
-										<label for="account">Account</label>
-										<select ng-options="account.id as account.name for account in accounts track by account.id" ng-model="account" name="account[]" id="account" class="form-control account"></select>
+										<label for="account">Account <span class="text-danger">*</span></label>
+										<select ng-options="account.name for account in accounts track by account.id" ng-model="account" name="account[]" id="account" class="form-control account">
+											<option value="">Choose an account</option>
+										</select>
 									</div>
 								</div>
 								<div class="col-lg-3">
 									<div class="form-group">
-										<label for="id">ID</label>
+										<label for="id">ID <span class="text-danger">*</span></label>
 										<input type="text" id="id" name="account_id[]" class="form-control">
 									</div>
 								</div>
 								<div class="col-lg-3">
 									<div class="form-group">
 										<label for="sub-account">Sub-Account</label>
-										<select ng-options="sub_account.id as sub_account.name for sub_account in sub_accounts track by sub_account.id" ng-model="sub_account" name="sub_account[]" id="sub_-account" class="form-control sub-account"></select>
+										<select ng-options="sub_account.name for sub_account in sub_accounts track by sub_account.id" ng-model="sub_account" name="sub_account[]" id="sub_-account" class="form-control sub-account">
+											<option value="">Choose a sub-account</option>
+										</select>
 									</div>
 								</div>
 							</div>
@@ -392,13 +396,18 @@
 							<div class="form-group">
 								<label for="role">Role</label>
 								<select name="role" id="role" class="form-control">
-									<option value="Admin" selected>Admin</option>
-									<option value="Coach">Coach</option>
-									<option value="Quality analyst">Quality analyst</option>
+									<option value="Coach" selected>Coach</option>
+									<option value="CSR">CSR</option>
+									<option value="KA">KA</option>
+									<option value="N1">N1</option>
+									<option value="N2">N2</option>
+									<option value="QA">QA</option>
+									<option value="SDM">SDM</option>
+									<option value="SDS">SDS</option>
 									<option value="SME">SME</option>
+									<option value="TL">TL</option>
 									<option value="Trainer">Trainer</option>
-									<option value="Team leader">Team leader</option>
-									<option value="Other">Other</option>
+									<option value="WFA">WFA</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -418,8 +427,8 @@
 						</div>
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="integration_date">Integration date</label>
-								<input type="date" name="integration_date" placeholder="integration_date" class="form-control"/>
+								<label for="integration_date">Integration date <span class="text-danger">*</span></label>
+								<input required type="date" name="integration_date" placeholder="integration_date" class="form-control"/>
 							</div>
 							<div class="form-group">
 								<label for="status">Status</label>
@@ -437,8 +446,8 @@
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="language">Language</label><br>
-								<select name="language[]" multiple class="selectpicker" data-width="100%">   
+								<label for="language">Language <span class="text-danger">*</span></label><br>
+								<select required name="language[]" multiple class="selectpicker" data-width="100%">   
 									@foreach($languages as $language)
 									<option value="{{ $language->Id }}">{{ $language->name }}</option>
 									@endforeach
@@ -477,7 +486,10 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-lg-2 col-lg-offset-8">
+						<div class="col-lg-7 col-lg-offset-1">
+							<span class="text-danger">Please assign required fields</span>
+						</div>
+						<div class="col-lg-2">
 							<input type="reset" class="btn btn-default" value="Cancel">
 							<input type="submit" class="btn btn-info" value="Add User">
 						</div>
