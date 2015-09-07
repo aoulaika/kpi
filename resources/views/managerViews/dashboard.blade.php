@@ -1,6 +1,12 @@
 @extends('managerViews/layout')
 @section('title', ' Global Dashboard')
-
+@section('style')
+<style>
+	/* span.select2-selection--single{
+		width:250px;
+	} */
+</style>
+@endsection
 @section('content')
 <!-- Date Picker -->
 <div class="row">
@@ -98,17 +104,17 @@
 	<div class="col-lg-7 col-sm-12">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<h3 class="box-title">Average Tickets Handling Time</h3>
+				<h3 class="box-title">Average Tickets Handle Time</h3>
 			</div><!-- /.box-header -->
-			<div class="box-body" style="height:394px">
+			<div class="box-body" style="min-height:320px">
 				<div class="row">
 					<div class="col-lg-6">
-						<div id="gauge1" style="height:300px;width:100%"></div>
-						<h5 class="minititle">Average THT</h5>
+						<div id="gauge1" style="height:250px;margin: auto;"></div>
+                        <h5 class="center">Average THT</h5>
 					</div>
 					<div class="col-lg-6">
-						<div id="gauge2" style="height:300px;width:100%"></div>
-						<h5 class="minititle">Average THT for Password Reset Closure</h5>
+						<div id="gauge2" style="height:250px;margin: auto;"></div>
+                        <h5 class="center">Average THT for Password Reset Closure</h5>
 					</div>
 				</div>
 			</div><!-- /.box-body -->
@@ -121,23 +127,7 @@
 				<h3 class="box-title">Tickets Priority</h3>
 			</div><!-- /.box-header -->
 			<div class="box-body">
-				<div id="priorityPie"></div>
-				<table class="table text-center" style="width:100%;margin:auto;">
-					<tr>
-						<th>Critical</th>
-						<th>High</th>
-						<th>Medium</th>
-						<th>Low</th>
-						<th>Low/Planning</th>
-					</tr>
-					<tr id="pr">
-						<td>{{ $critical }}</td>
-						<td>{{ $high }}</td>
-						<td>{{ $medium }}</td>
-						<td>{{ $low }}</td>
-						<td>{{ $planning }}</td>
-					</tr>
-				</table>
+				<div id="priorityPie" style="margin: auto;"></div>
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
 	</div><!-- /.col -->
@@ -161,7 +151,7 @@
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab_1">
 							<div>
-								<div id="select2" class="col-sm-12">
+								<div class="col-sm-4">
 									<label for="product">Filter By Product</label>
 									<select name="product" id="product" class="form-control select2">
 										<option value="all">All</option>
@@ -176,8 +166,9 @@
 						<div class="tab-pane" id="tab_2">
 							<div>
 								<form action="" class="form-inline">
-									<div class="form-group">
-										<select name="product_week" id="product-week" class="form-control select2">
+									<div class="col-sm-4 form-group">
+                                        <label for="product">Filter By Product</label>
+										<select name="product-week" id="product-week" class="form-control select2">
 											<option value="all">All</option>
 											@foreach ($tickets_all['product'] as $key => $value)
 											<option value="{{ $key }}">{{ $key }}</option>
@@ -264,8 +255,8 @@
 					globalView('div2', "Total KB Usage", 100*(1-response.kb_missed/response.total_ticket));
 					globalView('div3', "Total FCR", 100*(1-response.fcr_missed/response.total_ticket_phone));
 					globalView('div4', "Total FCR Resolvable", 100*(1-response.fcr_reso_missed/response.fcr_reso_total));
-					drawGauge('#gauge1', [response.avg_tht.all[0]], 0, 20, 'THT', response.avg_tht.all[1]);
-					drawGauge('#gauge2', [response.avg_tht.password[0]], 0, 10, 'THT(Password Reset Closure)', response.avg_tht.password[1]);
+					drawGauge('#gauge1', [response.avg_tht.all[0]], 0, 20, '', response.avg_tht.all[1]);
+					drawGauge('#gauge2', [response.avg_tht.password[0]], 0, 10, '', response.avg_tht.password[1]);
 					drawPie('#priorityPie',response.priority);
 					drawBar('#categoryPie',response.category);
 					reloadPriority(response.critical,response.high,response.medium,response.low,response.planning);
@@ -323,8 +314,7 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 		for (var i = 0; i < d.length; i++) {
 			ticketsData.push({
 				date: new Date(d[i].CreatedYear, d[i].CreatedMonth - 1, d[i].CreatedDay, d[i].CreatedHour, d[i].CreatedMinute, d[i].CreatedSecond, 0),
-				visits: d[i].count,
-
+				visits: d[i].count
 			});
 		};
 		var chart1 = AmCharts.makeChart(id, {
@@ -349,7 +339,10 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 				"hideBulletsCount": 50,
 				"title": "red line",
 				"valueField": "visits",
-				"useLineColorForBulletBorder": true
+				"useLineColorForBulletBorder": true,
+                "lineThickness": 3,
+                "bulletBorderThickness": 1,
+                "bulletSize":15
 			}],
 			"chartScrollbar": {
 				"autoGridCount": true,
@@ -407,6 +400,8 @@ zoomChart();
 				success: function(response){
 					var data=response[0];
 					var datao=response[1];
+                    console.log(response[0]);
+                    console.log(response[1]);
 					var chartData=[];
 					if (data.length==0 && datao.length==0)
 					{   
@@ -438,15 +433,13 @@ zoomChart();
 								chartData.push({
 									date: new Date(datao[i].CreatedYear, datao[i].CreatedMonth-1, datao[i].CreatedDay, datao[i].CreatedHour, 0),
 									visits: data[i].count,
-									hits : datao[i].count,
-									
-
+									hits : datao[i].count
 								});
 							}catch(err){
 								chartData.push({
 									date: new Date(datao[i].CreatedYear, datao[i].CreatedMonth-1, datao[i].CreatedDay, datao[i].CreatedHour, 0),
 									visits: 0,
-									hits : datao[i].count,
+									hits : datao[i].count
 									
 								});
 							}
@@ -535,8 +528,8 @@ zoomChart();
 
 <!-- Gauge Chart -->
 <script type="text/javascript">
-	drawGauge('#gauge1', [{{ $avg_tht['all'][0] }}], 0, 20, 'THT', '{{ $avg_tht['all'][1] }}');
-	drawGauge('#gauge2', [{{ $avg_tht['password'][0] }}], 0, 10, 'THT(Password Reset Closure)', '{{ $avg_tht['password'][1] }}');
+	drawGauge('#gauge1', [{{ $avg_tht['all'][0] }}], 0, 20, '', '{{ $avg_tht['all'][1] }}');
+	drawGauge('#gauge2', [{{ $avg_tht['password'][0] }}], 0, 10, '', '{{ $avg_tht['password'][1] }}');
 	function drawGauge (id,dataGauge,mn,mx,txt,t) {
 		var gaugeOptions = {
 			chart: {
@@ -635,13 +628,17 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 			plotBackgroundColor: null,
 			plotBorderWidth: null,
 			plotShadow: false,
-			type: 'pie'
+			type: 'pie',
+            style: {
+                fontFamily: '"Source Sans Pro", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif', // default font
+                fontSize: '20px'
+            }
 		},
 		title: {
-			text: 'Tickets Priority'
+			text: ''
 		},
 		tooltip: {
-			pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+			pointFormat: '{series.name}: <b>{point.percentage:.1f}% <br>({point.y} Tickets)</b>'
 		},
 		plotOptions: {
 			pie: {
@@ -729,7 +726,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 
 <!-- Others Script -->
 <script>
-	$('.select2').select2();
+	$('.select2').select2({width:'100%'});
 </script>
 <!-- End Others Script -->
 

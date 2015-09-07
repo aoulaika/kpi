@@ -127,7 +127,7 @@ class ControllerZakaria extends Controller
             ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
             ->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count'))
             ->groupBy('agent_dim.Id')
-            ->orderBy('count')
+            ->orderBy('count','desc')
             ->get();
         /* Number of Password Reset Closure tickets per agent */
         $prc_nbr = DB ::select('SELECT a.Id,a.Name,SUM(CASE WHEN t.Closure_code=\'Password Reset\' THEN 1 ELSE 0 END) as count FROM fact f,agent_dim a,tickets_dim t WHERE f.fk_agent=a.Id AND f.fk_ticket=t.Id GROUP BY a.Id');
@@ -314,8 +314,6 @@ class ControllerZakaria extends Controller
 
     public function dashboard(Request $req){
         $params = $req->except(['_token']);
-        if($params['lg_username']!='mohamed-yassin.el-harruchi@hp.com' || $params['lg_password']!='123456')
-            return redirect()->route('login')->with('error','error');
         $date = Carbon::now();
         $today = explode(' ',$date);
 
@@ -786,8 +784,8 @@ class ControllerZakaria extends Controller
             ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
             ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
             ->where('product','=',$params['product'])
-            ->where('time_dim.Created', '>', $s[0])
-            ->where('time_dim.Created', '<', $s[1])
+            ->where('time_dim.Created', '>=', $s[0])
+            ->where('time_dim.Created', '<=', $s[1])
             ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
             ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
             ->get();
@@ -795,8 +793,8 @@ class ControllerZakaria extends Controller
             ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
             ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
             ->where('product','=',$params['product'])
-            ->where('time_dim.Created', '>', $e[0])
-            ->where('time_dim.Created', '<', $e[1])
+            ->where('time_dim.Created', '>=', $e[0])
+            ->where('time_dim.Created', '<=', $e[1])
             ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
             ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
             ->get();
@@ -1323,10 +1321,6 @@ class ControllerZakaria extends Controller
         return response()->json([
             'languages'=>$languages
             ]);
-    }
-
-    public function project(){
-        return View('managerViews.project');
     }
 
     public function addlanguage(Request $request){

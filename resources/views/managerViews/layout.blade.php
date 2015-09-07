@@ -69,10 +69,9 @@
         .center {
             text-align: center;
         }
-        .label{
-            color:black;
+        .hiddenRow {
+            padding: 0 !important;
         }
-
     </style>
     @yield('style')
 </head>

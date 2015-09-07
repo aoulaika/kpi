@@ -100,7 +100,7 @@ Route::get('/getLanguages', [
 
 Route::get('/project', [
     'as' => 'project',
-    'uses' => 'ControllerZakaria@project'
+    'uses' => 'ControllerProject@project'
 ]);
 
 Route::post('addlanguage', [
@@ -116,4 +116,24 @@ Route::post('deletelanguage', [
 Route::post('editlanguage', [
     'as' => 'editlanguage',
     'uses' => 'ControllerZakaria@editlanguage'
+]);
+
+Route::post('addProject', [
+    'as' => 'addProject',
+    'uses' => 'ControllerProject@addProject'
+]);
+
+Route::post('deleteProj', [
+    'as' => 'deleteProj',
+    'uses' => 'ControllerProject@deleteProj'
+]);
+
+Route::post('addSubProj', [
+    'as' => 'addSubProj',
+    'uses' => 'ControllerProject@addSubProj'
+]);
+
+Route::post('deleteSubProj', [
+    'as' => 'deleteSubProj',
+    'uses' => 'ControllerProject@deleteSubProj'
 ]);

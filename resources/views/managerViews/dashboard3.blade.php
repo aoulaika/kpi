@@ -337,8 +337,8 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
     $('#daterange-agent').on('apply.daterangepicker', function(ev, picker) {
             //console.log(picker.startDate.format('YYYY-MM-DD'));
             //console.log(picker.endDate.format('YYYY-MM-DD'));
-            $('#debut').html(picker.startDate.format('YYYY-MM-DD'));
-            $('#fin').html(picker.endDate.format('YYYY-MM-DD'));
+            $('#datedeb').html(picker.startDate.format('YYYY-MM-DD'));
+            $('#datefin').html(picker.endDate.format('YYYY-MM-DD'));
             $.ajax({
                 url: 'rangedate',
                 type: "post",
