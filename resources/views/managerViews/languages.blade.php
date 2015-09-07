@@ -2,6 +2,17 @@
 @section('title', ' Manage Languages')
 @section('style')
 <link rel="stylesheet" href="{{ asset('/css/xeditable.css') }}">
+<style>
+	td{
+		vertical-align: middle;
+	}
+	.hiddenRow {
+		padding: 0 !important;
+	}
+	.fa-2x{
+		color: grey;
+	}
+</style>
 @endsection
 @section('content')
 <div class="container-fluid" ng-app="languageApp" ng-controller="languageCtrl">
@@ -22,17 +33,25 @@
 							<tr>
 								<th>#</th>
 								<th>Languages</th>
-								<th>Employee/language</th>
 								<th>Actions</th>
 							</tr>
-							<tr ng-repeat="language in languages">
+							<tr ng-repeat-start="language in languages" data-toggle="collapse" ng-click="angle('#i'+language.Id)" data-target="<% '#'+language.Id %>" class="accordion-toggle">
 								<td><% language.Id %></td>
-								<td><a editable-text="language.language" onbeforesave="edit($data,language.Id)"><% language.language || 'Empty' %></a></td>
-								<td><% language.language %></td>
+								<td><a editable-text="language.name" onbeforesave="edit($data,language.Id)"><% language.name || 'Empty' %></a></td>
 								<td>
 									<button class="btn btn-danger" ng-click="deleteLanguage(language.Id)">
 										<i class="fa fa-trash"></i>
 									</button>
+								</td>
+								<td>
+									<i class="fa fa-2x fa-angle-down" id="<% 'i'+language.Id %>"></i>
+								</td>
+							</tr>
+							<tr ng-repeat-end>
+								<td colspan="3" class="hiddenRow">
+									<div class="accordian-body collapse" id="<% language.Id %>">
+										50 Employee/language
+									</div>
 								</td>
 							</tr>
 						</table>
@@ -67,7 +86,6 @@
 	</div>
 </div>
 @endsection
-
 @section('script')
 <script src="{{ asset('/js/angular.min.js') }}"></script>
 <script src="{{ asset('/js/xeditable.js') }}"></script>

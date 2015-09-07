@@ -423,7 +423,7 @@ zoomChart();
 								chartData.push({
 									date: new Date(data[i].CreatedYear, data[i].CreatedMonth-1, data[i].CreatedDay, data[i].CreatedHour, data[i].CreatedMinute, data[i].CreatedSecond, 0),
 									visits: data[i].count,
-									hits : 0,
+									hits : 0
 								});
 							}
 						}
@@ -638,6 +638,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 			text: ''
 		},
 		tooltip: {
+
 			pointFormat: '{series.name}: <b>{point.percentage:.1f}% <br>({point.y} Tickets)</b>'
 		},
 		plotOptions: {

@@ -178,14 +178,14 @@
                             <li class="{{ Request::is('errors') ? 'active' : ''}}" }}><a href=" {{ route("errors") }} "><i class="fa fa-circle-o"></i> Errors Tracking</a></li>
                         </ul>
                     </li>
-                    <li class="{{ (Request::is('users1') || Request::is('language') || Request::is('project'))? 'active' : '' }} treeview">
+                    <li class="{{ (Request::is('users') || Request::is('language') || Request::is('project'))? 'active' : '' }} treeview">
                         <a href="#">
                             <i class="fa fa-cogs"></i>
                             <span>Managing</span>
                             <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li class="{{ Request::is('users1') ? 'active' : '' }}"><a href=" {{ route("users1") }} "><i class="fa fa-circle-o"></i> Users</a></li>
+                            <li class="{{ Request::is('users') ? 'active' : '' }}"><a href=" {{ route("users") }} "><i class="fa fa-circle-o"></i> Users</a></li>
                             <li class="{{ Request::is('project') ? 'active' : '' }}"><a href="{{ route("project") }}"><i class="fa fa-circle-o"></i> Projects</a></li>
                             <li class="{{ Request::is('language') ? 'active' : '' }}"><a href="{{ route("language") }}"><i class="fa fa-circle-o"></i> Languages</a></li>
                         </ul>
