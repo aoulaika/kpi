@@ -2,7 +2,37 @@
 @section('title', ' Manage Users')
 @section('style')
 <link href="{{ asset('/css/style3.css') }}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{{ asset('/css/xeditable.css') }}">
 <link href="{{ asset('/css/bootstrap-select.min.css') }}" rel="stylesheet" type="text/css" />
+<style>
+	.modal-header{
+		padding: 0;
+	}
+	.title-user{
+		margin-top: 25px;
+	}
+	.modal-body{
+		padding: 0;
+	}
+	a.editable-click {
+		color: black;
+		border-bottom: none;
+	}
+	a.editable-click:hover {
+		border-bottom-color: #47a447;
+	}
+	.details td{
+		width: 50%;
+	}
+	input[name="account_id[]"]{
+		margin-left: 5px;
+		margin-right: 5px;
+		width: 97%;
+	}
+	.span{
+		font-size: 1.3em;
+	}
+</style>
 @endsection
 @section('content')
 <div ng-app="app" ng-controller="ctrl">
@@ -64,57 +94,184 @@
 					<!-- Modal content-->
 					<div class="modal-content">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title"><strong><% selectedItem.firstname+' '+selectedItem.lastname %></strong></h4>
+							<!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+							<div class="row">
+								<div class="col-lg-2">
+									<div class="media">
+										<a class="pull-left" href="#">
+											<img class="media-object dp img-circle" ng-src="{{ asset('/images/<% selectedItem.picture %>') }}" style="width: 100px;height:100px;">
+										</a>
+									</div>
+								</div>
+								<div class="col-lg-10 title-user">
+									<h4>
+										<strong><% selectedItem.firstname+' '+selectedItem.lastname %></strong>
+									</h4>
+									<h5>
+										<% selectedItem.role %> at <small>Eli lilly</small>
+									</h5>
+								</div>
+							</div>
 						</div>
 						<div class="modal-body">
 							<div class="row">
 								<div class="col-lg-6">
-									<!-- Image -->
-									<div class="media">
-										<a class="pull-left" href="#">
-											<img class="media-object dp img-circle" src="{{ asset('/img/user2-160x160.jpg') }}" style="width: 100px;height:100px;">
-										</a>
-										<div class="media-body">
-											<h4 class="media-heading"><% selectedItem.firstname+' '+selectedItem.lastname %></h4>
-											<h5><% selectedItem.role %> at <small>Eli lilly</small></h5>
-											<hr style="margin:8px auto">
-										</div>
-									</div>
-									<!-- End Image -->
-									<div style="border-left:1px solid #E5E5E5;margin-left:57px;">
-										<div style="margin-left:20px">
-											<table class="table">
-												<tr>
-													<td><b>Employe Id</b></td>
-													<td><% selectedItem.employee_id %></td>
-												</tr>
-												<tr>
-													<td><b>Matricule</b></td>
-													<td><% selectedItem.matricule %></td>
-												</tr>
-												<tr>
-													<td><b>First Name</b></td>
-													<td><% selectedItem.firstname %></td>
-												</tr>
-												<tr>
-													<td><b>Last Name</b></td>
-													<td><% selectedItem.lastname %></td>
-												</tr>
-												<tr>
-													<td><b>E-mail</b></td>
-													<td><% selectedItem.email %></td>
-												</tr>
-												<tr>
-													<td><b>Phone</b></td>
-													<td><% selectedItem.phone %></td>
-												</tr>
-												<tr>
-													<td><b>Languages</b></td>
-													<td><% selectedItem.L1+' '+selectedItem.L2+' '+selectedItem.L3+' '+selectedItem.L4 %></td>
-												</tr>
-											</table>
-										</div>
+									<div class="nav-tabs-custom">
+										<ul class="nav nav-tabs">
+											<li class="active"><a href="#tab_1-1" data-toggle="tab" aria-expanded="true">Personal details</a></li>
+											<li class=""><a href="#tab_2-2" data-toggle="tab" aria-expanded="false">Professional details</a></li>
+											<li class=""><a href="#tab_3-3" data-toggle="tab" aria-expanded="false">Tools</a></li>
+										</ul>
+										<div class="tab-content">
+											<div class="tab-pane active" id="tab_1-1">
+												<table class="table details">
+													<tr>
+														<td><b>Employe Id</b></td>
+														<td>
+															<a editable-text="selectedItem.employe_id" onbeforesave="editUser(selectedItem.Id,'employe_id',$data)">
+																<% selectedItem.employe_id || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Matricule</b></td>
+														<td>
+															<a editable-text="selectedItem.matricule" onbeforesave="editUser(selectedItem.Id,'matricule',$data)">
+																<% selectedItem.matricule || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Last Name</b></td>
+														<td>
+															<a editable-text="selectedItem.lastname" onbeforesave="editUser(selectedItem.Id,'lastname',$data)">
+																<% selectedItem.lastname || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>First Name</b></td>
+														<td>
+															<a editable-text="selectedItem.firstname" onbeforesave="editUser(selectedItem.Id,'firstname',$data)">
+																<% selectedItem.firstname || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>E-mail</b></td>
+														<td>
+															<a editable-email="selectedItem.email" onbeforesave="editUser(selectedItem.Id,'email',$data)">
+																<% selectedItem.email || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>City</b></td>
+														<td>
+															<a editable-text="selectedItem.city" onbeforesave="editUser(selectedItem.Id,'city',$data)">
+																<% selectedItem.city || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Adress</b></td>
+														<td>
+															<a editable-text="selectedItem.adress" onbeforesave="editUser(selectedItem.Id,'adress',$data)">
+																<% selectedItem.adress || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Phone</b></td>
+														<td>
+															<a editable-text="selectedItem.phone" onbeforesave="editUser(selectedItem.Id,'phone',$data)">
+																<% selectedItem.phone || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Languages</b></td>
+														<td>
+															<a editable-select="user_languages" e-multiple e-ng-options="l.Id as l.name for l in languages" onbeforesave="editUser(selectedItem.Id,'language',$data)">
+																<% showLanguages() %>
+															</a>
+														</td>
+													</tr>
+												</table>
+											</div><!-- /.tab-pane -->
+											<div class="tab-pane" id="tab_2-2">
+												<table class="table details">
+													<tr>
+														<td><b>Job</b></td>
+														<td>
+															<a href="#" editable-select="selectedItem.job" e-ng-options="j.value as j.text for j in jobes" onbeforesave="editUser(selectedItem.Id,'job',$data)">
+																<% selectedItem.job || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Role</b></td>
+														<td>
+															<a href="#" editable-select="selectedItem.role" e-ng-options="r.value as r.text for r in roles" onbeforesave="editUser(selectedItem.Id,'role',$data)">
+																<% selectedItem.role || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Team</b></td>
+														<td>
+															<a href="#" editable-select="selectedItem.team" e-ng-options="t.value as t.text for t in teams" onbeforesave="editUser(selectedItem.Id,'team',$data)">
+																<% selectedItem.team_name || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Grade</b></td>
+														<td>
+															<a href="#" editable-select="selectedItem.grade" e-ng-options="g.value as g.text for g in grades" onbeforesave="editUser(selectedItem.Id,'grade',$data)">
+																<% selectedItem.grade || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Integration date</b></td>
+														<td>
+															<a href="#" editable-text="selectedItem.integration_date" onbeforesave="editUser(selectedItem.Id,'integration_date',$data)">
+																<% selectedItem.integration_date || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Status</b></td>
+														<td>
+															<a href="#" editable-select="selectedItem.status" e-ng-options="s.value as s.text for s in status" onbeforesave="editUser(selectedItem.Id,'status',$data)">
+																<% selectedItem.status || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Computer</b></td>
+														<td>
+															<a href="#" editable-select="selectedItem.computer" e-ng-options="c.value as c.text for c in computers" onbeforesave="editUser(selectedItem.Id,'computer',$data)">
+																<% selectedItem.computer || 'Empty' %>
+															</a>
+														</td>
+													</tr>
+												</table>
+											</div><!-- /.tab-pane -->
+											<div class="tab-pane" id="tab_3-3">
+												<table class="table">
+													<tr>
+														<td><b>Tools</b></td>
+														<td>
+															<a editable-select="user_tools" class="selectpicker" e-multiple e-ng-options="t.Id as t.name for t in tools" onbeforesave="editUser(selectedItem.Id,'tool',$data)">
+																<% showTools() %>
+															</a>
+														</td>
+													</tr>
+												</table>
+											</div><!-- /.tab-pane -->
+										</div><!-- /.tab-content -->
 									</div>
 								</div>
 								<div class="col-lg-6">
@@ -138,19 +295,19 @@
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
 								<label for="Employee_id">Employe ID</label>
-								<input required type="text" name="employe_id" placeholder="Employe id" class="form-control" >
+								<input type="text" name="employe_id" placeholder="Employe id" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="lastName">Last Name</label>
-								<input required type="text" name="lastname" placeholder="Last Name" class="form-control"  >
+								<input type="text" name="lastname" placeholder="Last Name" class="form-control"  >
 							</div>
 							<div class="form-group">
 								<label for="firstname">First Name</label>
-								<input required type="text" name="firstname" placeholder="First Name" class="form-control" >
+								<input type="text" name="firstname" placeholder="First Name" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="email">Email</label>
-								<input required type="email" name="email" placeholder="Email" class="form-control" >
+								<input type="email" name="email" placeholder="Email" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="gender">Gender</label>
@@ -163,7 +320,7 @@
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
 								<label for="matricule">AgirhID/Matricule</label>
-								<input required type="text" name="matricule" placeholder="AgirhID/Matricule" class="form-control" >
+								<input type="text" name="matricule" placeholder="AgirhID/Matricule" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="city">City</label>
@@ -184,6 +341,42 @@
 						</div>
 					</div>
 					<legend>Professional details</legend>
+					<div class="container">
+						<legend>Accounts</legend>
+					</div>
+					<div id="frm-content">
+						<div class="frm-element">
+							<div class="row">
+								<div class="col-lg-1">
+								<span class="span pull-right"># <span class="number">1</span></span>
+								</div>
+								<div class="col-lg-3">
+									<div class="form-group">
+										<label for="account">Account</label>
+										<select ng-options="account.id as account.name for account in accounts track by account.id" ng-model="account" name="account[]" id="account" class="form-control account"></select>
+									</div>
+								</div>
+								<div class="col-lg-3">
+									<div class="form-group">
+										<label for="id">ID</label>
+										<input type="text" id="id" name="account_id[]" class="form-control">
+									</div>
+								</div>
+								<div class="col-lg-3">
+									<div class="form-group">
+										<label for="sub-account">Sub-Account</label>
+										<select ng-options="sub_account.id as sub_account.name for sub_account in sub_accounts track by sub_account.id" ng-model="sub_account" name="sub_account[]" id="sub_-account" class="form-control sub-account"></select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-2 col-lg-offset-10">
+							<a class="btn btn-info" id="add"><i class="fa fa-plus"></i></a>
+						</div>
+					</div>
+					<hr>
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
@@ -210,11 +403,7 @@
 							</div>
 							<div class="form-group">
 								<label for="team">Team</label>
-								<select name="team" id="team" class="form-control">
-									<option value="" selected></option>
-									@foreach($team as $t)
-									<option value="{{ $t->Id }}">{{ $t->lastname.' '.$t->firstname }}</option>
-									@endforeach
+								<select name="team" id="team" class="form-control" ng-options="t.value as t.text for t in teams track by t.value" ng-model="selectedTeam">
 								</select>
 							</div>
 							<div class="form-group">
@@ -249,7 +438,7 @@
 							</div>
 							<div class="form-group">
 								<label for="language">Language</label><br>
-								<select name="language[]" multiple class="selectpicker">   
+								<select name="language[]" multiple class="selectpicker" data-width="100%">   
 									@foreach($languages as $language)
 									<option value="{{ $language->Id }}">{{ $language->name }}</option>
 									@endforeach
@@ -261,22 +450,8 @@
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="lilly_id">Lilly ID</label>
-								<input type="text" name="lilly_id" class="form-control" placeholder="Lilly ID">
-							</div>
-							<div class="form-group">
 								<label for="global_id">Global ID</label>
 								<input type="text" name="global_id" class="form-control" placeholder="Global ID">
-							</div>
-							<div class="form-group">
-								<label for="avaya_id">Avaya ID</label>
-								<input type="text" name="avaya_id" class="form-control" placeholder="Avaya ID">
-							</div>
-						</div>
-						<div class="col-lg-4 col-lg-offset-1">
-							<div class="form-group">
-								<label for="account">Account</label>
-								<input type="text" name="account" class="form-control" placeholder="Account">
 							</div>
 							<div class="form-group">
 								<label for="bcp">bcp</label><br>
@@ -285,9 +460,15 @@
 									<option value="No">No</option>
 								</select>
 							</div>
+						</div>
+						<div class="col-lg-4 col-lg-offset-1">
+							<div class="form-group">
+								<label for="avaya_id">Avaya ID</label>
+								<input type="text" name="avaya_id" class="form-control" placeholder="Avaya ID">
+							</div>
 							<div class="form-group">
 								<label for="tools">Tools</label><br>
-								<select name="tools[]" multiple class="selectpicker">   
+								<select name="tools[]" multiple class="selectpicker" data-width="100%">   
 									@foreach($tools as $tool)
 									<option value="{{ $tool->Id }}">{{ $tool->name }}</option>
 									@endforeach
@@ -309,36 +490,34 @@
 @endsection
 @section('script')
 <script src="{{ asset('/js/angular.min.js') }}"></script>
-<script src="{{ asset('/js/controller.js') }}"></script>
+<script src="{{ asset('/js/userCtrl.js') }}"></script>
 <script src="{{ asset('/js/highcharts.js') }}"></script>
 <script src="{{ asset('/js/highcharts-more.js') }}"></script>
 <script src="{{ asset('/js/exporting.js') }}"></script>
 <script src="{{ asset('/js/showRadar.js') }}"></script>
+<script src="{{ asset('/js/xeditable.js') }}"></script>
 <script src="{{ asset('/js/bootstrap-select.min.js') }}"></script>
 <script>
-	$('.selectpicker').selectpicker();
 	$(document).ready(function(){
+		$('.selectpicker').selectpicker();
 		$('#btn-add').click(function() {
-			$('#directory-user').toggle();
-			$('#add-user').toggle();
-			$('#btn-add').hide();
+			$('#directory-user').toggle(1000)
+			$('#add-user').toggle(1000);
+			$('#btn-add').hide(1000);
 			$('#title').text('New Employee');
 		});
 		$("input[value='Cancel']").click(function() {
-			$('#directory-user').toggle();
-			$('#add-user').toggle();
-			$('#btn-add').show();
+			$('#directory-user').toggle(1000);
+			$('#add-user').toggle(1000);
+			$('#btn-add').show(1000);
 			$('#title').text('Employee Directory');
 		});
-/*		$('.input_control').attr('checked', false);
-		$('.input_control').click(function(){
-			if($('input[name='+ $(this).attr('value')+']').prop('disabled') == false){
-				$('input[name='+ $(this).attr('value')+']').prop('disabled', true);
-				$('input[name='+ $(this).attr('value')+']').val('');
-			}else{
-				$('input[name='+ $(this).attr('value')+']').prop('disabled', false);
-			}
-		});*/
-});
+		$(document.body).on('click', '#add', function() {
+			var a = $('.number').last().text();
+			var elm = '<div class="frm-element">'+$("#frm-content").children('.frm-element').last().html()+'</div>';
+			$('#frm-content').append(elm);
+			$('.number').last().text(parseInt(a)+1);
+		});		
+	});
 </script>
 @endsection

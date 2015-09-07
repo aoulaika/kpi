@@ -1,6 +1,12 @@
 @extends('managerViews/layout')
 @section('title', ' Global Dashboard')
-
+@section('style')
+<style>
+	/* span.select2-selection--single{
+		width:250px;
+	} */
+</style>
+@endsection
 @section('content')
 <!-- Date Picker -->
 <div class="row">
@@ -641,7 +647,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 			text: 'Tickets Priority'
 		},
 		tooltip: {
-			pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+			pointFormat: '{series.name}: <b>{point.percentage:.1f}% <br/>({point.y} Tickets)</b>'
 		},
 		plotOptions: {
 			pie: {
