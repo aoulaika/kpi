@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers;
 
+use Faker\Provider\DateTime;
 use \Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -400,11 +401,11 @@ class ControllerZakaria extends Controller
             ->where('Priority','like','Low/Planning')
             ->count();
         $priority=array(
-            (object)array('y'=>$critical,'name'=>'critical'),
-            (object)array('y'=>$high,'name'=>'high'),
-            (object)array('y'=>$medium,'name'=>'medium'),
-            (object)array('y'=>$low,'name'=>'low'),
-            (object)array('y'=>$planning,'name'=>'planning'),
+            (object)array('y'=>$critical,'name'=>"Critical"),
+            (object)array('y'=>$high,'name'=>'High'),
+            (object)array('y'=>$medium,'name'=>'Medium'),
+            (object)array('y'=>$low,'name'=>'Low'),
+            (object)array('y'=>$planning,'name'=>'Planning'),
             );
 
         $category=DB::table('fact')
@@ -474,6 +475,20 @@ class ControllerZakaria extends Controller
             ));
         }
 
+        $times = ['2015/08/02 - 2015/08/07','2015/08/09 - 2015/08/14','2015/08/16 - 2015/08/21','2015/08/23 - 2015/08/28'];
+
+        for($i=0;$i<sizeof($times);$i++){
+            $time = explode(' - ', $times[$i]);
+            $intervals[$i] = DB::table('fact')
+                ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
+                ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+                ->where('time_dim.Created', '>=', $time[0])
+                ->where('time_dim.Created', '<=', $time[1])
+                ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
+                ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
+                ->get();
+        }
+
         return View('managerViews/dashboard')->with([
             'total_ticket'=>$total_ticket,
             'kb_missed'=>$kb_missed,
@@ -491,7 +506,8 @@ class ControllerZakaria extends Controller
             'high'=>$high,
             'medium'=>$medium,
             'low'=>$low,
-            'planning'=>$planning
+            'planning'=>$planning,
+            'intervals'=> $intervals
         ]);
     }
 
@@ -1250,5 +1266,49 @@ class ControllerZakaria extends Controller
             'fcr_reso_total'=>$fcr_reso_total,
             'fcr_reso_missed'=>$fcr_reso_missed
             ]);
+    }
+
+    public function compare(){
+        $times = ['2015/08/01 - 2015/08/01','2015/08/08 - 2015/08/08'];
+        for($i=0;$i<sizeof($times);$i++){
+            $intervals = explode(' - ', $times[$i]);
+            $values[$i] = DB::table('fact')
+                ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
+                ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+                ->where('product','=','activedirectory')
+                ->where('time_dim.Created', '>=', $intervals[0])
+                ->where('time_dim.Created', '<=', $intervals[1])
+                ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
+                ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
+                ->get();
+        }
+        return View('managerViews/compare')->with([
+            'values'=> $values
+        ]);
+    }
+
+    public function reloadIntervals(Request $req){
+        $params = $req->except(['_token']);
+        for($i=0;$i<sizeof($params['dates']);$i++){
+            $dates[$i] = \DateTime::createFromFormat('Y-m-d',$params['dates'][$i]);
+            $dates[$i]->setTime(0,0,0);
+            $dates_fin[$i] = clone $dates[$i];
+            if($params['type']=='week')
+                $dates_fin[$i]->modify('+6 day');
+            if($params['type']=='month')
+                $dates_fin[$i]->modify('+29 day');
+            $values[$i] = DB::table('fact')
+                ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
+                ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+                ->where('product','=','activedirectory')
+                ->where('time_dim.Created', '>=', $dates[$i])
+                ->where('time_dim.Created', '<=', $dates_fin[$i])
+                ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
+                ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
+                ->get();
+        }
+        return response()->json([
+            'values'=> $values
+        ]);
     }
 }

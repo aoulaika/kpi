@@ -192,3 +192,13 @@ Route::get('getSubAccount', [
     'as' => 'getSubAccount',
     'uses' => 'UsersController@getSubAccount'
 ]);
+
+Route::get('compare', [
+    'as' => 'compare',
+    'uses' => 'ControllerZakaria@compare'
+]);
+
+Route::post('reloadIntervals', [
+    'as' => 'reloadIntervals',
+    'uses' => 'ControllerZakaria@reloadIntervals'
+]);
