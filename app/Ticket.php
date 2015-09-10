@@ -49,13 +49,7 @@ class Ticket {
     'ResolutionTime'
     ];
 
-    /**
-     * @return the fact for the ticket.
-     */
-    public function fact()
-    {
-        return $this->hasOne('App\Fact');
-    }
+    
 
     public $timestamps=false;
 

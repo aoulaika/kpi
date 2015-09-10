@@ -69,6 +69,8 @@ class UsersController extends Controller{
 
   public function getUsers() {
     $users=DB::table('users')
+    ->join('user_project','user_id','=','users.id')
+    ->select('users.*', 'user_project.project_id')
     ->get();
     $teams=DB::table('users')
     ->where('job','=','SME')
