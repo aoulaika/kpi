@@ -44,7 +44,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-5" >
-                        <img src="{{ asset('/img/default-user.png') }}" class="agent-image"/>
+                        <img src="{{ asset('/img/default-user.png') }}" id="agent-image" class="agent-image"/>
                         <h3 class="agent-name" id="agent_name"></h3>
                         <h4 class="minititle">Handled <span id="nbr" style="color: #44A1C1;"></span> Tickets</h4>
                         <h5 class="minititle">Missed <span style="color: red;" id="missed_resolvable"> {{ $fcr_reso_missed }}/{{ $fcr_reso_total }}</span> Resolvable Tickets </h5>
@@ -317,6 +317,15 @@
             },
             success: function(response){
                 /* Setting values for tickets chart */
+                console.log(response);
+                var img = "{{ asset('/img/default-user.png') }}";
+                'localhost/kpi/public/img/default-user.png';
+                if(response.user_pic != 'default-user.png'){
+                    var i="/images/"+response.user_pic;
+                    console.log(i);
+                    img = "http://kpi.dev"+i;
+                }
+                $('#agent-image').attr('src', img);
                 reloadSelect(response.tickets_all.product,'#product');
                 draw(response.tickets_all.all);
                 $('#missed_resolvable').html(response.fcr_reso_missed+"/"+response.fcr_reso_total);

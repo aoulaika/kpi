@@ -84,106 +84,166 @@ class UsersController extends Controller{
 
   public function polarData(Request $request) {
     $params=$request->all();
-        /*$data = [
-        {
-          className: 'Agent',
-          axes: [
-          {axis: "FCR", value: 0.8}, 
-          {axis: "FCR Resolvable", value: 0.9},
-          {axis: "Resolvable Missed", value: 0.4},
-          {axis: "CI Usage", value: 0.76},  
-          {axis: "EKMS Usage", value: 0.75}
-          ]
-        },
-        {
-          className: 'Average',
-          axes: [
-          {axis: "FCR", value: 0.76}, 
-          {axis: "FCR Resolvable", value: 0.92},
-          {axis: "Resolvable Missed", value: 0.2},
-          {axis: "CI Usage", value: 0.7},  
-          {axis: "EKMS Usage", value: 0.8}
-          ]
-        }
-        ];*/
-        return response()->json([
-        	'params' => $params
-        	]);
-      }
 
-      public function adduser(Request $request) {
-       $params=$request->all();
-       $filename = '';
-       if ($request->hasFile('picture')) {
-        if ($request->file('picture')->isValid()) {
-          $filename = $params['employe_id']  . '.' . $request->file('picture')->getClientOriginalExtension();
-          $request->file('picture')->move('images/', $filename);
-        }
-      }
-      $id=DB::table('users')
-      ->insertGetId([
-        'employe_id'=>$params['employe_id'],
-        'matricule'=>$params['matricule'],
-        'firstname'=>$params['firstname'],
-        'lastname'=>$params['lastname'],
-        'gender'=>$params['gender'],
-        'email'=>$params['email'],
-        'picture'=>$filename,
-        'city'=>$params['city'],
-        'adress'=>$params['adress'],
-        'phone'=>$params['phone'],
-        'job'=>$params['job'],
-        'role'=>$params['role'],
-        'grade'=>$params['grade'],
-        'integration_date'=>$params['integration_date'],
-        'status'=>$params['status'],
-        'computer'=>$params['computer'],
-        'global_id'=>$params['global_id'],
-        'avaya_id'=>$params['avaya_id'],
-        'bcp'=>$params['bcp'],
-        'team'=>$params['team']
-        ]);
-      if (isset($params['account_id'])) {
-        for ($i=0; $i < sizeof($params['account']); $i++) {
-         if (!empty($params['account_id'][$i])) {
-          try{
-           DB::table('user_project')
-           ->insert([
-             'user_id' => $id,
-             'project_id' => $params['account'][$i],
-             'account_id' => $params['account_id'][$i]
-             ]);
-         }catch(\Exception $e) {}
-         try{
-           DB::table('user_sub_project')
-           ->insert([
-             'user_id' => $id,
-             'sub_project_id' => $params['sub_account'][$i]
-             ]);
-         }catch(\Exception $e) {}
-       }
-     }
+    $ci=DB::table('user_project')
+    ->where('user_project.user_id','=',$params['id'])
+    ->join('agent_dim','agent_dim.Code','=','user_project.account_id')
+    ->join('fact','fact.fk_agent','=','agent_dim.Id')
+    ->join('ci_dim', 'fact.fk_ci', '=', 'ci_dim.Id')
+    ->select(DB::raw('SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS ci'))
+    ->get();
+
+    $kb=DB::table('user_project')
+    ->where('user_project.user_id','=',$params['id'])
+    ->join('agent_dim','agent_dim.Code','=','user_project.account_id')
+    ->join('fact','fact.fk_agent','=','agent_dim.Id')
+    ->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->where('Category','not like','Service Catalog')
+    ->select(DB::raw('SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS kb'))
+    ->get();
+
+    $fcr=DB::table('user_project')
+    ->where('user_project.user_id','=',$params['id'])
+    ->join('agent_dim','agent_dim.Code','=','user_project.account_id')
+    ->join('fact','fact.fk_agent','=','agent_dim.Id')
+    ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+    ->where('Contact_type','like','Phone')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->select(DB::raw('SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS fcr'))
+    ->get();
+
+    $fcr_reso=DB::table('user_project')
+    ->where('user_project.user_id','=',$params['id'])
+    ->join('agent_dim','agent_dim.Code','=','user_project.account_id')
+    ->join('fact','fact.fk_agent','=','agent_dim.Id')
+    ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+    ->where('Contact_type','like','Phone')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->select(DB::raw('IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS fcr_reso'))
+    ->get();
+
+    $avg_ci=DB::table('fact')
+    ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+    ->join('ci_dim', 'fact.fk_ci', '=', 'ci_dim.Id')
+    ->select(DB::raw('SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS avg_ci'))
+    ->get();
+
+    $avg_kb=DB::table('fact')
+    ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+    ->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->where('Category','not like','Service Catalog')
+    ->select(DB::raw('SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS avg_kb'))
+    ->get();
+
+    $avg_fcr=DB::table('fact')
+    ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+    ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->where('Contact_type','like','Phone')
+    ->select(DB::raw('SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS avg_fcr'))
+    ->get();
+
+    $avg_fcr_reso=DB::table('fact')
+    ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
+    ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->where('Contact_type','like','Phone')
+    ->select(DB::raw('IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS avg_fcr_reso'))
+    ->get();
+    
+    $data = array(
+      (object)array(
+        'name'=>'Average',
+        'data'=>array(floatval($avg_fcr[0]->avg_fcr),floatval($avg_fcr_reso[0]->avg_fcr_reso),floatval($avg_kb[0]->avg_kb),floatval($avg_ci[0]->avg_ci)),
+        'pointPlacement'=>'on'
+        ),
+      (object)array(
+        'name'=>'Agent',
+        'data'=>array(floatval($fcr[0]->fcr),floatval($fcr_reso[0]->fcr_reso),floatval($kb[0]->kb),floatval($ci[0]->ci)),
+        'pointPlacement'=>'on'
+        ),
+      );
+
+    return response()->json([
+      'data'=>$data
+      ]);
+  }
+
+  public function adduser(Request $request) {
+   $params=$request->all();
+   $filename = '';
+   if ($request->hasFile('picture')) {
+    if ($request->file('picture')->isValid()) {
+      $filename = $params['employe_id']  . '.' . $request->file('picture')->getClientOriginalExtension();
+      $request->file('picture')->move('images/', $filename);
+    }
+  }
+  $id=DB::table('users')
+  ->insertGetId([
+    'employe_id'=>$params['employe_id'],
+    'matricule'=>$params['matricule'],
+    'firstname'=>$params['firstname'],
+    'lastname'=>$params['lastname'],
+    'gender'=>$params['gender'],
+    'email'=>$params['email'],
+    'picture'=>$filename,
+    'city'=>$params['city'],
+    'adress'=>$params['adress'],
+    'phone'=>$params['phone'],
+    'job'=>$params['job'],
+    'role'=>$params['role'],
+    'grade'=>$params['grade'],
+    'integration_date'=>$params['integration_date'],
+    'status'=>$params['status'],
+    'computer'=>$params['computer'],
+    'global_id'=>$params['global_id'],
+    'avaya_id'=>$params['avaya_id'],
+    'bcp'=>$params['bcp'],
+    'team'=>$params['team']
+    ]);
+  if (isset($params['account_id'])) {
+    for ($i=0; $i < sizeof($params['account']); $i++) {
+     if (!empty($params['account_id'][$i])) {
+      try{
+       DB::table('user_project')
+       ->insert([
+         'user_id' => $id,
+         'project_id' => $params['account'][$i],
+         'account_id' => $params['account_id'][$i]
+         ]);
+     }catch(\Exception $e) {}
+     try{
+       DB::table('user_sub_project')
+       ->insert([
+         'user_id' => $id,
+         'sub_project_id' => $params['sub_account'][$i]
+         ]);
+     }catch(\Exception $e) {}
    }
-   if (isset($params['language'])) {
-    foreach ($params['language'] as $l) {
-      DB::table('user_language')
-      ->insert([
-       'user_id' => $id,
-       'language_id' => $l
-       ]);
-    }
+ }
+}
+if (isset($params['language'])) {
+  foreach ($params['language'] as $l) {
+    DB::table('user_language')
+    ->insert([
+     'user_id' => $id,
+     'language_id' => $l
+     ]);
   }
+}
 
-  if (isset($params['tools'])) {
-    foreach ($params['tools'] as $tool) {
-      DB::table('user_tool')
-      ->insert([
-       'user_id' => $id,
-       'tool_id' => $tool
-       ]);
-    }
+if (isset($params['tools'])) {
+  foreach ($params['tools'] as $tool) {
+    DB::table('user_tool')
+    ->insert([
+     'user_id' => $id,
+     'tool_id' => $tool
+     ]);
   }
-  return redirect()->back();
+}
+return redirect()->back();
 }
 
 public function getUserLanguages(Request $request) {

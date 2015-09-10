@@ -151,29 +151,17 @@ app.controller('ctrl', function($scope,$http) {
       console.log(response);
     });
 
-    var data = [
-    {
-      className: 'Agent',
-      axes: [
-      {axis: "FCR", value: 0.8}, 
-      {axis: "FCR Resolvable", value: 0.9},
-      {axis: "Resolvable Missed", value: 0.4},
-      {axis: "CI Usage", value: 0.76},  
-      {axis: "EKMS Usage", value: 0.75}
-      ]
-    },
-    {
-      className: 'Average',
-      axes: [
-      {axis: "FCR", value: 0.76}, 
-      {axis: "FCR Resolvable", value: 0.92},
-      {axis: "Resolvable Missed", value: 0.2},
-      {axis: "CI Usage", value: 0.7},  
-      {axis: "EKMS Usage", value: 0.8}
-      ]
-    }
-    ];
-    showRadar();
+    $http.post('polarData', {id:item.Id})
+    .then(function (response) {
+      console.log(response.data.data);
+      
+      showRadar(response.data.data);
+    })
+    .then(function (response) {
+      console.log('Error polarData');
+      console.log(response);
+    });
+
   };
 
   $scope.editUser = function(id, attribut, data) {

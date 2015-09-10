@@ -272,8 +272,17 @@
 										</div><!-- /.tab-content -->
 									</div>
 								</div>
-								<div class="col-lg-6" ng-show="(selectedItem.role=='N1'||selectedItem.role=='N2')">
-									<div id="chart-container" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto"></div>
+								<div ng-class="(selectedItem.role=='N1'||selectedItem.role=='N2')?'col-lg-6':'col-lg-0'" ng-show="(selectedItem.role=='N1'||selectedItem.role=='N2')">
+									<div class="row text-center">
+										<div class="btn-group" role="group" aria-label="...">
+											<button type="button" class="btn btn-default">Left</button>
+											<button type="button" class="btn btn-default">Middle</button>
+											<button type="button" class="btn btn-default">Right</button>
+										</div>
+									</div>
+									<div class="row">
+										<div id="chart-container" style="width: 100%; width: 93%; margin: 0 auto"></div>
+									</div>
 								</div>
 							</div>
 						</div>
