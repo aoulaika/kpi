@@ -51,7 +51,7 @@
 					<img ng-show="project.id || false" style="height:60px" src="{{ asset('/img/proj-img/<% project.id+".png" %>') }}" alt="">
 				</div>
 				<div class="col-lg-4">
-				<h2 ng-show="team.text">Team <span ng-bind="team.text"></span></h2>
+				<h3 ng-show="team.text">Team <span ng-bind="team.text"></span></h3>
 				</div>
 				<div class="col-lg-4">
 					<a class="btn btn-social btn-primary pull-right" id="btn-add">
@@ -105,14 +105,14 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<div class="row">
-								<div class="col-lg-2">
+								<div class="col-lg-3">
 									<div class="media">
 										<a class="pull-left" href="#">
 											<img class="media-object dp img-circle" ng-src="{{ asset('/images/<% selectedItem.picture %>') }}" style="width: 100px;height:100px;">
 										</a>
 									</div>
 								</div>
-								<div class="col-lg-10 title-user">
+								<div class="col-lg-9 title-user">
 									<h4>
 										<strong><% selectedItem.firstname+' '+selectedItem.lastname %></strong>
 									</h4>
@@ -124,7 +124,7 @@
 						</div>
 						<div class="modal-body">
 							<div class="row">
-								<div ng-class="(selectedItem.role=='N1'||selectedItem.role=='N2')?'col-lg-6':'col-lg-12'">
+								<div ng-class="(selectedItem.role=='N1'||selectedItem.role=='N2')?'col-lg-6':'col-lg-11'">
 									<div class="nav-tabs-custom">
 										<ul class="nav nav-tabs">
 											<li class="active"><a href="#tab_1-1" data-toggle="tab" aria-expanded="true">Personal details</a></li>
@@ -286,7 +286,7 @@
 										</div><!-- /.tab-content -->
 									</div>
 								</div>
-								<div ng-class="(selectedItem.role=='N1'||selectedItem.role=='N2')?'col-lg-6':'col-lg-0'" ng-show="(selectedItem.role=='N1'||selectedItem.role=='N2')">
+								<div ng-class="(selectedItem.role=='N1'||selectedItem.role=='N2')?'col-lg-6':'col-lg-1'" ng-show="(selectedItem.role=='N1'||selectedItem.role=='N2')">
 									<div class="row text-center">
 										<div class="btn-group" role="group" aria-label="...">
 											<button type="button" class="btn btn-default">Left</button>
@@ -295,7 +295,9 @@
 										</div>
 									</div>
 									<div class="row">
-										<div id="chart-container" style="width: 100%; width: 93%; margin: 0 auto"></div>
+									<div style="width: 93%; margin: 0 auto">
+										<div id="chart-container"></div>
+									</div>
 									</div>
 								</div>
 							</div>
