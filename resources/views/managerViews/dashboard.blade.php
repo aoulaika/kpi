@@ -147,7 +147,6 @@
 						<li class="active"><a href="#tab_1" data-toggle="tab">Tickets Per Hours</a></li>
 						<li><a href="#tab_2" data-toggle="tab">Comparing</a></li>
 					</ul>
-
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab_1">
 							<div>
@@ -189,7 +188,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="form-group form-inline pull-right">
+                                            <div class="form-group form-inline pull-right" style="margin-right:10px;">
                                                 <label for="interval-type">Interval type: </label>
                                                 <select name="interval-type" id="interval-type" class="form-control">
                                                     <option value="day">Day</option>
@@ -206,10 +205,10 @@
                                                     <strong><p style="margin-top: 4px;">#1</p></strong>
                                                 </div>
                                                 <div class="col-lg-5 form-inline">
-                                                    <label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut" />
+                                                    <label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut"/>
                                                 </div>
                                                 <div class="col-lg-5 form-inline">
-                                                    <label>TO :</label> <input type="text" class="form-control" disabled/>
+                                                    <label>TO :</label> <input type="text" class="form-control datefin" disabled/>
                                                 </div>
                                             </div>
                                             <div class="row toRepeat" style="margin-top:15px;">
@@ -220,12 +219,19 @@
                                                     <label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut" />
                                                 </div>
                                                 <div class="col-lg-5 form-inline">
-                                                    <label>TO :</label> <input type="text" class="form-control" disabled/>
+                                                    <label>TO :</label> <input type="text" class="form-control datefin" disabled/>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <a id="zid" class="btn btn-primary pull-right" style="margin:10px;"><i class="fa fa-plus"></i></a>
+                                        </div>
+                                        <div class="row">
+                                            <div class="alert alert-danger alert-dismissable" id="alert1" style="display: none;">
+                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                                <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                                                <p>Intervals must begin by the same day of the week !</p>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -817,19 +823,66 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
                 range = 7;
             if($('#interval-type').val()=='month')
                 range = 30;
-            $.ajax({
-                url: 'reloadIntervals',
-                type: "post",
-                data: {
-                    '_token': $('input[name=_token]').val(),
-                    'dates': dates,
-                    'type': $('#interval-type').val()
-                },
-                success: function (response) {
-                    drawChart(response.values,range);
+            var msg = "";
+            var d2 = new Date(dates[0]);
+            for(var i=0;i<dates.length;i++){
+                var d1 = new Date(dates[i]);
+                if(dates[i] == ""){
+                    msg = "Please assign all visible inputs or remove them !";
+                    break;
                 }
-            });
+                if(i>0 && d2.getDay()!= d1.getDay()){
+                    msg = "Intervals must begin with the same day of the week !";
+                    break;
+                }
+                d2 = d1;
+            }
+            if(msg != ""){
+                $('#alert1').children('p').text(msg);
+                $('#alert1').css("display","block");
+            }
+            else{
+                $('#alert1').children('p').text(msg);
+                $('#alert1').css("display","none");
+                $.ajax({
+                    url: 'reloadIntervals',
+                    type: "post",
+                    data: {
+                        '_token': $('input[name=_token]').val(),
+                        'dates': dates,
+                        'type': $('#interval-type').val()
+                    },
+                    success: function (response) {
+                        drawChart(response.values,range);
+                    }
+                });
+            }
         });
     </script>
 <!-- END Ajax Tickets Interval -->
+<!-- Onchange datepicker and interval select -->
+    <script>
+        function setFinDates(elt){
+            if($(elt).val() == "")
+                $(elt).parent().next().children('input.datefin').val("");
+            else{
+                var dd = new Date($(elt).val());
+                dd.setHours(0,0,0);
+                if($('#interval-type').val()=='week')
+                    dd = addDays(dd,6);
+                if($('#interval-type').val()=='month')
+                    dd = addDays(dd,29);
+                var df = dd.getDate() + "/" + (dd.getMonth() + 1) + "/" + dd.getFullYear();
+                $(elt).parent().next().children('input.datefin').val(df);
+            }
+        }
+        $(document.body).on('change','input.datedebut',function(){
+            setFinDates(this);
+        });
+        $(document.body).on('change','#interval-type',function(){
+            $('input.datedebut').each(function(){
+                setFinDates(this);
+            });
+        });
+    </script>
 @endsection
