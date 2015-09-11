@@ -1,5 +1,13 @@
 @extends('managerViews/layout')
 @section('title', ' Agents Dashboard')
+@section('page_title')
+    Dashboard
+    <small>Agents</small>
+@endsection
+@section('page_current')
+    <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboards</a></li>
+    <li class="active">Agents dashboard</li>
+@endsection
 @section('content')
 <div class="row">
     <div class="col-md-12">

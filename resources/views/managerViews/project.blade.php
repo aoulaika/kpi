@@ -1,5 +1,13 @@
 @extends('managerViews/layout')
 @section('title', ' Manage Languages')
+@section('title', ' Agents Dashboard')
+@section('page_title')
+    Projects
+@endsection
+@section('page_current')
+    <li><a href="{{ route('project') }}"><i class="fa fa-dashboard"></i> Projects</a></li>
+    <li class="active">Managing</li>
+@endsection
 @section('style')
 @endsection
 @section('content')

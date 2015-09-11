@@ -1,5 +1,13 @@
 @extends('managerViews/layout')
 @section('title', ' Global Dashboard')
+@section('page_title')
+    Dashboard
+    <small>Global</small>
+@endsection
+@section('page_current')
+    <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboards</a></li>
+    <li class="active">Global dashboard</li>
+@endsection
 @section('style')
 <style>
 	/* span.select2-selection--single{
