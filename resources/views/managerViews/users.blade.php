@@ -38,8 +38,9 @@
 <div ng-app="app" ng-controller="ctrl">
 	<div class="box box-default">
 		<div class="box-header with-border">
-			<h3 class="box-title" style="padding-top:5px" id="title">
-				Employee Directory
+			<h3 class="box-title" style="padding-top:5px;" id="title">
+				<img ng-show="project.id || false" style="width:70px" src="{{ asset('/img/proj-img/<% project.id+".png" %>') }}" alt="">
+				<br><% team?'Team '+team.text:'' %>
 			</h3>
 			<a class="btn btn-social btn-primary pull-right" id="btn-add">
 				<i class="fa fa-plus"></i> Add Employee
@@ -49,31 +50,25 @@
 			<div class="container-fluid">
 				<header class="clearfix">
 					<div class="form-inline pull-left">
-						<select name="projects" id="projects" class="form-control filter">
-							<option value="Eli Lilly">Project Eli Lilly</option>
-							<option value="Eli Lilly">Project Eli Lilly</option>
-							<option value="Eli Lilly">Project Eli Lilly</option>
-							<option value="Eli Lilly">Project Eli Lilly</option>
+						<select ng-model="project" ng-options="project.name for project in accounts track by project.id" class="form-control">
+							<option value="">All</option>
 						</select>
-						<select name="team" id="team" class="form-control filter">
-							@foreach($team as $t)
-							<option value="{{ $t->Id }}">{{ 'Team '.$t->lastname.' '.$t->firstname }}</option>
-							@endforeach
+						<select ng-model="team" ng-options="team.text for team in teams | filter:{'value':'!'+0} track by team.value" class="form-control">
+							<option value="">All</option>
 						</select>
 					</div>
 					<div class="form-inline pull-right">
 						<div class="form-group">
-							<div class="input-group">
+							<div style="width:350px" class="input-group">
 								<span class="input-group-addon"><i class="fa fa-search"></i></span>
-								<input type="text" class="form-control"  ng-model="searchText" type="search" placeholder="Type name, email, or department">
-								<!-- <button ng-click="searchText = ''" ng-show="searchText != ''" type="button" class="close" aria-hidden="true">&times;</button> -->
+								<input style="width:350px" type="text" class="form-control"  ng-model="searchText" type="search" placeholder="Type name, email, role, job ... etc">
 								<span class="input-group-addon" ng-click="searchText = ''" ng-show="searchText != ''"><i class="fa fa-eraser"></i></span>
 							</div>
 						</div>
 					</div>
 				</header>
 				<div class="row">
-					<div ng-repeat="item in items | filter:searchText" class="col-lg-4 col-md-6 box-user">
+					<div ng-repeat="item in items | filter:{'project_id':project.id} | filter:{'team':team.value} | filter:searchText" class="col-lg-4 col-md-6 box-user">
 						<div class="col-xs-5">
 							<a class="image" ng-click="editItem(item)" data-toggle="modal" data-target="#myModal">
 								<span class="rollover"></span>
@@ -82,7 +77,9 @@
 						</div>
 						<div class="col-xs-7">
 							<blockquote>
-								<p><% item.firstname+' '+item.lastname %></p> <small><cite title="Source Title"><% item.role %></cite></small>
+								<img src="{{ asset('/img/<% item.status %>.png') }}" alt="">
+								<span ng-bind="item.firstname+' '+item.lastname"></span>
+								<small><cite title="Source Title"><% item.role %></cite></small>
 							</blockquote>
 						</div>
 					</div>
@@ -90,11 +87,9 @@
 			</div>
 			<!-- Modal -->
 			<div class="modal fade" id="myModal" role="dialog">
-				<div class="modal-dialog">
-					<!-- Modal content-->
+				<div class="modal-dialog" ng-style="(selectedItem.role=='N1'||selectedItem.role=='N2')?{width:'75%'}:{width:'50%'}">
 					<div class="modal-content">
 						<div class="modal-header">
-							<!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
 							<div class="row">
 								<div class="col-lg-2">
 									<div class="media">
@@ -108,19 +103,20 @@
 										<strong><% selectedItem.firstname+' '+selectedItem.lastname %></strong>
 									</h4>
 									<h5>
-										<% selectedItem.role %> at <small>Eli lilly</small>
+										<% selectedItem.role %>
 									</h5>
 								</div>
 							</div>
 						</div>
 						<div class="modal-body">
 							<div class="row">
-								<div class="col-lg-6">
+								<div ng-class="(selectedItem.role=='N1'||selectedItem.role=='N2')?'col-lg-6':'col-lg-12'">
 									<div class="nav-tabs-custom">
 										<ul class="nav nav-tabs">
 											<li class="active"><a href="#tab_1-1" data-toggle="tab" aria-expanded="true">Personal details</a></li>
 											<li class=""><a href="#tab_2-2" data-toggle="tab" aria-expanded="false">Professional details</a></li>
 											<li class=""><a href="#tab_3-3" data-toggle="tab" aria-expanded="false">Tools</a></li>
+											<li class=""><a href="#tab_4-4" data-toggle="tab" aria-expanded="false">Projects</a></li>
 										</ul>
 										<div class="tab-content">
 											<div class="tab-pane active" id="tab_1-1">
@@ -271,11 +267,22 @@
 													</tr>
 												</table>
 											</div><!-- /.tab-pane -->
+											<div class="tab-pane" id="tab_4-4">
+											</div>
 										</div><!-- /.tab-content -->
 									</div>
 								</div>
-								<div class="col-lg-6">
-									<div id="chart-container" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto"></div>
+								<div ng-class="(selectedItem.role=='N1'||selectedItem.role=='N2')?'col-lg-6':'col-lg-0'" ng-show="(selectedItem.role=='N1'||selectedItem.role=='N2')">
+									<div class="row text-center">
+										<div class="btn-group" role="group" aria-label="...">
+											<button type="button" class="btn btn-default">Left</button>
+											<button type="button" class="btn btn-default">Middle</button>
+											<button type="button" class="btn btn-default">Right</button>
+										</div>
+									</div>
+									<div class="row">
+										<div id="chart-container" style="width: 100%; width: 93%; margin: 0 auto"></div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -294,20 +301,20 @@
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="Employee_id">Employe ID</label>
-								<input type="text" name="employe_id" placeholder="Employe id" class="form-control" >
+								<label for="Employee_id">Employe ID <span class="text-danger">*</span></label>
+								<input required type="text" name="employe_id" placeholder="Employe id" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="lastName">Last Name</label>
-								<input type="text" name="lastname" placeholder="Last Name" class="form-control"  >
+								<label for="lastName">Last Name <span class="text-danger">*</span></label>
+								<input required type="text" name="lastname" placeholder="Last Name" class="form-control"  >
 							</div>
 							<div class="form-group">
-								<label for="firstname">First Name</label>
-								<input type="text" name="firstname" placeholder="First Name" class="form-control" >
+								<label for="firstname">First Name <span class="text-danger">*</span></label>
+								<input required type="text" name="firstname" placeholder="First Name" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="email">Email</label>
-								<input type="email" name="email" placeholder="Email" class="form-control" >
+								<label for="email">Email <span class="text-danger">*</span></label>
+								<input required type="email" name="email" placeholder="Email" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="gender">Gender</label>
@@ -319,20 +326,20 @@
 						</div>
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="matricule">AgirhID/Matricule</label>
-								<input type="text" name="matricule" placeholder="AgirhID/Matricule" class="form-control" >
+								<label for="matricule">AgirhID/Matricule <span class="text-danger">*</span></label>
+								<input required type="text" name="matricule" placeholder="AgirhID/Matricule" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="city">City</label>
-								<input type="city" name="city" placeholder="City" class="form-control" >
+								<label for="city">City <span class="text-danger">*</span></label>
+								<input required type="city" name="city" placeholder="City" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="adress">Adress</label>
-								<input type="adress" name="adress" placeholder="adress" class="form-control" >
+								<label for="adress">Adress <span class="text-danger">*</span></label>
+								<input required type="adress" name="adress" placeholder="adress" class="form-control" >
 							</div>
 							<div class="form-group">
-								<label for="phone">Phone</label>
-								<input type="text" name="phone" placeholder="phone" class="form-control" >
+								<label for="phone">Phone <span class="text-danger">*</span></label>
+								<input required type="text" name="phone" placeholder="phone" class="form-control" >
 							</div>
 							<div class="form-group">
 								<label for="picture">Picture</label>
@@ -348,24 +355,28 @@
 						<div class="frm-element">
 							<div class="row">
 								<div class="col-lg-1">
-								<span class="span pull-right"># <span class="number">1</span></span>
+									<span class="span pull-right"># <span class="number">1</span></span>
 								</div>
 								<div class="col-lg-3">
 									<div class="form-group">
-										<label for="account">Account</label>
-										<select ng-options="account.id as account.name for account in accounts track by account.id" ng-model="account" name="account[]" id="account" class="form-control account"></select>
+										<label for="account">Account <span class="text-danger">*</span></label>
+										<select required ng-options="account.name for account in accounts track by account.id" ng-model="account" name="account[]" id="account" class="form-control account">
+											<option value="">Choose an account</option>
+										</select>
 									</div>
 								</div>
 								<div class="col-lg-3">
 									<div class="form-group">
-										<label for="id">ID</label>
-										<input type="text" id="id" name="account_id[]" class="form-control">
+										<label for="id">ID <span class="text-danger">*</span></label>
+										<input required type="text" id="id" name="account_id[]" class="form-control">
 									</div>
 								</div>
 								<div class="col-lg-3">
 									<div class="form-group">
 										<label for="sub-account">Sub-Account</label>
-										<select ng-options="sub_account.id as sub_account.name for sub_account in sub_accounts track by sub_account.id" ng-model="sub_account" name="sub_account[]" id="sub_-account" class="form-control sub-account"></select>
+										<select ng-options="sub_account.name for sub_account in sub_accounts track by sub_account.id" ng-model="sub_account" name="sub_account[]" id="sub_account" class="form-control sub-account">
+											<option value="">Choose a sub-account</option>
+										</select>
 									</div>
 								</div>
 							</div>
@@ -392,13 +403,18 @@
 							<div class="form-group">
 								<label for="role">Role</label>
 								<select name="role" id="role" class="form-control">
-									<option value="Admin" selected>Admin</option>
-									<option value="Coach">Coach</option>
-									<option value="Quality analyst">Quality analyst</option>
+									<option value="Coach" selected>Coach</option>
+									<option value="CSR">CSR</option>
+									<option value="KA">KA</option>
+									<option value="N1">N1</option>
+									<option value="N2">N2</option>
+									<option value="QA">QA</option>
+									<option value="SDM">SDM</option>
+									<option value="SDS">SDS</option>
 									<option value="SME">SME</option>
+									<option value="TL">TL</option>
 									<option value="Trainer">Trainer</option>
-									<option value="Team leader">Team leader</option>
-									<option value="Other">Other</option>
+									<option value="WFA">WFA</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -418,8 +434,8 @@
 						</div>
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
-								<label for="integration_date">Integration date</label>
-								<input type="date" name="integration_date" placeholder="integration_date" class="form-control"/>
+								<label for="integration_date">Integration date <span class="text-danger">*</span></label>
+								<input required type="date" name="integration_date" placeholder="integration_date" class="form-control"/>
 							</div>
 							<div class="form-group">
 								<label for="status">Status</label>
@@ -437,8 +453,8 @@
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="language">Language</label><br>
-								<select name="language[]" multiple class="selectpicker" data-width="100%">   
+								<label for="language">Language <span class="text-danger">*</span></label><br>
+								<select required name="language[]" multiple class="selectpicker" data-width="100%">   
 									@foreach($languages as $language)
 									<option value="{{ $language->Id }}">{{ $language->name }}</option>
 									@endforeach
@@ -477,7 +493,10 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-lg-2 col-lg-offset-8">
+						<div class="col-lg-7 col-lg-offset-1">
+							<span class="text-danger">Please assign required fields</span>
+						</div>
+						<div class="col-lg-2">
 							<input type="reset" class="btn btn-default" value="Cancel">
 							<input type="submit" class="btn btn-info" value="Add User">
 						</div>
@@ -512,12 +531,25 @@
 			$('#btn-add').show(1000);
 			$('#title').text('Employee Directory');
 		});
+		var i=0;
+		var r="<a class='btn btn-danger' id='remove'><i class='fa fa-minus'></i></a>";
 		$(document.body).on('click', '#add', function() {
 			var a = $('.number').last().text();
-			var elm = '<div class="frm-element">'+$("#frm-content").children('.frm-element').last().html()+'</div>';
+			i++;
+			if(i==1){
+				$('#add').before(r);
+			}
+			var elm = "<div id='r"+i+"' class='frm-element'>"+$("#frm-content").children('.frm-element').last().html()+"</div>";
 			$('#frm-content').append(elm);
 			$('.number').last().text(parseInt(a)+1);
-		});		
+		});
+		$(document.body).on('click', '#remove', function() {
+			$('#r'+i).remove();
+			i--;
+			if(i==0){
+				$('#remove').remove();
+			}
+		});
 	});
 </script>
 @endsection

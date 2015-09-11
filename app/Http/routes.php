@@ -87,7 +87,7 @@ Route::post('getTeamName', [
     'uses' => 'UsersController@getTeamName'
 ]);
 
-Route::any('polarData', [
+Route::post('polarData', [
     'as' => 'polarData',
     'uses' => 'UsersController@polarData'
 ]);

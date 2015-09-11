@@ -17,6 +17,7 @@ app.controller('ctrl', function($scope,$http) {
     $scope.teams=response.teams;
     $scope.selectedTeam = {value: 0, text: ""};
     $scope.items=response.users;
+    console.log(response.users);
   })
   .error(function(response) {
     console.log('Error getUsers');
@@ -94,13 +95,18 @@ app.controller('ctrl', function($scope,$http) {
   ];
 
   $scope.roles = [
-  {value: "Admin", text: "Admin"},
   {value: "Coach", text: "Coach"},
-  {value: "Quality analyst", text: "Quality analyst"},
+  {value: "CSR", text: "CSR"},
+  {value: "KA", text: "KA"},
+  {value: "N1", text: "N1"},
+  {value: "N2", text: "N2"},
+  {value: "QA", text: "QA"},
+  {value: "SDM", text: "SDM"},
+  {value: "SDS", text: "SDS"},
   {value: "SME", text: "SME"},
+  {value: "TL", text: "TL"},
   {value: "Trainer", text: "Trainer"},
-  {value: "Team leader", text: "Team leader"},
-  {value: "Other", text: "Other"}
+  {value: "WFA", text: "WFA"},
   ];
 
   $scope.editItem = function(item){
@@ -136,33 +142,30 @@ app.controller('ctrl', function($scope,$http) {
       console.log(response);
     });
 
-    var data = [
-    {
-      className: 'Agent',
-      axes: [
-      {axis: "FCR", value: 0.8}, 
-      {axis: "FCR Resolvable", value: 0.9},
-      {axis: "Resolvable Missed", value: 0.4},
-      {axis: "CI Usage", value: 0.76},  
-      {axis: "EKMS Usage", value: 0.75}
-      ]
-    },
-    {
-      className: 'Average',
-      axes: [
-      {axis: "FCR", value: 0.76}, 
-      {axis: "FCR Resolvable", value: 0.92},
-      {axis: "Resolvable Missed", value: 0.2},
-      {axis: "CI Usage", value: 0.7},  
-      {axis: "EKMS Usage", value: 0.8}
-      ]
-    }
-    ];
-    showRadar();
+    $http.post('getUserTools', {id:item.Id})
+    .then(function (response) {
+      $scope.user_tools=response.data.tools;
+    })
+    .then(function (response) {
+      console.log('Error getUserTools');
+      console.log(response);
+    });
+
+    $http.post('polarData', {id:item.Id})
+    .then(function (response) {
+      console.log(response.data.data);
+      
+      showRadar(response.data.data);
+    })
+    .then(function (response) {
+      console.log('Error polarData');
+      console.log(response);
+    });
+
   };
 
   $scope.editUser = function(id, attribut, data) {
-    if (data == '') {
+    if (attribut != 'team' && data == '' ) {
       return attribut+" shouldn't be `empty`";
     }else{
       if(attribut == 'language'){
