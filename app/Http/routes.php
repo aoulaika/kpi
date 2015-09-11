@@ -198,7 +198,7 @@ Route::get('compare', [
     'uses' => 'ControllerZakaria@compare'
 ]);
 
-Route::post('reloadIntervals', [
+Route::get('reloadIntervals', [
     'as' => 'reloadIntervals',
     'uses' => 'ControllerZakaria@reloadIntervals'
 ]);

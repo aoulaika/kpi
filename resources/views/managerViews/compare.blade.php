@@ -9,23 +9,24 @@
     <script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
     <script>
         var values= JSON.parse('<?php echo json_encode($values); ?>');
-        drawChart(values);
+        var times= JSON.parse('<?php echo json_encode($times); ?>');
+        drawChart(values,7,times);
         function addDays(date, days) {
             var result = new Date(date);
             result.setDate(result.getDate() + days);
             return result;
         }
-        function drawChart(values){
+        function drawChart(values,range,times){
             var chartData=[];
             var dates=[];
             var iterator =[];
-            for(var i=0;i<values.length;i++){
-                dates.push(new Date(values[i][0].CreatedYear, values[i][0].CreatedMonth-1, values[i][0].CreatedDay, 0, 0));
+            for(var i=0;i<times.length;i++){
+                dates.push(new Date(times[i][0]));
+                dates[i].setHours(0,0,0);
                 iterator.push(0);
             }
-            console.log(dates);
             var datefin=dates[0];
-            datefin=addDays(dates[0],1);
+            datefin=addDays(dates[0],range);
             while(dates[0]<datefin) {
                 var temp=[];
                 for(var i=0;i<values.length;i++){
@@ -50,7 +51,6 @@
                 for(var i=0;i<values.length;i++)
                     dates[i].setHours(dates[i].getHours()+1);
             }
-            console.log(chartData);
             var graphData = [];
             for(var i=0;i<values.length;i++){
                 var obj = {
@@ -60,7 +60,7 @@
                     "bulletBorderAlpha": 1,
                     "bulletColor": "#FFFFFF",
                     "hideBulletsCount": 50,
-                    "title": "week<br>" ,
+                    "title": (times[i][0]!=times[i][1])?times[i][0]+'<br>'+times[i][1]:times[i][1],
                     "valueField": ""+i,
                     "useLineColorForBulletBorder": true,
                     "lineThickness": 2

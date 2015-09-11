@@ -315,9 +315,6 @@ class ControllerZakaria extends Controller
 
 public function dashboard(Request $req){
     $params = $req->except(['_token']);
-    $date = Carbon::now();
-    $today = explode(' ',$date);
-
     $total_ticket=DB::table('fact')
     ->count();
 
@@ -455,16 +452,23 @@ public function dashboard(Request $req){
             $tickets_product[$value->Product] = [array('count' => $value->count, 'CreatedYear' => $value->CreatedYear, 'CreatedMonth' => $value->CreatedMonth, 'CreatedDay' => $value->CreatedDay, 'CreatedHour' => $value->CreatedHour, 'CreatedMinute' => $value->CreatedMinute, 'CreatedSecond' => $value->CreatedSecond)];
         }
     }
+    $end2 = new \DateTime();
+    $end2->setTime(0,0,0);
+    $begin2 = clone $end2;
+    $begin2->modify('-6 day');
+    $end1 = clone $begin2;
+    $end1->modify('-1 day');
+    $begin1 = clone $end1;
+    $begin1->modify('-6 day');
 
-    $times = ['2015/08/02 - 2015/08/07','2015/08/09 - 2015/08/14','2015/08/16 - 2015/08/21','2015/08/23 - 2015/08/28'];
+    $times = [[$begin1->format('Y-m-d'),$end1->format('Y-m-d')],[$begin2->format('Y-m-d'),$end2->format('Y-m-d')]];
 
     for($i=0;$i<sizeof($times);$i++){
-        $time = explode(' - ', $times[$i]);
         $intervals[$i] = DB::table('fact')
             ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
             ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
-            ->where('time_dim.Created', '>=', $time[0])
-            ->where('time_dim.Created', '<=', $time[1])
+            ->where('time_dim.Created', '>=', $times[$i][0])
+            ->where('time_dim.Created', '<=', $times[$i][1])
             ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
             ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
             ->get();
@@ -509,7 +513,8 @@ public function dashboard(Request $req){
         'medium'=>$medium,
         'low'=>$low,
         'planning'=>$planning,
-        'intervals'=> $intervals
+        'intervals'=> $intervals,
+        'times'=> $times
     ]);
 }
 
@@ -1276,46 +1281,61 @@ public function rangedate(Request $request)
     }
 
     public function compare(){
-        $times = ['2015/08/01 - 2015/08/01','2015/08/08 - 2015/08/08'];
+        $times = [['2015-08-02','2015-08-08'],['2015-08-09','2015-08-15'],['2015-08-16','2015-08-22'],['2015-08-23','2015-08-29']];
         for($i=0;$i<sizeof($times);$i++){
-            $intervals = explode(' - ', $times[$i]);
             $values[$i] = DB::table('fact')
                 ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
                 ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
                 ->where('product','=','activedirectory')
-                ->where('time_dim.Created', '>=', $intervals[0])
-                ->where('time_dim.Created', '<=', $intervals[1])
+                ->where('time_dim.Created', '>=', $times[$i][0])
+                ->where('time_dim.Created', '<=', $times[$i][1])
                 ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
                 ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
                 ->get();
         }
         return View('managerViews/compare')->with([
-            'values'=> $values
+            'values' => $values,
+            'times' => $times
         ]);
     }
 
     public function reloadIntervals(Request $req){
         $params = $req->except(['_token']);
         for($i=0;$i<sizeof($params['dates']);$i++){
-            $dates[$i] = \DateTime::createFromFormat('Y-m-d',$params['dates'][$i]);
-            $dates[$i]->setTime(0,0,0);
-            $dates_fin[$i] = clone $dates[$i];
+            $dates = \DateTime::createFromFormat('Y-m-d',$params['dates'][$i]);
+            $dates->setTime(0,0,0);
+            $dates_fin= clone $dates;
             if($params['type']=='week')
-                $dates_fin[$i]->modify('+6 day');
+                $dates_fin->modify('+6 day');
             if($params['type']=='month')
-                $dates_fin[$i]->modify('+29 day');
-            $values[$i] = DB::table('fact')
-                ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
-                ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
-                ->where('product','=','activedirectory')
-                ->where('time_dim.Created', '>=', $dates[$i])
-                ->where('time_dim.Created', '<=', $dates_fin[$i])
-                ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
-                ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
-                ->get();
+                $dates_fin->modify('+29 day');
+            if($params['product']=='all'){
+                $values[$i] = DB::table('fact')
+                    ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
+                    ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+                    ->where('time_dim.Created', '>=', $dates->format('Y-m-d'))
+                    ->where('time_dim.Created', '<=', $dates_fin->format('Y-m-d'))
+                    ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
+                    ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
+                    ->get();
+            }
+            else{
+                $values[$i] = DB::table('fact')
+                    ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
+                    ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+                    ->where('product','=',$params['product'])
+                    ->where('time_dim.Created', '>=', $dates->format('Y-m-d'))
+                    ->where('time_dim.Created', '<=', $dates_fin->format('Y-m-d'))
+                    ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
+                    ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
+                    ->get();
+            }
+            $times[$i][0] = $dates->format('Y-m-d');
+            $times[$i][1] = $dates_fin->format('Y-m-d');
         }
         return response()->json([
-            'values'=> $values
+            'values'=> $values,
+            'times'=> $times
         ]);
     }
 }

@@ -208,7 +208,7 @@
                                                     <label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut"/>
                                                 </div>
                                                 <div class="col-lg-5 form-inline">
-                                                    <label>TO :</label> <input type="text" class="form-control datefin" disabled/>
+                                                    <label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
                                                 </div>
                                             </div>
                                             <div class="row toRepeat" style="margin-top:15px;">
@@ -219,7 +219,7 @@
                                                     <label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut" />
                                                 </div>
                                                 <div class="col-lg-5 form-inline">
-                                                    <label>TO :</label> <input type="text" class="form-control datefin" disabled/>
+                                                    <label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
                                                 </div>
                                             </div>
                                         </div>
@@ -228,7 +228,6 @@
                                         </div>
                                         <div class="row">
                                             <div class="alert alert-danger alert-dismissable" id="alert1" style="display: none;">
-                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                                 <h4><i class="icon fa fa-ban"></i> Alert!</h4>
                                                 <p>Intervals must begin by the same day of the week !</p>
                                             </div>
@@ -434,23 +433,20 @@ zoomChart();
 <!-- Compare Weeks -->
 <script>
     var values= JSON.parse('<?php echo json_encode($intervals); ?>');
-    drawChart(values,6);
+    var times= JSON.parse('<?php echo json_encode($times); ?>');
+    drawChart(values,7,times);
     function addDays(date, days) {
         var result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
     }
-    function drawChart(values,range){
+    function drawChart(values,range,times){
         var chartData=[];
         var dates=[];
         var iterator =[];
-        for(var i=0;i<values.length;i++){
-            try{
-                dates.push(new Date(values[i][0].CreatedYear, values[i][0].CreatedMonth-1, values[i][0].CreatedDay, 0, 0));
-            }
-            catch(err){
-                dates.push(new Date(0));
-            }
+        for(var i=0;i<times.length;i++){
+            dates.push(new Date(times[i][0]));
+            dates[i].setHours(0,0,0);
             iterator.push(0);
         }
         var datefin=dates[0];
@@ -469,12 +465,7 @@ zoomChart();
             var tempo ={};
             tempo["date"] = new Date(dates[0].getTime());
             for(var i=0;i<values.length;i++) {
-                try{
-                    tempo[""+i] = (temp[i].getTime() == dates[i].getTime())? values[i][iterator[i]].count:0;
-                }
-                catch(err){
-                    tempo[""+i] = 0;
-                }
+                tempo[""+i] = (temp[i].getTime() == dates[i].getTime())? values[i][iterator[i]].count:0;
             }
             chartData.push(tempo);
             for(var i=0;i<values.length;i++) {
@@ -493,16 +484,16 @@ zoomChart();
                 "bulletBorderAlpha": 1,
                 "bulletColor": "#FFFFFF",
                 "hideBulletsCount": 50,
-                "title": "week<br>" ,
+                "title": (times[i][0]!=times[i][1])?times[i][0]+'<br>'+times[i][1]:times[i][1],
                 "valueField": ""+i,
                 "useLineColorForBulletBorder": true,
-                "lineThickness": 2
+                "lineThickness": 3
             };
             graphData.push(obj);
         }
         var weekday=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
         function formatLabel(value, date, categoryAxis){
-            if (date.getHours()==0){
+            if (range!=1 && date.getHours()==0){
                 return weekday[date.getDay()];}
             else {return String(date.getHours())+":"+String(date.getMinutes())};
         }
@@ -545,8 +536,8 @@ zoomChart();
                 "enabled": true
             }
         });
-        chart.addListener("rendered", zoomChart);
-        zoomChart();
+        //chart.addListener("rendered", zoomChart);
+        //zoomChart();
         // this method is called when chart is first inited as we listen for "dataUpdated" event
         function zoomChart() {
             // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
@@ -818,6 +809,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
             var dates = $('input.datedebut').map(function(i, el) {
                 return el.value;
             }).get();
+            console.log(dates);
             var range = 1;
             if($('#interval-type').val()=='week')
                 range = 7;
@@ -831,7 +823,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
                     msg = "Please assign all visible inputs or remove them !";
                     break;
                 }
-                if(i>0 && d2.getDay()!= d1.getDay()){
+                if(i>0 && $('#interval-type').val()!='day' && d2.getDay()!= d1.getDay()){
                     msg = "Intervals must begin with the same day of the week !";
                     break;
                 }
@@ -846,21 +838,21 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
                 $('#alert1').css("display","none");
                 $.ajax({
                     url: 'reloadIntervals',
-                    type: "post",
+                    type: "get",
                     data: {
-                        '_token': $('input[name=_token]').val(),
                         'dates': dates,
+                        'product': $('#product-week').val(),
                         'type': $('#interval-type').val()
                     },
                     success: function (response) {
-                        drawChart(response.values,range);
+                        drawChart(response.values,range,response.times);
                     }
                 });
             }
         });
     </script>
 <!-- END Ajax Tickets Interval -->
-<!-- Onchange datepicker and interval select -->
+<!-- Onchange datepicker and interval type select -->
     <script>
         function setFinDates(elt){
             if($(elt).val() == "")
@@ -885,4 +877,31 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
             });
         });
     </script>
+<!-- END Onchange datepicker and interval type select -->
+<!-- Onchange product type for comparison -->
+    <script>
+        $(document.body).on('change','#product-week',function(){
+            var dates = $('input.datedebut').map(function(i, el) {
+                return el.value;
+            }).get();
+            var range = 1;
+            if($('#interval-type').val()=='week')
+                range = 7;
+            if($('#interval-type').val()=='month')
+                range = 30;
+            $.ajax({
+                url: 'reloadIntervals',
+                type: "get",
+                data: {
+                    'dates': dates,
+                    'product': $('#product-week').val(),
+                    'type': $('#interval-type').val()
+                },
+                success: function (response) {
+                    drawChart(response.values,range,response.times);
+                }
+            });
+        });
+    </script>
+<!-- END Onchange datepicker and interval type select -->
 @endsection
