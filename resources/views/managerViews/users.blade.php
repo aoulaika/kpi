@@ -38,13 +38,19 @@
 <div ng-app="app" ng-controller="ctrl">
 	<div class="box box-default">
 		<div class="box-header with-border">
-			<h3 class="box-title" style="padding-top:5px;" id="title">
-				<img ng-show="project.id || false" style="width:70px" src="{{ asset('/img/proj-img/<% project.id+".png" %>') }}" alt="">
-				<br><% team?'Team '+team.text:'' %>
-			</h3>
-			<a class="btn btn-social btn-primary pull-right" id="btn-add">
-				<i class="fa fa-plus"></i> Add Employee
-			</a>
+			<div class="row">
+				<div class="col-lg-4">
+					<img ng-show="project.id || false" style="height:60px" src="{{ asset('/img/proj-img/<% project.id+".png" %>') }}" alt="">
+				</div>
+				<div class="col-lg-4">
+				<h2 ng-show="team.text">Team <span ng-bind="team.text"></span></h2>
+				</div>
+				<div class="col-lg-4">
+					<a class="btn btn-social btn-primary pull-right" id="btn-add">
+						<i class="fa fa-plus"></i> Add Employee
+					</a>
+				</div>
+			</div>
 		</div><!-- /.box-header -->
 		<div class="box-body" id="directory-user">
 			<div class="container-fluid">

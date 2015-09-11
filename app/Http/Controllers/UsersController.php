@@ -278,6 +278,8 @@ public function editUser(Request $request) {
  ->update([$params['attr'] => $params['value']]);
 
  $users=DB::table('users')
+ ->join('user_project','user_id','=','users.id')
+ ->select('users.*', 'user_project.project_id')
  ->get();
 
  return response()->json([
