@@ -1,5 +1,13 @@
 @extends('managerViews/layout')
 @section('title', ' Errors Tracking')
+@section('page_title')
+    Errors
+    <small>Tracking</small>
+@endsection
+@section('page_current')
+    <li><a href="{{ route('errors') }}"><i class="fa fa-dashboard"></i> Errors</a></li>
+    <li class="active">Tracking</li>
+@endsection
 @section('content')
         <div class="box box-default">
             <div class="box-header with-border">

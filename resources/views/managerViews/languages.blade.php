@@ -1,5 +1,13 @@
 @extends('managerViews/layout')
 @section('title', ' Manage Languages')
+@section('title', ' Agents Dashboard')
+@section('page_title')
+    Languages
+@endsection
+@section('page_current')
+    <li><a href="{{ route('language') }}"><i class="fa fa-dashboard"></i> Languages</a></li>
+    <li class="active">Managing</li>
+@endsection
 @section('style')
 <link rel="stylesheet" href="{{ asset('/css/xeditable.css') }}">
 <style>

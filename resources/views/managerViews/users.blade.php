@@ -1,5 +1,13 @@
 @extends('managerViews/layout')
 @section('title', ' Manage Users')
+@section('page_title')
+    Employees
+    <small>Directory</small>
+@endsection
+@section('page_current')
+    <li><a href="{{ route('users') }}"><i class="fa fa-dashboard"></i> Employees</a></li>
+    <li class="active">Managing</li>
+@endsection
 @section('style')
 <link href="{{ asset('/css/style3.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="{{ asset('/css/xeditable.css') }}">
