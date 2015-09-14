@@ -33,7 +33,7 @@
 					</div><!-- /.form group -->
 				</div>
 				<div class="col-lg-6">
-					<span class="pull-right" id="range"><span class="date total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span class="date" id="debut">1900-01-01</span> and : <span class="date" id="fin">2015-08-19</span></span>
+					<span class="pull-right" id="range"><span class="date total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span class="date" id="debut">{{ $begin }}</span> and : <span class="date" id="fin">{{ $end }}</span></span>
 				</div>
 			</div><!-- /.box-header -->
 		</div>
@@ -295,6 +295,28 @@
 <script src="{{ asset('/js/radialProgress.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
 
+<!-- date range picker -->
+<script type="text/javascript">
+    $('.daterange-btn').daterangepicker(
+            {
+                ranges: {
+                    'All':['{{ $begin_inv }}',moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                startDate: '{{ $begin_inv }}',
+                endDate: moment()
+            },
+            function (start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+    );
+</script>
+<!-- END date range picker -->
+
 <!-- Ajax -->
 <script>
 	var data_temp = JSON.parse('<?php echo json_encode($tickets_all); ?>');
@@ -369,7 +391,9 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 		draw(data,'ticketsChart');
 	});
 	draw(data,'ticketsChart');
-	function draw(d,id) {
+    datedeb = $("#debut").html();
+    datefin = $("#fin").html();
+	function draw(d,id,datedeb,datefin) {
 		var ticketsData = [];
 		for (var i = 0; i < d.length; i++) {
 			ticketsData.push({

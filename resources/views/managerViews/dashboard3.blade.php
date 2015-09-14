@@ -274,10 +274,27 @@
 <script src="{{ asset('/plugins/select2/select2.full.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/js/function.js') }}" type="text/javascript"></script>
 <!-- End Percentage Counter -->
-<script>
-
-    
+<!-- date range picker -->
+<script type="text/javascript">
+    $('.daterange-btn').daterangepicker(
+            {
+                ranges: {
+                    'All':['01-01-1900',moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                startDate: '01-01-1900',
+                endDate: moment()
+            },
+            function (start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+    );
 </script>
+<!-- END date range picker -->
 <!-- Script Change User -->
 <script>
     var ci_temp = JSON.parse('<?php echo json_encode($ci_users); ?>');

@@ -313,7 +313,7 @@
 			<div class="container-fluid">
 				<form method="post" action="{{ route('adduser') }}" class="form-horizontal" enctype="multipart/form-data">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">
-					<legend>Personnal details</legend>
+					<legend>Personal details</legend>
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-1">
 							<div class="form-group">
@@ -522,6 +522,7 @@
 		</div>
 	</div><!-- /.box -->
 </div><!-- /.modal -->
+
 @endsection
 @section('script')
 <script src="{{ asset('/js/angular.min.js') }}"></script>

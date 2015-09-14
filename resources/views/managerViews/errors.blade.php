@@ -161,6 +161,27 @@
     <script src="{{ asset('plugins/datatables/extensions/Buttons/js/buttons.html5.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('plugins/datatables/extensions/jszip.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('plugins/iCheck/icheck.js') }}" type="text/javascript"></script>
+    <!-- date range picker -->
+    <script type="text/javascript">
+        $('.daterange-btn').daterangepicker(
+                {
+                    ranges: {
+                        'All':['01-01-1900',moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: '01-01-1900',
+                    endDate: moment()
+                },
+                function (start, end) {
+                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                }
+        );
+    </script>
+    <!-- END date range picker -->
     <script>
         $('.edit').click(function(){
             var id = $(this).closest('tr').children('input.id').val();
