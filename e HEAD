@@ -1,0 +1,223 @@
+[33mcommit eb1be569e8b7403e7adee1b0d991235bc6e61996[m
+Author: AyoubOlk <ayoubolk@gmail.com>
+Date:   Mon Sep 14 17:17:16 2015 +0100
+
+    fuck u
+
+[1mdiff --git a/app/Http/Controllers/ControllerZakaria.php b/app/Http/Controllers/ControllerZakaria.php[m
+[1mindex 1c27a69..d88c466 100644[m
+[1m--- a/app/Http/Controllers/ControllerZakaria.php[m
+[1m+++ b/app/Http/Controllers/ControllerZakaria.php[m
+[36m@@ -504,6 +504,23 @@[m [mpublic function dashboard(Request $req){[m
+         ));[m
+     }[m
+ [m
+[32m+[m[32m    $csi_rate=DB::table('csi')[m
+[32m+[m[32m    ->where('csi.sla_metric','=','Yes')[m
+[32m+[m[32m    ->join('tickets_dim','tickets_dim.Number','=','csi.ticket_number')[m
+[32m+[m[32m    ->select(DB::raw('avg(csi.rate) as rate'))[m
+[32m+[m[32m    ->first()->rate;[m
+[32m+[m
+[32m+[m[32m    $out=DB::table('quality')[m
+[32m+[m[32m    ->where('quality.accounted','=','NO')[m
+[32m+[m[32m    ->lists('ticket_number');[m
+[32m+[m
+[32m+[m[32m    $csi_rate_quality=DB::table('csi')[m
+[32m+[m[32m    ->where('csi.sla_metric','=','Yes')[m
+[32m+[m[32m    ->join('tickets_dim','tickets_dim.Number','=','csi.ticket_number')[m
+[32m+[m[32m    ->whereNotIn('csi.ticket_number', $out)[m
+[32m+[m[32m    ->select(DB::raw('avg(csi.rate) as rate'))[m
+[32m+[m[32m    ->first()->rate;[m
+[32m+[m
+     $countryChart=array();[m
+     foreach ($country as $key => $value) {[m
+         array_push($countryChart, (object)array([m
+[36m@@ -541,7 +558,9 @@[m [mpublic function dashboard(Request $req){[m
+         'begin'=> $begin,[m
+         'begin_inv'=> $begin_inv,[m
+         'end'=> $end,[m
+[31m-        'csi_map'=> $csi_map[m
+[32m+[m[32m        'csi_map'=> $csi_map,[m
+[32m+[m[32m        'csi_rate'=> $csi_rate,[m
+[32m+[m[32m        'csi_rate_quality'=> $csi_rate_quality[m
+     ]);[m
+ }[m
+ [m
+[36m@@ -1077,6 +1096,53 @@[m [mpublic function rangedate(Request $request)[m
+         ->where('tickets_dim.fcr_resolved','=','0')[m
+         ->count();[m
+         /*missed*/[m
+[32m+[m
+[32m+[m[32m        $csi_country=DB::table('fact')[m
+[32m+[m[32m        ->join('time_dim','fact.fk_time','=','time_dim.Id')[m
+[32m+[m[32m        ->where('time_dim.Created','>=',$params['datedeb'])[m
+[32m+[m[32m        ->where('time_dim.Created','<=',$params['datefin'])[m
+[32m+[m[32m        ->join('geography','geography.Id','=','fact.fk_geography')[m
+[32m+[m[32m        ->whereNotNull('geography.country_code')[m
+[32m+[m[32m        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')[m
+[32m+[m[32m        ->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')[m
+[32m+[m[32m        ->select(DB::raw('AVG(csi.rate) as count,geography.country_code,geography.country_name'))[m
+[32m+[m[32m        ->groupBy('geography.country_code')[m
+[32m+[m[32m        ->get();[m
+[32m+[m
+[32m+[m[32m        $csi_map=array();[m
+[32m+[m[32m        foreach ($csi_country as $key => $value) {[m
+[32m+[m[32m            array_push($csi_map, (object)array([m
+[32m+[m[32m                'code'=>$value->country_code,[m
+[32m+[m[32m                'value'=>$value->count,[m
+[32m+[m[32m                'name'=>$value->country_name[m
+[32m+[m[32m                ));[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        $csi_rate=DB::table('fact')[m
+[32m+[m[32m        ->join('time_dim','fact.fk_time','=','time_dim.Id')[m
+[32m+[m[32m        ->where('time_dim.Created','>=',$params['datedeb'])[m
+[32m+[m[32m        ->where('time_dim.Created','<=',$params['datefin'])[m
+[32m+[m[32m        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')[m
+[32m+[m[32m        ->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')[m
+[32m+[m[32m        ->where('csi.sla_metric','=','Yes')[m
+[32m+[m[32m        ->select(DB::raw('avg(csi.rate) as rate'))[m
+[32m+[m[32m        ->first()->rate;[m
+[32m+[m
+[32m+[m[32m        $out=DB::table('quality')[m
+[32m+[m[32m        ->where('quality.accounted','=','NO')[m
+[32m+[m[32m        ->lists('ticket_number');[m
+[32m+[m
+[32m+[m[32m        $csi_rate_quality=DB::table('fact')[m
+[32m+[m[32m        ->join('time_dim','fact.fk_time','=','time_dim.Id')[m
+[32m+[m[32m        ->where('time_dim.Created','>=',$params['datedeb'])[m
+[32m+[m[32m        ->where('time_dim.Created','<=',$params['datefin'])[m
+[32m+[m[32m        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')[m
+[32m+[m[32m        ->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')[m
+[32m+[m[32m        ->where('csi.sla_metric','=','Yes')[m
+[32m+[m[32m        ->whereNotIn('csi.ticket_number', $out)[m
+[32m+[m[32m        ->select(DB::raw('avg(csi.rate) as rate'))[m
+[32m+[m[32m        ->first()->rate;[m
+[32m+[m
+         $data=array([m
+             'kb'=>$total_kb,[m
+             'ci'=>$total_ci,[m
+[36m@@ -1098,7 +1164,10 @@[m [mpublic function rangedate(Request $request)[m
+             'high'=>$high,[m
+             'medium'=>$medium,[m
+             'low'=>$low,[m
+[31m-            'planning'=>$planning[m
+[32m+[m[32m            'planning'=>$planning,[m
+[32m+[m[32m            'csi_map'=> $csi_map,[m
+[32m+[m[32m            'csi_rate'=> $csi_rate,[m
+[32m+[m[32m            'csi_rate_quality'=> $csi_rate_quality[m
+             );[m
+         return response()->json($data);[m
+     }[m
+[1mdiff --git a/resources/views/managerViews/dashboard.blade.php b/resources/views/managerViews/dashboard.blade.php[m
+[1mindex 7f61aa6..c4a71d7 100644[m
+[1m--- a/resources/views/managerViews/dashboard.blade.php[m
+[1m+++ b/resources/views/managerViews/dashboard.blade.php[m
+[36m@@ -13,6 +13,15 @@[m [mDashboard[m
+ 	/* span.select2-selection--single{[m
+ 		width:250px;[m
+ 	} */[m
+[32m+[m	[32m.csi{[m
+[32m+[m		[32mfont-size: 3em;[m
+[32m+[m		[32mtext-align: center;[m
+[32m+[m		[32mcolor: #44A1C1;[m
+[32m+[m		[32mfont-family: 'Share Tech', sans-serif;[m
+[32m+[m		[32mheight: 90px;[m
+[32m+[m		[32mvertical-align: middle;[m
+[32m+[m		[32mmargin-top: 5%;[m
+[32m+[m	[32m}[m
+ </style>[m
+ @endsection[m
+ @section('content')[m
+[36m@@ -114,7 +123,7 @@[m [mDashboard[m
+ 			<div class="box-header with-border">[m
+ 				<h3 class="box-title">CSI Per Country</h3>[m
+ 			</div><!-- /.box-header -->[m
+[31m-			<div class="box-body" style="min-height:320px">[m
+[32m+[m			[32m<div class="box-body" style="height:390px">[m
+ 				<div id="csi_map" style="width: 100%; height: 100%;"></div>[m
+ 			</div><!-- /.box-body -->[m
+ 		</div><!-- /.box -->[m
+[36m@@ -125,7 +134,7 @@[m [mDashboard[m
+ 			<div class="box-header with-border">[m
+ 				<h3 class="box-title">CSI Per Category</h3>[m
+ 			</div><!-- /.box-header -->[m
+[31m-			<div class="box-body" style="min-height:320px">[m
+[32m+[m			[32m<div class="box-body" style="height:390px">[m
+ 				<div id="csiPie" style="margin: auto;"></div>[m
+ 			</div><!-- /.box-body -->[m
+ 		</div><!-- /.box -->[m
+[36m@@ -136,8 +145,19 @@[m [mDashboard[m
+ 			<div class="box-header with-border">[m
+ 				<h3 class="box-title">CSI Rate</h3>[m
+ 			</div><!-- /.box-header -->[m
+[31m-			<div class="box-body" style="min-height:320px">[m
+[31m-				[m
+[32m+[m			[32m<div class="box-body" style="height:390px">[m
+[32m+[m				[32m<div class="box box-warning">[m
+[32m+[m					[32m<div class="box-header with-border">[m
+[32m+[m						[32m<div class="box-title">Current CSI</div>[m
+[32m+[m						[32m<div class="box-body csi">{{ $csi_rate }}</div>[m
+[32m+[m					[32m</div>[m
+[32m+[m				[32m</div>[m
+[32m+[m				[32m<div class="box box-info">[m
+[32m+[m					[32m<div class="box-header with-border">[m
+[32m+[m						[32m<div class="box-title">CSI With Scrub</div>[m
+[32m+[m						[32m<div class="box-body csi">{{ $csi_rate_quality }}</div>[m
+[32m+[m					[32m</div>[m
+[32m+[m				[32m</div>[m
+ 			</div><!-- /.box-body -->[m
+ 		</div><!-- /.box -->[m
+ 	</div>[m
+[36m@@ -382,7 +402,10 @@[m [mDashboard[m
+ 					data_temp=response.ticket_all;[m
+ 					reloadSelect(data_temp.product,'#product');[m
+ 					draw(data_temp.all,'ticketsChart');[m
+[31m-					drawMap('#regions_div', response.countryChart);[m
+[32m+[m					[32m$('.csi').first().html(response.csi_rate);[m
+[32m+[m					[32m$('.csi').last().html(response.csi_rate_quality);[m
+[32m+[m					[32mdrawMap('#regions_div', response.countryChart, 2000, 'Number of Tickets', ' ticket');[m
+[32m+[m					[32mdrawMap('#csi_map', response.csi_map, 4.5, 'CSI Rating', ' ');[m
+ 					reloadMissed(response.total_ticket, response.ci_missed, response.kb_missed, response.fcr_missed, response.fcr_reso_missed, response.fcr_reso_total);[m
+ 				}[m
+ 			});[m
+[36m@@ -779,9 +802,12 @@[m [m$(id).highcharts(Highcharts.merge(gaugeOptions, {[m
+ <script src="{{ asset('/js/world.js') }}"></script>[m
+ <script>[m
+ 	var dataTemp=<?php echo json_encode($countryChart); ?>;[m
+[31m-	drawMap('#regions_div', dataTemp);[m
+[32m+[m	[32mdrawMap('#regions_div', dataTemp, 2000, 'Number of Tickets', ' ticket');[m
+[32m+[m
+[32m+[m	[32mvar csi_map=<?php echo json_encode($csi_map); ?>;[m
+[32m+[m	[32mdrawMap('#csi_map', csi_map, 4.5, 'CSI Rating', '');[m
+ [m
+[31m-	function drawMap (id, dataTemp) {[m
+[32m+[m	[32mfunction drawMap (id, dataTemp, mx, nm, sx) {[m
+ 		console.log(dataTemp);[m
+ 		$(id).highcharts('Map', {[m
+ 			title : {[m
+[36m@@ -793,21 +819,21 @@[m [m$(id).highcharts(Highcharts.merge(gaugeOptions, {[m
+ 			},[m
+ 			colorAxis: {[m
+ 				min: 1,[m
+[31m-				max: 2000,[m
+[32m+[m				[32mmax: mx,[m
+ 				type: 'logarithmic'[m
+ 			},[m
+ 			series : [{[m
+ 				data : dataTemp,[m
+ 				mapData: Highcharts.maps['custom/world'],[m
+ 				joinBy: ['iso-a2', 'code'],[m
+[31m-				name: 'Number of Tickets',[m
+[32m+[m				[32mname: nm,[m
+ 				states: {[m
+ 					hover: {[m
+ 						color: '#BADA55'[m
+ 					}[m
+ 				},[m
+ 				tooltip: {[m
+[31m-					valueSuffix: ' ticket'[m
+[32m+[m					[32mvalueSuffix: sx[m
+ 				}[m
+ 			}][m
+ 		});[m

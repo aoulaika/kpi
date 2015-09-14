@@ -880,12 +880,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 	var csi_map=<?php echo json_encode($csi_map); ?>;
 	drawMap('#csi_map', csi_map, 4.5, 'CSI Rating', '');
 
-<<<<<<< HEAD
 	function drawMap (id, dataTemp, mx, nm, sx) {
-		console.log(dataTemp);
-=======
-	function drawMap (id, dataTemp) {
->>>>>>> cb3e1aaa7ee8925eb417d46b707ada48ebd4f237
 		$(id).highcharts('Map', {
 			title : {
 				text : ''
