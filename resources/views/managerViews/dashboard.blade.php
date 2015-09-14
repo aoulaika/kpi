@@ -229,6 +229,17 @@ Dashboard
 										@endforeach
 									</select>
 								</div>
+                                <div class="col-sm-2" style="margin-bottom:15px">
+                                    <label>Line thickness</label>
+                                    <select name="thicknessComp" id="thicknessComp" class="form-control">
+                                        <option value="3" selected>Default</option>
+                                        <option value="1">light</option>
+                                        <option value="2">Medium</option>
+                                        <option value="4">Bold </option>
+                                        <option value="5">Bold x2</option>
+                                        <option value="6">Bold x3</option>
+                                    </select>
+                                </div>
 								<a class="btn btn-primary pull-right" style="margin-top: 25px" data-toggle="modal" data-target="#myModal"><i class="fa fa-calendar"></i> Change intervals to compare</a>
 								<div id="weeks"></div>
 							</div>
@@ -343,8 +354,10 @@ Dashboard
 <script src="{{ asset('/js/radialProgress.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
 
+
 <!-- date range picker -->
 <script type="text/javascript">
+    var changed = false;
     $('.daterange-btn').daterangepicker(
             {
                 ranges: {
@@ -436,7 +449,7 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 		}else{
 			data=data_temp.product[v];
 		}
-		draw(data,'ticketsChart',$(this).val());
+		draw(data,'ticketsChart',$('#thickness').val());
 	});
     $('#thickness').change(function() {
         var v=$('#product').val();
@@ -533,15 +546,43 @@ chart1.pathToImages = '/kpi/public/img/';
 
 <!-- Compare Weeks -->
 <script>
+    console.log()
 	var values= JSON.parse('<?php echo json_encode($intervals); ?>');
 	var times= JSON.parse('<?php echo json_encode($times); ?>');
-	drawChart(values,7,times);
+	drawChart(values,7,times,3);
 	function addDays(date, days) {
 		var result = new Date(date);
 		result.setDate(result.getDate() + days);
 		return result;
 	}
-	function drawChart(values,range,times){
+    $('#thicknessComp').change(function(){
+        if(changed == false){
+            drawChart(values,7,times,$(this).val());
+        }
+        else{
+            var dates = $('input.datedebut').map(function(i, el) {
+                return el.value;
+            }).get();
+            var range = 1;
+            if($('#interval-type').val()=='week')
+                range = 7;
+            if($('#interval-type').val()=='month')
+                range = 30;
+            $.ajax({
+                url: 'reloadIntervals',
+                type: "get",
+                data: {
+                    'dates': dates,
+                    'product': $('#product-week').val(),
+                    'type': $('#interval-type').val()
+                },
+                success: function (response) {
+                    drawChart(response.values,range,response.times,$('#thicknessComp').val());
+                }
+            });
+        }
+    });
+	function drawChart(values,range,times,thickness){
 		var chartData=[];
 		var dates=[];
 		var iterator =[];
@@ -588,7 +629,7 @@ chart1.pathToImages = '/kpi/public/img/';
 				"title": (times[i][0]!=times[i][1])?times[i][0]+'<br>'+times[i][1]:times[i][1],
 				"valueField": ""+i,
 				"useLineColorForBulletBorder": true,
-				"lineThickness": 3
+				"lineThickness": thickness
 			};
 			graphData.push(obj);
 		}
@@ -945,7 +986,8 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
             			'type': $('#interval-type').val()
             		},
             		success: function (response) {
-            			drawChart(response.values,range,response.times);
+            			drawChart(response.values,range,response.times,$('#thicknessComp').val());
+                        changed = true;
             		}
             	});
             }
@@ -998,7 +1040,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 				'type': $('#interval-type').val()
 			},
 			success: function (response) {
-				drawChart(response.values,range,response.times);
+				drawChart(response.values,range,response.times,$('#thicknessComp').val());
 			}
 		});
 	});
