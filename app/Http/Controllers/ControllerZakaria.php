@@ -532,7 +532,7 @@ public function dashboard(Request $req){
 
     $begin = DB::table('time_dim')->min('Created');
     $begin_exp = explode('-',$begin);
-    $begin_inv = $begin_exp[2].'-'.$begin_exp[1].'-'.$begin_exp[0];
+    $begin_inv = $begin_exp[1].'-'.$begin_exp[2].'-'.$begin_exp[0];
     $end = (new \Datetime())->format('Y-m-d');
 
     return View('managerViews/dashboard')->with([
