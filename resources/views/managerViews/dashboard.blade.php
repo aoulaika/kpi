@@ -13,6 +13,15 @@ Dashboard
 	/* span.select2-selection--single{
 		width:250px;
 	} */
+	.csi{
+		font-size: 3em;
+		text-align: center;
+		color: #44A1C1;
+		font-family: 'Share Tech', sans-serif;
+		height: 90px;
+		vertical-align: middle;
+		margin-top: 5%;
+	}
 </style>
 @endsection
 @section('content')
@@ -114,7 +123,7 @@ Dashboard
 			<div class="box-header with-border">
 				<h3 class="box-title">CSI Per Country</h3>
 			</div><!-- /.box-header -->
-			<div class="box-body" style="min-height:320px">
+			<div class="box-body" style="height:390px">
 				<div id="csi_map" style="width: 100%; height: 100%;"></div>
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
@@ -125,7 +134,7 @@ Dashboard
 			<div class="box-header with-border">
 				<h3 class="box-title">CSI Per Category</h3>
 			</div><!-- /.box-header -->
-			<div class="box-body" style="min-height:320px">
+			<div class="box-body" style="height:390px">
 				<div id="csiPie" style="margin: auto;"></div>
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
@@ -136,8 +145,19 @@ Dashboard
 			<div class="box-header with-border">
 				<h3 class="box-title">CSI Rate</h3>
 			</div><!-- /.box-header -->
-			<div class="box-body" style="min-height:320px">
-				
+			<div class="box-body" style="height:390px">
+				<div class="box box-warning">
+					<div class="box-header with-border">
+						<div class="box-title">Current CSI</div>
+						<div class="box-body csi">{{ $csi_rate }}</div>
+					</div>
+				</div>
+				<div class="box box-info">
+					<div class="box-header with-border">
+						<div class="box-title">CSI With Scrub</div>
+						<div class="box-body csi">{{ $csi_rate_quality }}</div>
+					</div>
+				</div>
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
 	</div>
@@ -382,7 +402,10 @@ Dashboard
 					data_temp=response.ticket_all;
 					reloadSelect(data_temp.product,'#product');
 					draw(data_temp.all,'ticketsChart');
-					drawMap('#regions_div', response.countryChart);
+					$('.csi').first().html(response.csi_rate);
+					$('.csi').last().html(response.csi_rate_quality);
+					drawMap('#regions_div', response.countryChart, 2000, 'Number of Tickets', ' ticket');
+					drawMap('#csi_map', response.csi_map, 4.5, 'CSI Rating', ' ');
 					reloadMissed(response.total_ticket, response.ci_missed, response.kb_missed, response.fcr_missed, response.fcr_reso_missed, response.fcr_reso_total);
 				}
 			});
@@ -779,9 +802,12 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 <script src="{{ asset('/js/world.js') }}"></script>
 <script>
 	var dataTemp=<?php echo json_encode($countryChart); ?>;
-	drawMap('#regions_div', dataTemp);
+	drawMap('#regions_div', dataTemp, 2000, 'Number of Tickets', ' ticket');
 
-	function drawMap (id, dataTemp) {
+	var csi_map=<?php echo json_encode($csi_map); ?>;
+	drawMap('#csi_map', csi_map, 4.5, 'CSI Rating', '');
+
+	function drawMap (id, dataTemp, mx, nm, sx) {
 		console.log(dataTemp);
 		$(id).highcharts('Map', {
 			title : {
@@ -793,21 +819,21 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 			},
 			colorAxis: {
 				min: 1,
-				max: 2000,
+				max: mx,
 				type: 'logarithmic'
 			},
 			series : [{
 				data : dataTemp,
 				mapData: Highcharts.maps['custom/world'],
 				joinBy: ['iso-a2', 'code'],
-				name: 'Number of Tickets',
+				name: nm,
 				states: {
 					hover: {
 						color: '#BADA55'
 					}
 				},
 				tooltip: {
-					valueSuffix: ' ticket'
+					valueSuffix: sx
 				}
 			}]
 		});

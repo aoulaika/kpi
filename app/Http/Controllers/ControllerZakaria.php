@@ -504,6 +504,23 @@ public function dashboard(Request $req){
         ));
     }
 
+    $csi_rate=DB::table('csi')
+    ->where('csi.sla_metric','=','Yes')
+    ->join('tickets_dim','tickets_dim.Number','=','csi.ticket_number')
+    ->select(DB::raw('avg(csi.rate) as rate'))
+    ->first()->rate;
+
+    $out=DB::table('quality')
+    ->where('quality.accounted','=','NO')
+    ->lists('ticket_number');
+
+    $csi_rate_quality=DB::table('csi')
+    ->where('csi.sla_metric','=','Yes')
+    ->join('tickets_dim','tickets_dim.Number','=','csi.ticket_number')
+    ->whereNotIn('csi.ticket_number', $out)
+    ->select(DB::raw('avg(csi.rate) as rate'))
+    ->first()->rate;
+
     $countryChart=array();
     foreach ($country as $key => $value) {
         array_push($countryChart, (object)array(
@@ -541,7 +558,9 @@ public function dashboard(Request $req){
         'begin'=> $begin,
         'begin_inv'=> $begin_inv,
         'end'=> $end,
-        'csi_map'=> $csi_map
+        'csi_map'=> $csi_map,
+        'csi_rate'=> $csi_rate,
+        'csi_rate_quality'=> $csi_rate_quality
     ]);
 }
 
@@ -1077,6 +1096,53 @@ public function rangedate(Request $request)
         ->where('tickets_dim.fcr_resolved','=','0')
         ->count();
         /*missed*/
+
+        $csi_country=DB::table('fact')
+        ->join('time_dim','fact.fk_time','=','time_dim.Id')
+        ->where('time_dim.Created','>=',$params['datedeb'])
+        ->where('time_dim.Created','<=',$params['datefin'])
+        ->join('geography','geography.Id','=','fact.fk_geography')
+        ->whereNotNull('geography.country_code')
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')
+        ->select(DB::raw('AVG(csi.rate) as count,geography.country_code,geography.country_name'))
+        ->groupBy('geography.country_code')
+        ->get();
+
+        $csi_map=array();
+        foreach ($csi_country as $key => $value) {
+            array_push($csi_map, (object)array(
+                'code'=>$value->country_code,
+                'value'=>$value->count,
+                'name'=>$value->country_name
+                ));
+        }
+
+        $csi_rate=DB::table('fact')
+        ->join('time_dim','fact.fk_time','=','time_dim.Id')
+        ->where('time_dim.Created','>=',$params['datedeb'])
+        ->where('time_dim.Created','<=',$params['datefin'])
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')
+        ->where('csi.sla_metric','=','Yes')
+        ->select(DB::raw('avg(csi.rate) as rate'))
+        ->first()->rate;
+
+        $out=DB::table('quality')
+        ->where('quality.accounted','=','NO')
+        ->lists('ticket_number');
+
+        $csi_rate_quality=DB::table('fact')
+        ->join('time_dim','fact.fk_time','=','time_dim.Id')
+        ->where('time_dim.Created','>=',$params['datedeb'])
+        ->where('time_dim.Created','<=',$params['datefin'])
+        ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+        ->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')
+        ->where('csi.sla_metric','=','Yes')
+        ->whereNotIn('csi.ticket_number', $out)
+        ->select(DB::raw('avg(csi.rate) as rate'))
+        ->first()->rate;
+
         $data=array(
             'kb'=>$total_kb,
             'ci'=>$total_ci,
@@ -1098,7 +1164,10 @@ public function rangedate(Request $request)
             'high'=>$high,
             'medium'=>$medium,
             'low'=>$low,
-            'planning'=>$planning
+            'planning'=>$planning,
+            'csi_map'=> $csi_map,
+            'csi_rate'=> $csi_rate,
+            'csi_rate_quality'=> $csi_rate_quality
             );
         return response()->json($data);
     }
