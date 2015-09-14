@@ -432,6 +432,7 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
     datefin = $("#fin").html();
 	function draw(d,id,datedeb,datefin) {
 		var ticketsData = [];
+        while(startdate<end)
 		for (var i = 0; i < d.length; i++) {
 			ticketsData.push({
 				date: new Date(d[i].CreatedYear, d[i].CreatedMonth - 1, d[i].CreatedDay, d[i].CreatedHour, d[i].CreatedMinute, d[i].CreatedSecond, 0),
