@@ -1,12 +1,12 @@
 @extends('managerViews/layout')
 @section('title', ' Global Dashboard')
 @section('page_title')
-    Dashboard
-    <small>Global</small>
+Dashboard
+<small>Global</small>
 @endsection
 @section('page_current')
-    <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboards</a></li>
-    <li class="active">Global dashboard</li>
+<li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboards</a></li>
+<li class="active">Global dashboard</li>
 @endsection
 @section('style')
 <style>
@@ -107,6 +107,43 @@
 </div>
 <!-- End Global View -->
 
+<!-- Customer Satisfaction Indicators -->
+<div class="row">
+	<div class="col-lg-5 col-sm-12">
+		<div class="box box-default">
+			<div class="box-header with-border">
+				<h3 class="box-title">CSI Per Country</h3>
+			</div><!-- /.box-header -->
+			<div class="box-body" style="min-height:320px">
+				<div id="csi_map" style="width: 100%; height: 100%;"></div>
+			</div><!-- /.box-body -->
+		</div><!-- /.box -->
+	</div><!-- /.col -->
+
+	<div class="col-lg-5 col-sm-12">
+		<div class="box box-default">
+			<div class="box-header with-border">
+				<h3 class="box-title">CSI Per Category</h3>
+			</div><!-- /.box-header -->
+			<div class="box-body" style="min-height:320px">
+				<div id="csiPie" style="margin: auto;"></div>
+			</div><!-- /.box-body -->
+		</div><!-- /.box -->
+	</div><!-- /.col -->
+
+	<div class="col-lg-2">
+		<div class="box box-default">
+			<div class="box-header with-border">
+				<h3 class="box-title">CSI Rate</h3>
+			</div><!-- /.box-header -->
+			<div class="box-body" style="min-height:320px">
+				
+			</div><!-- /.box-body -->
+		</div><!-- /.box -->
+	</div>
+</div> <!-- /.row -->
+<!-- End Customer Satisfaction Indicators -->
+
 <!-- Average Tickets Handling Time & Tickets Priority -->
 <div class="row">
 	<div class="col-lg-7 col-sm-12">
@@ -118,11 +155,11 @@
 				<div class="row">
 					<div class="col-lg-6">
 						<div id="gauge1" style="height:250px;margin: auto;"></div>
-                        <h5 class="center">Average THT</h5>
+						<h5 class="center">Average THT</h5>
 					</div>
 					<div class="col-lg-6">
 						<div id="gauge2" style="height:250px;margin: auto;"></div>
-                        <h5 class="center">Average THT for Password Reset Closure</h5>
+						<h5 class="center">Average THT for Password Reset Closure</h5>
 					</div>
 				</div>
 			</div><!-- /.box-body -->
@@ -172,82 +209,82 @@
 						</div><!-- /.tab-pane -->
 						<div class="tab-pane" id="tab_2">
 							<div>
-                                <div class="col-sm-4 form-group">
-                                    <label for="product">Filter By Product</label>
-                                    <select name="product-week" id="product-week" class="form-control select2">
-                                        <option value="all">All</option>
-                                        @foreach ($tickets_all['product'] as $key => $value)
-                                        <option value="{{ $key }}">{{ $key }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <a class="btn btn-primary pull-right" style="margin-top: 25px" data-toggle="modal" data-target="#myModal"><i class="fa fa-calendar"></i> Change intervals to compare</a>
-                                <div id="weeks"></div>
+								<div class="col-sm-4 form-group">
+									<label for="product">Filter By Product</label>
+									<select name="product-week" id="product-week" class="form-control select2">
+										<option value="all">All</option>
+										@foreach ($tickets_all['product'] as $key => $value)
+										<option value="{{ $key }}">{{ $key }}</option>
+										@endforeach
+									</select>
+								</div>
+								<a class="btn btn-primary pull-right" style="margin-top: 25px" data-toggle="modal" data-target="#myModal"><i class="fa fa-calendar"></i> Change intervals to compare</a>
+								<div id="weeks"></div>
 							</div>
 						</div><!-- /.tab-pane -->
-                        <!-- intervals modal -->
-                        <div id="myModal" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                                <!-- Modal content-->
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title">Choosing intervals</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="form-group form-inline pull-right" style="margin-right:10px;">
-                                                <label for="interval-type">Interval type: </label>
-                                                <select name="interval-type" id="interval-type" class="form-control">
-                                                    <option value="day">Day</option>
-                                                    <option value="week">Week</option>
-                                                    <option value="month">Month</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <!-- Date dd/mm/yyyy -->
-                                        <div id="repeatBlock">
-                                            <div class="row" style="margin-top:15px;">
-                                                <div class="col-lg-2">
-                                                    <strong><p style="margin-top: 4px;">#1</p></strong>
-                                                </div>
-                                                <div class="col-lg-5 form-inline">
-                                                    <label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut"/>
-                                                </div>
-                                                <div class="col-lg-5 form-inline">
-                                                    <label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
-                                                </div>
-                                            </div>
-                                            <div class="row toRepeat" style="margin-top:15px;">
-                                                <div class="col-lg-2">
-                                                    <strong><p class="ordre" style="margin-top: 4px;">#2</p></strong>
-                                                </div>
-                                                <div class="col-lg-5 form-inline">
-                                                    <label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut" />
-                                                </div>
-                                                <div class="col-lg-5 form-inline">
-                                                    <label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <a id="zid" class="btn btn-primary pull-right" style="margin:10px;"><i class="fa fa-plus"></i></a>
-                                        </div>
-                                        <div class="row">
-                                            <div class="alert alert-danger alert-dismissable" id="alert1" style="display: none;">
-                                                <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-                                                <p>Intervals must begin by the same day of the week !</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                        <button id="btnIntervals" class="btn btn-primary">Set</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+						<!-- intervals modal -->
+						<div id="myModal" class="modal fade" role="dialog">
+							<div class="modal-dialog">
+								<!-- Modal content-->
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Choosing intervals</h4>
+									</div>
+									<div class="modal-body">
+										<div class="row">
+											<div class="form-group form-inline pull-right" style="margin-right:10px;">
+												<label for="interval-type">Interval type: </label>
+												<select name="interval-type" id="interval-type" class="form-control">
+													<option value="day">Day</option>
+													<option value="week">Week</option>
+													<option value="month">Month</option>
+												</select>
+											</div>
+										</div>
+										<input type="hidden" name="_token" value="{{ csrf_token() }}">
+										<!-- Date dd/mm/yyyy -->
+										<div id="repeatBlock">
+											<div class="row" style="margin-top:15px;">
+												<div class="col-lg-2">
+													<strong><p style="margin-top: 4px;">#1</p></strong>
+												</div>
+												<div class="col-lg-5 form-inline">
+													<label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut"/>
+												</div>
+												<div class="col-lg-5 form-inline">
+													<label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
+												</div>
+											</div>
+											<div class="row toRepeat" style="margin-top:15px;">
+												<div class="col-lg-2">
+													<strong><p class="ordre" style="margin-top: 4px;">#2</p></strong>
+												</div>
+												<div class="col-lg-5 form-inline">
+													<label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut" />
+												</div>
+												<div class="col-lg-5 form-inline">
+													<label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<a id="zid" class="btn btn-primary pull-right" style="margin:10px;"><i class="fa fa-plus"></i></a>
+										</div>
+										<div class="row">
+											<div class="alert alert-danger alert-dismissable" id="alert1" style="display: none;">
+												<h4><i class="icon fa fa-ban"></i> Alert!</h4>
+												<p>Intervals must begin by the same day of the week !</p>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+										<button id="btnIntervals" class="btn btn-primary">Set</button>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div><!-- /.tab-content -->
 				</div><!-- nav-tabs-custom -->
 			</div>
@@ -323,7 +360,7 @@
 					data_temp=response.ticket_all;
 					reloadSelect(data_temp.product,'#product');
 					draw(data_temp.all,'ticketsChart');
-					drawMap(response.countryChart);
+					drawMap('#regions_div', response.countryChart);
 					reloadMissed(response.total_ticket, response.ci_missed, response.kb_missed, response.fcr_missed, response.fcr_reso_missed, response.fcr_reso_total);
 				}
 			});
@@ -400,9 +437,9 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 				"title": "red line",
 				"valueField": "visits",
 				"useLineColorForBulletBorder": true,
-                "lineThickness": 3,
-                "bulletBorderThickness": 1,
-                "bulletSize":10
+				"lineThickness": 3,
+				"bulletBorderThickness": 1,
+				"bulletSize":10
 			}],
 			"chartScrollbar": {
 				"autoGridCount": true,
@@ -440,110 +477,110 @@ zoomChart();
 
 <!-- Compare Weeks -->
 <script>
-    var values= JSON.parse('<?php echo json_encode($intervals); ?>');
-    var times= JSON.parse('<?php echo json_encode($times); ?>');
-    drawChart(values,7,times);
-    function addDays(date, days) {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
-    }
-    function drawChart(values,range,times){
-        var chartData=[];
-        var dates=[];
-        var iterator =[];
-        for(var i=0;i<times.length;i++){
-            dates.push(new Date(times[i][0]));
-            dates[i].setHours(0,0,0);
-            iterator.push(0);
-        }
-        var datefin=dates[0];
-        datefin=addDays(dates[0],range);
-        while(dates[0]<datefin) {
-            var temp=[];
-            for(var i=0;i<values.length;i++){
-                try{
-                    temp[i] = new Date(values[i][iterator[i]].CreatedYear, values[i][iterator[i]].CreatedMonth-1, values[i][iterator[i]].CreatedDay, values[i][iterator[i]].CreatedHour, 0);
-                }
-                catch(err){
-                    temp[i] =new Date(0);
+	var values= JSON.parse('<?php echo json_encode($intervals); ?>');
+	var times= JSON.parse('<?php echo json_encode($times); ?>');
+	drawChart(values,7,times);
+	function addDays(date, days) {
+		var result = new Date(date);
+		result.setDate(result.getDate() + days);
+		return result;
+	}
+	function drawChart(values,range,times){
+		var chartData=[];
+		var dates=[];
+		var iterator =[];
+		for(var i=0;i<times.length;i++){
+			dates.push(new Date(times[i][0]));
+			dates[i].setHours(0,0,0);
+			iterator.push(0);
+		}
+		var datefin=dates[0];
+		datefin=addDays(dates[0],range);
+		while(dates[0]<datefin) {
+			var temp=[];
+			for(var i=0;i<values.length;i++){
+				try{
+					temp[i] = new Date(values[i][iterator[i]].CreatedYear, values[i][iterator[i]].CreatedMonth-1, values[i][iterator[i]].CreatedDay, values[i][iterator[i]].CreatedHour, 0);
+				}
+				catch(err){
+					temp[i] =new Date(0);
 
-                }
-            }
-            var tempo ={};
-            tempo["date"] = new Date(dates[0].getTime());
-            for(var i=0;i<values.length;i++) {
-                tempo[""+i] = (temp[i].getTime() == dates[i].getTime())? values[i][iterator[i]].count:0;
-            }
-            chartData.push(tempo);
-            for(var i=0;i<values.length;i++) {
-                if(temp[i].getTime() == dates[i].getTime())
-                    iterator[i]++;
-            }
-            for(var i=0;i<values.length;i++)
-                dates[i].setHours(dates[i].getHours()+1);
-        }
-        var graphData = [];
-        for(var i=0;i<values.length;i++){
-            var obj = {
-                "id": ""+i,
-                "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
-                "bullet": "round",
-                "bulletBorderAlpha": 1,
-                "bulletColor": "#FFFFFF",
-                "hideBulletsCount": 50,
-                "title": (times[i][0]!=times[i][1])?times[i][0]+'<br>'+times[i][1]:times[i][1],
-                "valueField": ""+i,
-                "useLineColorForBulletBorder": true,
-                "lineThickness": 3
-            };
-            graphData.push(obj);
-        }
-        var weekday=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-        function formatLabel(value, date, categoryAxis){
-            if (range!=1 && date.getHours()==0){
-                return weekday[date.getDay()];}
-            else {return String(date.getHours())+":"+String(date.getMinutes())};
-        }
-        var chart = AmCharts.makeChart("weeks", {
-            "type": "serial",
-            "theme": "light",
-            "legend": {
-                "useGraphSettings": true
-            },
-            "marginRight": 80,
-            "autoMarginOffset": 20,
-            "marginTop": 7,
-            "dataProvider": chartData,
-            "valueAxes": [{
-                "axisAlpha": 0.2,
-                "dashLength": 1,
-                "position": "left"
-            }],
-            "mouseWheelZoomEnabled": true,
-            "graphs": graphData,
-            "chartScrollbar": {
-                "autoGridCount": true,
-                "graph": "0",
-                "scrollbarHeight": 40
-            },
-            "chartCursor": {
-                "categoryBalloonDateFormat": "JJ h",
-                "cursorPosition": "mouse"
-            },
-            "categoryField": "date",
-            "categoryAxis": {
-                "parseDates": true,
-                "labelFunction":formatLabel,
-                "minPeriod": "mm",
-                "axisColor": "#DADADA",
-                "dashLength": 1,
-                "minorGridEnabled": true
-            },
-            "export": {
-                "enabled": true
-            }
-        });
+				}
+			}
+			var tempo ={};
+			tempo["date"] = new Date(dates[0].getTime());
+			for(var i=0;i<values.length;i++) {
+				tempo[""+i] = (temp[i].getTime() == dates[i].getTime())? values[i][iterator[i]].count:0;
+			}
+			chartData.push(tempo);
+			for(var i=0;i<values.length;i++) {
+				if(temp[i].getTime() == dates[i].getTime())
+					iterator[i]++;
+			}
+			for(var i=0;i<values.length;i++)
+				dates[i].setHours(dates[i].getHours()+1);
+		}
+		var graphData = [];
+		for(var i=0;i<values.length;i++){
+			var obj = {
+				"id": ""+i,
+				"balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
+				"bullet": "round",
+				"bulletBorderAlpha": 1,
+				"bulletColor": "#FFFFFF",
+				"hideBulletsCount": 50,
+				"title": (times[i][0]!=times[i][1])?times[i][0]+'<br>'+times[i][1]:times[i][1],
+				"valueField": ""+i,
+				"useLineColorForBulletBorder": true,
+				"lineThickness": 3
+			};
+			graphData.push(obj);
+		}
+		var weekday=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+		function formatLabel(value, date, categoryAxis){
+			if (range!=1 && date.getHours()==0){
+				return weekday[date.getDay()];}
+				else {return String(date.getHours())+":"+String(date.getMinutes())};
+			}
+			var chart = AmCharts.makeChart("weeks", {
+				"type": "serial",
+				"theme": "light",
+				"legend": {
+					"useGraphSettings": true
+				},
+				"marginRight": 80,
+				"autoMarginOffset": 20,
+				"marginTop": 7,
+				"dataProvider": chartData,
+				"valueAxes": [{
+					"axisAlpha": 0.2,
+					"dashLength": 1,
+					"position": "left"
+				}],
+				"mouseWheelZoomEnabled": true,
+				"graphs": graphData,
+				"chartScrollbar": {
+					"autoGridCount": true,
+					"graph": "0",
+					"scrollbarHeight": 40
+				},
+				"chartCursor": {
+					"categoryBalloonDateFormat": "JJ h",
+					"cursorPosition": "mouse"
+				},
+				"categoryField": "date",
+				"categoryAxis": {
+					"parseDates": true,
+					"labelFunction":formatLabel,
+					"minPeriod": "mm",
+					"axisColor": "#DADADA",
+					"dashLength": 1,
+					"minorGridEnabled": true
+				},
+				"export": {
+					"enabled": true
+				}
+			});
         //chart.addListener("rendered", zoomChart);
         //zoomChart();
         // this method is called when chart is first inited as we listen for "dataUpdated" event
@@ -658,36 +695,36 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 			plotBorderWidth: null,
 			plotShadow: false,
 			type: 'pie',
-            style: {
+			style: {
                 font: '20pt "Source Sans Pro", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif', // default font
                 fontSize: '20px'
             }
-		},
-		title: {
-			text: ''
-		},
-		tooltip: {
+        },
+        title: {
+        	text: ''
+        },
+        tooltip: {
 
-			pointFormat: '{series.name}: <b>{point.percentage:.1f}% <br>({point.y} Tickets)</b>'
-		},
-		plotOptions: {
-			pie: {
-				allowPointSelect: true,
-				cursor: 'pointer',
-				dataLabels: {
-					enabled: true,
-					format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-					style: {
-						color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-					}
-				}
-			}
-		},
-		series: [{
-			name: "Pourcentage",
-			data: dataPriority
-		}]
-	});
+        	pointFormat: '{series.name}: <b>{point.percentage:.1f}% <br>({point.y} Tickets)</b>'
+        },
+        plotOptions: {
+        	pie: {
+        		allowPointSelect: true,
+        		cursor: 'pointer',
+        		dataLabels: {
+        			enabled: true,
+        			format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+        			style: {
+        				color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+        			}
+        		}
+        	}
+        },
+        series: [{
+        	name: "Pourcentage",
+        	data: dataPriority
+        }]
+    });
 }
 </script>
 <!-- End Priority Pie Chart -->
@@ -718,10 +755,11 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 <script src="{{ asset('/js/world.js') }}"></script>
 <script>
 	var dataTemp=<?php echo json_encode($countryChart); ?>;
-	drawMap(dataTemp);
+	drawMap('#regions_div', dataTemp);
 
-	function drawMap (dataTemp) {
-		$('#regions_div').highcharts('Map', {
+	function drawMap (id, dataTemp) {
+		console.log(dataTemp);
+		$(id).highcharts('Map', {
 			title : {
 				text : ''
 			},
@@ -790,126 +828,126 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 </script>
 <!-- add range input -->
 <script>
-    var i=3;
-    $('#zid').on('click',function(){
-        var row = '<div class="row toRepeat" style="margin-top:15px;">'+$('.toRepeat').last().html()+'</div>';
-        $('.toRepeat').last().after(row);
-        $('.ordre').last().text('#'+i);
-        if(i==3){
-            var minus='<a class="btn btn-danger pull-right" id="nqess" style="margin:10px;"><i class="fa fa-minus"></i></a>';
-            $('#zid').after(minus);
-        }
-        i++;
-    });
-    $(document.body).on('click','#nqess',function(){
-        $('.toRepeat').last().remove();
-        if(i==4){
-            $('#nqess').remove();
-        }
-        i--;
-    });
+	var i=3;
+	$('#zid').on('click',function(){
+		var row = '<div class="row toRepeat" style="margin-top:15px;">'+$('.toRepeat').last().html()+'</div>';
+		$('.toRepeat').last().after(row);
+		$('.ordre').last().text('#'+i);
+		if(i==3){
+			var minus='<a class="btn btn-danger pull-right" id="nqess" style="margin:10px;"><i class="fa fa-minus"></i></a>';
+			$('#zid').after(minus);
+		}
+		i++;
+	});
+	$(document.body).on('click','#nqess',function(){
+		$('.toRepeat').last().remove();
+		if(i==4){
+			$('#nqess').remove();
+		}
+		i--;
+	});
 </script>
 <!--End add range input -->
 <!-- Ajax tickets intervals-->
-    <script>
-        $('#btnIntervals').on('click', function() {
+<script>
+	$('#btnIntervals').on('click', function() {
             //var dates = $('input.datedebut').serialize();
             var dates = $('input.datedebut').map(function(i, el) {
-                return el.value;
+            	return el.value;
             }).get();
             console.log(dates);
             var range = 1;
             if($('#interval-type').val()=='week')
-                range = 7;
+            	range = 7;
             if($('#interval-type').val()=='month')
-                range = 30;
+            	range = 30;
             var msg = "";
             var d2 = new Date(dates[0]);
             for(var i=0;i<dates.length;i++){
-                var d1 = new Date(dates[i]);
-                if(dates[i] == ""){
-                    msg = "Please assign all visible inputs or remove them !";
-                    break;
-                }
-                if(i>0 && $('#interval-type').val()!='day' && d2.getDay()!= d1.getDay()){
-                    msg = "Intervals must begin with the same day of the week !";
-                    break;
-                }
-                d2 = d1;
+            	var d1 = new Date(dates[i]);
+            	if(dates[i] == ""){
+            		msg = "Please assign all visible inputs or remove them !";
+            		break;
+            	}
+            	if(i>0 && $('#interval-type').val()!='day' && d2.getDay()!= d1.getDay()){
+            		msg = "Intervals must begin with the same day of the week !";
+            		break;
+            	}
+            	d2 = d1;
             }
             if(msg != ""){
-                $('#alert1').children('p').text(msg);
-                $('#alert1').css("display","block");
+            	$('#alert1').children('p').text(msg);
+            	$('#alert1').css("display","block");
             }
             else{
-                $('#alert1').children('p').text(msg);
-                $('#alert1').css("display","none");
-                $.ajax({
-                    url: 'reloadIntervals',
-                    type: "get",
-                    data: {
-                        'dates': dates,
-                        'product': $('#product-week').val(),
-                        'type': $('#interval-type').val()
-                    },
-                    success: function (response) {
-                        drawChart(response.values,range,response.times);
-                    }
-                });
+            	$('#alert1').children('p').text(msg);
+            	$('#alert1').css("display","none");
+            	$.ajax({
+            		url: 'reloadIntervals',
+            		type: "get",
+            		data: {
+            			'dates': dates,
+            			'product': $('#product-week').val(),
+            			'type': $('#interval-type').val()
+            		},
+            		success: function (response) {
+            			drawChart(response.values,range,response.times);
+            		}
+            	});
             }
         });
-    </script>
+</script>
 <!-- END Ajax Tickets Interval -->
 <!-- Onchange datepicker and interval type select -->
-    <script>
-        function setFinDates(elt){
-            if($(elt).val() == "")
-                $(elt).parent().next().children('input.datefin').val("");
-            else{
-                var dd = new Date($(elt).val());
-                dd.setHours(0,0,0);
-                if($('#interval-type').val()=='week')
-                    dd = addDays(dd,6);
-                if($('#interval-type').val()=='month')
-                    dd = addDays(dd,29);
-                var df = dd.getDate() + "/" + (dd.getMonth() + 1) + "/" + dd.getFullYear();
-                $(elt).parent().next().children('input.datefin').val(df);
-            }
-        }
-        $(document.body).on('change','input.datedebut',function(){
-            setFinDates(this);
-        });
-        $(document.body).on('change','#interval-type',function(){
-            $('input.datedebut').each(function(){
-                setFinDates(this);
-            });
-        });
-    </script>
+<script>
+	function setFinDates(elt){
+		if($(elt).val() == "")
+			$(elt).parent().next().children('input.datefin').val("");
+		else{
+			var dd = new Date($(elt).val());
+			dd.setHours(0,0,0);
+			if($('#interval-type').val()=='week')
+				dd = addDays(dd,6);
+			if($('#interval-type').val()=='month')
+				dd = addDays(dd,29);
+			var df = dd.getDate() + "/" + (dd.getMonth() + 1) + "/" + dd.getFullYear();
+			$(elt).parent().next().children('input.datefin').val(df);
+		}
+	}
+	$(document.body).on('change','input.datedebut',function(){
+		setFinDates(this);
+	});
+	$(document.body).on('change','#interval-type',function(){
+		$('input.datedebut').each(function(){
+			setFinDates(this);
+		});
+	});
+</script>
 <!-- END Onchange datepicker and interval type select -->
 <!-- Onchange product type for comparison -->
-    <script>
-        $(document.body).on('change','#product-week',function(){
-            var dates = $('input.datedebut').map(function(i, el) {
-                return el.value;
-            }).get();
-            var range = 1;
-            if($('#interval-type').val()=='week')
-                range = 7;
-            if($('#interval-type').val()=='month')
-                range = 30;
-            $.ajax({
-                url: 'reloadIntervals',
-                type: "get",
-                data: {
-                    'dates': dates,
-                    'product': $('#product-week').val(),
-                    'type': $('#interval-type').val()
-                },
-                success: function (response) {
-                    drawChart(response.values,range,response.times);
-                }
-            });
-        });
-    </script>
+<script>
+	$(document.body).on('change','#product-week',function(){
+		var dates = $('input.datedebut').map(function(i, el) {
+			return el.value;
+		}).get();
+		var range = 1;
+		if($('#interval-type').val()=='week')
+			range = 7;
+		if($('#interval-type').val()=='month')
+			range = 30;
+		$.ajax({
+			url: 'reloadIntervals',
+			type: "get",
+			data: {
+				'dates': dates,
+				'product': $('#product-week').val(),
+				'type': $('#interval-type').val()
+			},
+			success: function (response) {
+				drawChart(response.values,range,response.times);
+			}
+		});
+	});
+</script>
 <!-- END Onchange datepicker and interval type select -->
 @endsection

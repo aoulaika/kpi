@@ -486,6 +486,24 @@ public function dashboard(Request $req){
         ->groupBy('geography.country_code')
         ->get();
 
+    $csi_country=DB::table('fact')
+    ->join('geography','geography.Id','=','fact.fk_geography')
+    ->whereNotNull('geography.country_code')
+    ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
+    ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
+    ->select(DB::raw('AVG(csi.rate) as count,geography.country_code,geography.country_name'))
+    ->groupBy('geography.country_code')
+    ->get();
+
+    $csi_map=array();
+    foreach ($csi_country as $key => $value) {
+        array_push($csi_map, (object)array(
+            'code'=>$value->country_code,
+            'value'=>$value->count,
+            'name'=>$value->country_name
+        ));
+    }
+
     $countryChart=array();
     foreach ($country as $key => $value) {
         array_push($countryChart, (object)array(
@@ -514,7 +532,8 @@ public function dashboard(Request $req){
         'low'=>$low,
         'planning'=>$planning,
         'intervals'=> $intervals,
-        'times'=> $times
+        'times'=> $times,
+        'csi_map'=> $csi_map
     ]);
 }
 

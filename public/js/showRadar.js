@@ -9,7 +9,7 @@ function showRadar (data) {
             x: -80
         },
         pane: {
-            size: '90%'
+            size: '85%'
         },
         xAxis: {
             categories: ['FCR', 'FCR Resolvable', 'EKMS Usage', 'CI Usage'],

@@ -1,12 +1,12 @@
 @extends('managerViews/layout')
 @section('title', ' Manage Users')
 @section('page_title')
-    Employees
-    <small>Directory</small>
+Employees
+<small>Directory</small>
 @endsection
 @section('page_current')
-    <li><a href="{{ route('users') }}"><i class="fa fa-dashboard"></i> Employees</a></li>
-    <li class="active">Managing</li>
+<li><a href="{{ route('users') }}"><i class="fa fa-dashboard"></i> Employees</a></li>
+<li class="active">Managing</li>
 @endsection
 @section('style')
 <link href="{{ asset('/css/style3.css') }}" rel="stylesheet" type="text/css" />
@@ -51,7 +51,7 @@
 					<img ng-show="project.id || false" style="height:60px" src="{{ asset('/img/proj-img/<% project.id+".png" %>') }}" alt="">
 				</div>
 				<div class="col-lg-4">
-				<h3 ng-show="team.text">Team <span ng-bind="team.text"></span></h3>
+					<h3 ng-show="team.text">Team <span ng-bind="team.text"></span></h3>
 				</div>
 				<div class="col-lg-4">
 					<a class="btn btn-social btn-primary pull-right" id="btn-add">
@@ -287,17 +287,10 @@
 									</div>
 								</div>
 								<div ng-class="(selectedItem.role=='N1'||selectedItem.role=='N2')?'col-lg-6':'col-lg-1'" ng-show="(selectedItem.role=='N1'||selectedItem.role=='N2')">
-									<div class="row text-center">
-										<div class="btn-group" role="group" aria-label="...">
-											<button type="button" class="btn btn-default">Left</button>
-											<button type="button" class="btn btn-default">Middle</button>
-											<button type="button" class="btn btn-default">Right</button>
-										</div>
-									</div>
 									<div class="row">
-									<div style="width: 93%; margin: 0 auto">
-										<div id="chart-container"></div>
-									</div>
+										<div style="width: 93%; margin: 0 auto">
+											<div id="chart-container"></div>
+										</div>
 									</div>
 								</div>
 							</div>
