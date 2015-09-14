@@ -204,6 +204,17 @@ Dashboard
 										@endforeach
 									</select>
 								</div>
+                                <div class="col-sm-2" style="margin-bottom:15px">
+                                    <label>Line thickness</label>
+                                    <select name="thickness" id="thickness" class="form-control">
+                                        <option value="3" selected>Default</option>
+                                        <option value="1">light</option>
+                                        <option value="2">Medium</option>
+                                        <option value="4">Bold </option>
+                                        <option value="5">Bold x2</option>
+                                        <option value="6">Bold x3</option>
+                                    </select>
+                                </div>
 								<div  id="ticketsChart"></div>
 							</div>
 						</div><!-- /.tab-pane -->
@@ -425,20 +436,40 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 		}else{
 			data=data_temp.product[v];
 		}
-		draw(data,'ticketsChart');
+		draw(data,'ticketsChart',$(this).val());
 	});
-	draw(data,'ticketsChart');
-    datedeb = $("#debut").html();
-    datefin = $("#fin").html();
-	function draw(d,id,datedeb,datefin) {
+    $('#thickness').change(function() {
+        var v=$('#product').val();
+        if(v=='all'){
+            data=data_temp.all;
+        }else{
+            data=data_temp.product[v];
+        }
+        draw(data,'ticketsChart',$(this).val());
+    });
+	draw(data,'ticketsChart',3);
+	function draw(d,id,thickness) {
 		var ticketsData = [];
-        while(startdate<end)
-		for (var i = 0; i < d.length; i++) {
+        var deb = new Date($('#debut').html());
+        deb.setHours(0,0,0);
+        var fin = new Date($('#fin').html());
+        fin.setHours(0,0,0);
+        var i = 0;
+		while(deb<=fin) {
+            try{
+                current = new Date(d[i].CreatedYear, d[i].CreatedMonth - 1, d[i].CreatedDay, d[i].CreatedHour, 0);
+            }
+            catch(err){
+                current = new Date(0);
+            }
 			ticketsData.push({
-				date: new Date(d[i].CreatedYear, d[i].CreatedMonth - 1, d[i].CreatedDay, d[i].CreatedHour, d[i].CreatedMinute, d[i].CreatedSecond, 0),
-				visits: d[i].count
+				date: new Date(deb.getTime()),
+				visits: (current.getTime() == deb.getTime())?d[i].count:0
 			});
-		};
+            if(current.getTime() == deb.getTime())
+                i++;
+            deb.setHours(deb.getHours()+1);
+		}
 		var chart1 = AmCharts.makeChart(id, {
 			"type": "serial",
 			"theme": "light",
@@ -462,7 +493,7 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 				"title": "red line",
 				"valueField": "visits",
 				"useLineColorForBulletBorder": true,
-				"lineThickness": 3,
+				"lineThickness": thickness,
 				"bulletBorderThickness": 1,
 				"bulletSize":10
 			}],
@@ -488,8 +519,8 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 			}
 		});
 chart1.pathToImages = '/kpi/public/img/';
-chart1.addListener("rendered", zoomChart);
-zoomChart();
+//chart1.addListener("rendered", zoomChart);
+//zoomChart();
 
 		// this method is called when chart is first inited as we listen for "dataUpdated" event
 		function zoomChart() {
@@ -783,7 +814,6 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 	drawMap('#regions_div', dataTemp);
 
 	function drawMap (id, dataTemp) {
-		console.log(dataTemp);
 		$(id).highcharts('Map', {
 			title : {
 				text : ''
@@ -880,7 +910,6 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
             var dates = $('input.datedebut').map(function(i, el) {
             	return el.value;
             }).get();
-            console.log(dates);
             var range = 1;
             if($('#interval-type').val()=='week')
             	range = 7;
