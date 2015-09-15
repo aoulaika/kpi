@@ -1515,44 +1515,4 @@ public function compare(){
         'times' => $times
         ]);
 }
-
-public function reloadIntervals(Request $req){
-    $params = $req->except(['_token']);
-    for($i=0;$i<sizeof($params['dates']);$i++){
-        $dates = \DateTime::createFromFormat('Y-m-d',$params['dates'][$i]);
-        $dates->setTime(0,0,0);
-        $dates_fin= clone $dates;
-        if($params['type']=='week')
-            $dates_fin->modify('+6 day');
-        if($params['type']=='month')
-            $dates_fin->modify('+29 day');
-        if($params['product']=='all'){
-            $values[$i] = DB::table('fact')
-            ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
-            ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
-            ->where('time_dim.Created', '>=', $dates->format('Y-m-d'))
-            ->where('time_dim.Created', '<=', $dates_fin->format('Y-m-d'))
-            ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
-            ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
-            ->get();
-        }
-        else{
-            $values[$i] = DB::table('fact')
-            ->join('time_dim', 'fact.fk_time', '=', 'time_dim.Id')
-            ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
-            ->where('product','=',$params['product'])
-            ->where('time_dim.Created', '>=', $dates->format('Y-m-d'))
-            ->where('time_dim.Created', '<=', $dates_fin->format('Y-m-d'))
-            ->select(DB::raw('CreatedYear,CreatedMonth,CreatedDay,CreatedHour,CreatedMinute,CreatedSecond,count(*) as count'))
-            ->groupBy('CreatedYear', 'CreatedMonth', 'CreatedDay', 'CreatedHour')
-            ->get();
-        }
-        $times[$i][0] = $dates->format('Y-m-d');
-        $times[$i][1] = $dates_fin->format('Y-m-d');
-    }
-    return response()->json([
-        'values'=> $values,
-        'times'=> $times
-        ]);
-}
 }
