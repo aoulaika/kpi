@@ -23,7 +23,7 @@ Route::any('/dashboard', [
 
 Route::any('/dashboard3', [
     'as' => 'dashboard3',
-    'uses' => 'ControllerZakaria@dashboard3'
+    'uses' => 'AgentController@dashboard3'
 ]);
 
 Route::get('/forgot', [
@@ -38,7 +38,7 @@ Route::any('/test', [
 
 Route::any('/rangedate', [
     'as' => 'rangedate',
-    'uses' => 'ControllerZakaria@rangedate'
+    'uses' => 'AgentController@rangedate'
 ]);
 
 Route::any('reload', [
@@ -48,7 +48,7 @@ Route::any('reload', [
 
 Route::any('changeAgent', [
     'as' => 'changeAgent',
-    'uses' => 'ControllerZakaria@changeAgent'
+    'uses' => 'AgentController@changeAgent'
 ]);
 
 Route::any('jib', [
