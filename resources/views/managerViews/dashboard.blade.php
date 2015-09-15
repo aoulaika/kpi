@@ -14,13 +14,14 @@ Dashboard
 		width:250px;
 	} */
 	.csi{
-		font-size: 3em;
+		font-size: 4em;
 		text-align: center;
 		color: #44A1C1;
 		font-family: 'Share Tech', sans-serif;
-		height: 90px;
+		height: 95px;
 		vertical-align: middle;
-		margin-top: 5%;
+		margin-top: 6%;
+		margin-bottom: 6%;
 	}
 </style>
 @endsection
@@ -119,18 +120,18 @@ Dashboard
 <!-- Customer Satisfaction Indicators -->
 <div class="row">
 	<div class="col-lg-5 col-sm-12">
-		<div class="box box-default">
+		<div class="box box-default" style="height:400px">
 			<div class="box-header with-border">
 				<h3 class="box-title">CSI Per Country</h3>
 			</div><!-- /.box-header -->
-			<div class="box-body" style="height:390px">
-				<div id="csi_map" style="width: 100%; height: 100%;"></div>
+			<div class="box-body">
+				<div id="csi_map" style="width: 100%; height: 340px;"></div>
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
 	</div><!-- /.col -->
 
 	<div class="col-lg-5 col-sm-12">
-		<div class="box box-default">
+		<div class="box box-default" style="height:400px">
 			<div class="box-header with-border">
 				<h3 class="box-title">CSI Per Category</h3>
 			</div><!-- /.box-header -->
@@ -160,12 +161,12 @@ Dashboard
 	</div><!-- /.col -->
 
 	<div class="col-lg-2">
-		<div class="box box-default">
+		<div class="box box-default" style="height:400px">
 			<div class="box-header with-border">
 				<h3 class="box-title">CSI Rate</h3>
 			</div><!-- /.box-header -->
-			<div class="box-body" style="height:390px">
-				<div class="box box-success">
+			<div class="box-body">
+				<div class="box box-warning">
 					<div class="box-header with-border">
 						<div class="box-title">Current CSI</div>
 						<div class="box-body csi">{{ $csi_rate }}</div>
