@@ -18,7 +18,7 @@ Route::get('/', [
 
 Route::any('/dashboard', [
     'as' => 'dashboard',
-    'uses' => 'ControllerZakaria@dashboard'
+    'uses' => 'DashboardController@dashboard'
 ]);
 
 Route::any('/dashboard3', [
@@ -43,17 +43,12 @@ Route::any('/rangedate', [
 
 Route::any('reload', [
     'as' => 'reload',
-    'uses' => 'ControllerZakaria@reload'
+    'uses' => 'DashboardController@reload'
 ]);
 
 Route::any('changeAgent', [
     'as' => 'changeAgent',
     'uses' => 'AgentController@changeAgent'
-]);
-
-Route::any('jib', [
-    'as' => 'jib',
-    'uses' => 'ControllerZakaria@jib'
 ]);
 
 Route::any('errors', [
@@ -200,5 +195,5 @@ Route::get('compare', [
 
 Route::get('reloadIntervals', [
     'as' => 'reloadIntervals',
-    'uses' => 'ControllerZakaria@reloadIntervals'
+    'uses' => 'DashboardController@reloadIntervals'
 ]);
