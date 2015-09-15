@@ -56,6 +56,8 @@
                         <h3 class="agent-name" id="agent_name"></h3>
                         <h4 class="minititle">Handled <span id="nbr" style="color: #44A1C1;"></span> Tickets</h4>
                         <h5 class="minititle">Missed <span style="color: red;" id="missed_resolvable"> {{ $fcr_reso_missed }}/{{ $fcr_reso_total }}</span> Resolvable Tickets </h5>
+                        <h5 class="minititle">Current CSI <span style="color: red;" id="csi"> {{ $csi->rate }}</span> For <span style="color: red;" id="csi-count">{{ $csi->count }}</span> Tickets</h5>
+                        <h5 class="minititle">CSI With Scrub <span style="color: red;" id="csiscrub"> {{ $csi_scrub->rate }}</span> For <span style="color: red;" id="csiscrub-count">{{ $csi_scrub->count }}</span> Tickets</h5>
                     </div>
                     <div class="col-lg-7" >
                         <table class="table percentable">
@@ -343,6 +345,9 @@
             success: function(response){
                 /* Setting values for tickets chart */
                 console.log(response);
+                /*csi*/
+                $('#csi').text(response.csi.rate);$('#csi-count').text(response.csi.count);
+                $('#csiscrub').text(response.csi_scrub.rate);$('#csiscrub-count').text(response.csi_scrub.count);
                 var img = "{{ asset('/img/default-user.png') }}";
                 'localhost/kpi/public/img/default-user.png';
                 if(response.user_pic != 'default-user.png'){
@@ -394,6 +399,10 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
 
                     /* Getting agent Id*/
                     var v=$('#agent').val();
+
+                    /*csi*/
+                    $('#csi').text(response.csi.rate);$('#csi-count').text(response.csi.count);
+                    $('#csiscrub').text(response.csi_scrub.rate);$('#csiscrub-count').text(response.csi_scrub.count);
 
                     /* Setting html values and graphes */
                     doit(ci_temp[v].Name,tickets_per_agent[v].count,ci_temp[v].count,kb_temp[v].count,fcr_temp[v].count,fcr_reso_temp[v].count);
