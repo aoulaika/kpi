@@ -110,7 +110,7 @@ Route::post('editUserTools', [
 
 Route::get('/project', [
     'as' => 'project',
-    'uses' => 'ControllerProject@project'
+    'uses' => 'ProjectController@project'
 ]);
 
 Route::get('/language', [
@@ -140,22 +140,22 @@ Route::post('editlanguage', [
 
 Route::post('addProject', [
     'as' => 'addProject',
-    'uses' => 'ControllerProject@addProject'
+    'uses' => 'ProjectController@addProject'
 ]);
 
 Route::post('deleteProj', [
     'as' => 'deleteProj',
-    'uses' => 'ControllerProject@deleteProj'
+    'uses' => 'ProjectController@deleteProj'
 ]);
 
 Route::post('addSubProj', [
     'as' => 'addSubProj',
-    'uses' => 'ControllerProject@addSubProj'
+    'uses' => 'ProjectController@addSubProj'
 ]);
 
 Route::post('deleteSubProj', [
     'as' => 'deleteSubProj',
-    'uses' => 'ControllerProject@deleteSubProj'
+    'uses' => 'ProjectController@deleteSubProj'
 ]);
 
 Route::get('signup', [
