@@ -135,7 +135,26 @@ Dashboard
 				<h3 class="box-title">CSI Per Category</h3>
 			</div><!-- /.box-header -->
 			<div class="box-body" style="height:390px">
-				<div id="csiPie" style="margin: auto;"></div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Number of surveys</th>
+                            <th>CSI</th>
+                            <th>CSI with Scrub</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($csi_cat as $row)
+                        <tr>
+                            <td>{{ $row[0] }}</td>
+                            <td>{{ $row[1] }}</td>
+                            <td>{{ $row[2] }}</td>
+                            <td>{{ $row[3] }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
 	</div><!-- /.col -->
@@ -146,13 +165,13 @@ Dashboard
 				<h3 class="box-title">CSI Rate</h3>
 			</div><!-- /.box-header -->
 			<div class="box-body" style="height:390px">
-				<div class="box box-warning">
+				<div class="box box-success">
 					<div class="box-header with-border">
 						<div class="box-title">Current CSI</div>
 						<div class="box-body csi">{{ $csi_rate }}</div>
 					</div>
 				</div>
-				<div class="box box-info">
+				<div class="box box-primary">
 					<div class="box-header with-border">
 						<div class="box-title">CSI With Scrub</div>
 						<div class="box-body csi">{{ $csi_rate_quality }}</div>
@@ -421,7 +440,12 @@ Dashboard
 					drawGauge('#gauge1', [response.avg_tht.all[0]], 0, 20, '', response.avg_tht.all[1]);
 					drawGauge('#gauge2', [response.avg_tht.password[0]], 0, 10, '', response.avg_tht.password[1]);
 					drawPie('#priorityPie',response.priority);
-					drawBar('#categoryPie',response.category);
+                    series = [{
+                        name: 'Number of tickets',
+                        showInLegend: false,
+                        data: response.category[1]
+                    }];
+                    drawBar('#categoryPie',response.category[0],' tickets',series);
 					reloadPriority(response.critical,response.high,response.medium,response.low,response.planning);
 					data_temp=response.ticket_all;
 					reloadSelect(data_temp.product,'#product');
@@ -921,30 +945,35 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 <!-- End Others Script -->
 
 <script type="text/javascript">
-	drawBar('#categoryPie',JSON.parse('<?php echo json_encode($category); ?>'));
-	function drawBar(id,dataBar){
+    /* Preparing data for tickets per cat bar chart */
+    dataBar = JSON.parse('<?php echo json_encode($category); ?>');
+    series = [{
+        name: 'Number of tickets',
+        showInLegend: false,
+        data: dataBar[1]
+    }];
+    /* tickets per cat bar chart  */
+	drawBar('#categoryPie',dataBar[0],' tickets',series);
+
+	function drawBar(id,cat,tooltip,dataArray){
 		$(id).highcharts({
 			chart:{
 				type:'bar'
 			},
+            title: {
+                text: ' '
+            },
+            xAxis: {
+                categories: cat
+            },
 			exporting: { enabled: false },
 			tooltip: {
-				valueSuffix: ' ticket'
-			},
-			title: {
-				text: ' '
+				valueSuffix: tooltip
 			},
 			credits: {
 				enabled: false
 			},
-			xAxis: {
-				categories: dataBar[0]
-			},
-			series: [{
-				name: 'EKMS Usage',
-				showInLegend: false,
-				data: dataBar[1]
-			}]
+			series:  dataArray
 		});
 	}
 </script>

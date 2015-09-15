@@ -413,11 +413,9 @@ public function dashboard(Request $req){
     ->orderBy('y', 'desc')
     ->get();
     $categoryName=array();
-    foreach ($category as $key => $value) {
-        array_push($categoryName, $value->name);
-    }
     $categoryValue=array();
     foreach ($category as $key => $value) {
+        array_push($categoryName, $value->name);
         array_push($categoryValue, $value->y);
     }
     $tht=DB::table('fact')
@@ -530,6 +528,35 @@ public function dashboard(Request $req){
         ));
     }
 
+    $csi_category=DB::table('fact')
+        ->join('tickets_dim','tickets_dim.Id','=','fact.fk_ticket')
+        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
+        ->select(DB::raw('count(*)as count,AVG(csi.rate) as avg,tickets_dim.Category'))
+        ->groupBy('tickets_dim.Category')
+        ->orderBy('avg','desc')
+        ->get();
+
+    $csi_category_scrub=DB::table('fact')
+        ->join('tickets_dim','tickets_dim.Id','=','fact.fk_ticket')
+        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
+        ->whereNotIn('csi.ticket_number', function($q){
+            $q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+        })
+        ->select(DB::raw('AVG(csi.rate) as avg,tickets_dim.Category'))
+        ->groupBy('tickets_dim.Category')
+        ->get();
+
+    foreach($csi_category as $obj){
+        $csi_cat[$obj->Category][0] = $obj->Category;
+        $csi_cat[$obj->Category][1] = $obj->count;
+        $csi_cat[$obj->Category][2] = $obj->avg;
+        $csi_cat[$obj->Category][3] = 0;
+    }
+
+    foreach($csi_category_scrub as $obj){
+        $csi_cat[$obj->Category][3] = $obj->avg;
+    }
+
     $begin = DB::table('time_dim')->min('Created');
     $begin_exp = explode('-',$begin);
     $begin_inv = $begin_exp[1].'-'.$begin_exp[2].'-'.$begin_exp[0];
@@ -560,7 +587,8 @@ public function dashboard(Request $req){
         'end'=> $end,
         'csi_map'=> $csi_map,
         'csi_rate'=> $csi_rate,
-        'csi_rate_quality'=> $csi_rate_quality
+        'csi_rate_quality'=> $csi_rate_quality,
+        'csi_cat'=> $csi_cat
     ]);
 }
 
