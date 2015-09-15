@@ -6,6 +6,7 @@ function c_avg (tab) {
     }
     return sum/tab.length;
 }
+
 function c_max (tab) {
     var max=parseInt(tab[0].count);
     for (var i = 1; i < tab.length; i++) {
@@ -15,6 +16,7 @@ function c_max (tab) {
     }
     return max;
 }
+
 function c_min (tab) {
     var min=parseInt(tab[0].count);
     for (var i = 1; i < tab.length; i++) {
@@ -280,5 +282,78 @@ zoomChart();
         function zoomChart() {
             // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
             chart2.zoomToIndexes(ticketsData1.length - 40, ticketsData1.length - 1);
+        }
+    }
+
+    function csiTrack(id, data) {
+        var csiData = [];
+        console.log(data);
+        for (var i = 0; i < data.length; i++) {
+            csiData.push({
+                date: new Date(data[i].Created),
+                visits: data[i].rate
+            });
+        };
+
+        var chart2 = AmCharts.makeChart(id, {
+            "type": "serial",
+            "theme": "light",
+            "marginRight": 80,
+            "autoMarginOffset": 20,
+            "marginTop": 7,
+            "dataProvider": csiData,
+            "valueAxes": [{
+                "axisAlpha": 0.2,
+                "dashLength": 1,
+                "position": "left"
+            }],
+            "mouseWheelZoomEnabled": true,
+            "graphs": [{
+                "id": "ticketsChart2",
+                "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
+                "bullet": "round",
+                "bulletBorderAlpha": 1,
+                "bulletColor": "#FFFFFF",
+                "hideBulletsCount": 50,
+                "title": "red line",
+                "valueField": "visits",
+                "useLineColorForBulletBorder": true
+            }],
+            "chartScrollbar": {
+                "autoGridCount": true,
+                "graph": "ticketsChart2",
+                "scrollbarHeight": 40
+            },
+            "chartCursor": {
+                "categoryBalloonDateFormat": "YYYY-MM-DD",
+                "cursorPosition": "mouse"
+            },
+            "categoryField": "date",
+            "categoryAxis": {
+                "parseDates": true,
+                "minPeriod": "mm",
+                "axisColor": "#DADADA",
+                "dashLength": 1,
+                "minorGridEnabled": true,
+                "guides": [{
+                    "dashLength": 1,
+                    "inside": true,
+                    "label": "average",
+                    "lineAlpha": 2,
+                    "value": 80
+                }]
+            },
+            "export": {
+                "enabled": true
+            }
+        });
+chart2.pathToImages = '/kpi/public/img/';
+chart2.addListener("rendered", zoomChart);
+zoomChart();
+
+        // this method is called when chart is first inited as we listen for "dataUpdated" event
+        function zoomChart() {
+            // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+            chart2.zoomToIndexes(csiData.length - 40, csiData.length - 1);
         }
     }
