@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('/', [
-    'as' => 'login',
-    'uses' => 'ControllerZakaria@login'
-]);
 
 Route::any('/dashboard', [
     'as' => 'dashboard',
@@ -24,16 +20,6 @@ Route::any('/dashboard', [
 Route::any('/dashboard3', [
     'as' => 'dashboard3',
     'uses' => 'ControllerZakaria@dashboard3'
-]);
-
-Route::get('/forgot', [
-    'as' => 'forgot',
-    'uses' => 'ControllerZakaria@forgot'
-]);
-
-Route::any('/test', [
-    'as' => 'test',
-    'uses' => 'ControllerZakaria@test'
 ]);
 
 Route::any('/rangedate', [
@@ -186,11 +172,6 @@ Route::get('getAccount', [
 Route::get('getSubAccount', [
     'as' => 'getSubAccount',
     'uses' => 'UsersController@getSubAccount'
-]);
-
-Route::get('compare', [
-    'as' => 'compare',
-    'uses' => 'ControllerZakaria@compare'
 ]);
 
 Route::get('reloadIntervals', [
