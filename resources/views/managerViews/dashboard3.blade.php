@@ -132,18 +132,7 @@
                         <li><a href="#tab_3" data-toggle="tab">FCR</a></li>
                         <li><a href="#tab_4" data-toggle="tab">FCR Resolvable</a></li>
                         <li><a href="#tab_5" data-toggle="tab">Number of tickets</a></li>
-                        <li class="pull-right">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="fa fa-gear"></i> <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Param1</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Param2</a></li>
-                            </ul>
-                        </li>
                     </ul>
-
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
                             <div id="container1bis" class="containerbis"></div>
