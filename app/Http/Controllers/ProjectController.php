@@ -15,7 +15,7 @@ use Carbon\Carbon;
 
 use Illuminate\Support\Facades\View;
 
-class ControllerProject extends Controller{
+class ProjectController extends Controller{
 
     public function project(){
         $projects = DB::table('projects')->get();

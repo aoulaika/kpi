@@ -150,7 +150,7 @@
                             </div>
                             <!-- /.tab-pane -->
                             <div class="tab-pane" id="tab_2">
-                                <div id="csiCountryTable" style="height:341px;overflow: auto;">
+                                <div id="csiCountryTable" class="customScroll" data-mcs-theme="dark" style="height:341px;overflow: auto;">
                                 </div>
                             </div>
                             <!-- /.tab-pane -->
@@ -172,7 +172,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <div id="csiCatTable" style="height:395px;overflow: auto;">
+                    <div id="csiCatTable" class="customScroll" data-mcs-theme="dark" style="height:395px;overflow: auto;">
                     </div>
                 </div>
                 <!-- /.box-body -->
@@ -444,8 +444,15 @@
     <script src="{{ asset('/js/pie.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/js/radialProgress.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
-
-
+    <!-- Add days to a date -->
+    <script>
+        function addDays(date, days) {
+            var result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+    </script>
+    <!-- END Add days to a date -->
     <!-- date range picker -->
     <script type="text/javascript">
         var changed = false;
@@ -507,6 +514,13 @@
                         drawMap('#regions_div', response.countryChart, 2000, 'Number of Tickets', ' ticket');
                         drawMap('#csi_map', response.csi_map, 4.5, 'Current CSI', ' ');
                         reloadMissed(response.total_ticket, response.ci_missed, response.kb_missed, response.fcr_missed, response.fcr_reso_missed, response.fcr_reso_total);
+                        //reload CSI per category table
+                        reloadTable(response.csi_cat,'#csiCatTable','Category');
+                        //reload CSI per country table
+                        reloadTable(response.csi_location,'#csiCountryTable','Country');
+                    },
+                    error: function(err){
+                        console.log(err.responseText);
                     }
                 });
             });
@@ -575,8 +589,9 @@
             deb.setHours(0, 0, 0);
             var fin = new Date($('#fin').html());
             fin.setHours(0, 0, 0);
+            fin = addDays(fin,1);
             var i = 0;
-            while (deb <= fin) {
+            while (deb < fin) {
                 try {
                     current = new Date(d[i].CreatedYear, d[i].CreatedMonth - 1, d[i].CreatedDay, d[i].CreatedHour, 0);
                 }
@@ -660,11 +675,6 @@
         var values = JSON.parse('<?php echo json_encode($intervals); ?>');
         var times = JSON.parse('<?php echo json_encode($times); ?>');
         compareChart = drawChart(values, 7, times, 3);
-        function addDays(date, days) {
-            var result = new Date(date);
-            result.setDate(result.getDate() + days);
-            return result;
-        }
         $('#thicknessComp').change(function () {
             if (changed == false) {
                 var start = compareChart.startIndex;
@@ -1239,4 +1249,7 @@
         });
     </script>
     <!-- END CSI MAP -->
+    <script>
+        $(".customScroll").mCustomScrollbar();
+    </script>
 @endsection

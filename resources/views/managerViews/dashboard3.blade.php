@@ -104,10 +104,10 @@ Dashboard
                     </div>
                 </div>
                 <div class="row text-center">
-                        <div class="btn-group btn-group">
-                            <a class="btn btn-xs btn-default active scrub-track">Current CSI</a>
-                            <a class="btn btn-xs btn-default scrub-track">CSI With Scrub</a>
-                        </div>
+                    <div class="btn-group btn-group">
+                        <a class="btn btn-xs btn-default active scrub-track">Current CSI</a>
+                        <a class="btn btn-xs btn-default scrub-track">CSI With Scrub</a>
+                    </div>
                 </div>
                 <div class="row">
                     <div id="csiTracking"></div>
@@ -162,7 +162,7 @@ Dashboard
                             <div id="container1bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll" data-mcs-theme="dark">
                                 <div id="container1" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -170,7 +170,7 @@ Dashboard
                             <div id="container2bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll" data-mcs-theme="dark">
                                 <div id="container2" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -178,7 +178,7 @@ Dashboard
                             <div id="container3bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll" data-mcs-theme="dark">
                                 <div id="container3" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -186,7 +186,7 @@ Dashboard
                             <div id="container4bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll" data-mcs-theme="dark">
                                 <div id="container4" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -194,7 +194,7 @@ Dashboard
                             <div id="container5bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll">
                                 <div id="container5" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -493,30 +493,33 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
     drawBar('#container5',ticket_ord_users,'Number of Ticket','',ticket_ord_value);
 </script>
 <!-- End Bar Chart -->
-    <!-- CSI Tracking -->
-    <script>
-        $('.scrub-track').click(function () {
-            $('.scrub-track.active').removeClass('active');
-            $(this).addClass('active');
-            var val = ($(this).text() == 'Current CSI') ? 0 : 1;
-            var txt = $(this).text();
-            var id=parseInt($('#agent').val())+1;
-            $.ajax({
-                url: 'reloadTrack',
-                type: "get",
-                data: {
-                    'scrub': val,
-                    'agent_id': id,
-                    'debut': $('#datedeb').text(),
-                    'fin': $('#datefin').text()
-                },
-                success: function (response) {
-                    csiTrack('csiTracking', response.csi_tracking);
-                },error: function (response) {
-                    console.log(response.responseText);
-                }
-            });
+<!-- CSI Tracking -->
+<script>
+    $('.scrub-track').click(function () {
+        $('.scrub-track.active').removeClass('active');
+        $(this).addClass('active');
+        var val = ($(this).text() == 'Current CSI') ? 0 : 1;
+        var txt = $(this).text();
+        var id=parseInt($('#agent').val())+1;
+        $.ajax({
+            url: 'reloadTrack',
+            type: "get",
+            data: {
+                'scrub': val,
+                'agent_id': id,
+                'debut': $('#datedeb').text(),
+                'fin': $('#datefin').text()
+            },
+            success: function (response) {
+                csiTrack('csiTracking', response.csi_tracking);
+            },error: function (response) {
+                console.log(response.responseText);
+            }
         });
-    </script>
-    <!-- END CSI Tracking -->
+    });
+</script>
+<!-- END CSI Tracking -->
+<script>
+    $(".customScroll").mCustomScrollbar();
+</script>
 @endsection

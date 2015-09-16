@@ -39,13 +39,13 @@ Route::any('changeAgent', [
 
 Route::any('errors', [
     'as' => 'errors',
-    'uses' => 'ControllerZakaria@errors'
+    'uses' => 'ErrorsController@errors'
 ]);
 
 
 Route::any('updateErrors', [
     'as' => 'updateErrors',
-    'uses' => 'ControllerZakaria@updateErrors'
+    'uses' => 'ErrorsController@updateErrors'
 ]);
 
 Route::get('/users', [
@@ -135,7 +135,7 @@ Route::post('deletelanguage', [
 
 Route::post('editlanguage', [
     'as' => 'editlanguage',
-    'uses' => 'ControllerZakaria@editlanguage'
+    'uses' => 'LanguagesController@editlanguage'
 ]);
 
 Route::post('addProject', [
