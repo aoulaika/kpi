@@ -564,7 +564,7 @@ public function reload(Request $request)
     ->whereNotNull('geography.country_code')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
     ->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')
-    ->select(DB::raw('AVG(csi.rate) as count,geography.country_code,geography.country_name'))
+    ->select(DB::raw('AVG(csi.rate) as rate,geography.country_code,geography.country_name, count(*) as surveys'))
     ->groupBy('geography.country_code')
     ->get();
 
@@ -599,7 +599,7 @@ public function reload(Request $request)
     foreach ($csi_country as $key => $value) {
         array_push($csi_map, (object)array(
             'code'=>$value->country_code,
-            'value'=>$value->count,
+            'value'=>$value->rate,
             'name'=>$value->country_name
             ));
     }
@@ -631,6 +631,41 @@ public function reload(Request $request)
     ->select(DB::raw('FORMAT(avg(csi.rate),2) as rate'))
     ->first()->rate;
 
+    $csi_category=DB::table('fact')
+        ->join('time_dim','fact.fk_time','=','time_dim.Id')
+        ->where('time_dim.Created','>=',$params['datedeb'])
+        ->where('time_dim.Created','<=',$params['datefin'])
+        ->join('tickets_dim','tickets_dim.Id','=','fact.fk_ticket')
+        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
+        ->select(DB::raw('count(*)as count,FORMAT(avg(csi.rate),2) as avg,tickets_dim.Category'))
+        ->groupBy('tickets_dim.Category')
+        ->orderBy('avg','desc')
+        ->get();
+
+    $csi_category_scrub=DB::table('fact')
+        ->join('time_dim','fact.fk_time','=','time_dim.Id')
+        ->where('time_dim.Created','>=',$params['datedeb'])
+        ->where('time_dim.Created','<=',$params['datefin'])
+        ->join('tickets_dim','tickets_dim.Id','=','fact.fk_ticket')
+        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
+        ->whereNotIn('csi.ticket_number', function($q){
+            $q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+        })
+        ->select(DB::raw('FORMAT(avg(csi.rate),2) as avg,tickets_dim.Category'))
+        ->groupBy('tickets_dim.Category')
+        ->get();
+    $csi_cat = array();
+    foreach($csi_category as $obj){
+        $csi_cat[$obj->Category][0] = $obj->Category;
+        $csi_cat[$obj->Category][1] = $obj->count;
+        $csi_cat[$obj->Category][2] = $obj->avg;
+        $csi_cat[$obj->Category][3] = 0;
+    }
+
+    foreach($csi_category_scrub as $obj){
+        $csi_cat[$obj->Category][3] = $obj->avg;
+    }
+
     $data=array(
         'kb'=>$total_kb,
         'ci'=>$total_ci,
@@ -656,7 +691,8 @@ public function reload(Request $request)
         'csi_map'=> $csi_map,
         'csi_location'=> $csi_location,
         'csi_rate'=> $csi_rate,
-        'csi_rate_quality'=> $csi_rate_quality
+        'csi_rate_quality'=> $csi_rate_quality,
+        'csi_cat'=> $csi_cat
         );
     return response()->json($data);
 }
@@ -705,7 +741,7 @@ public function reloadMap(Request $request)
 {
 
     $params = $request->all();
-    $csi_country;
+    $csi_country = array();
     if ($params['scrub']==0) {
         $csi_country=DB::table('fact')
         ->join('time_dim','fact.fk_time','=','time_dim.Id')
