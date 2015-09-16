@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 
-class AgentController extends Controller{
+class AgentController extends Controller {
+
 	public function dashboard3() {
 		$total_ticket=DB::table('fact')
 		->count();
@@ -273,7 +274,7 @@ class AgentController extends Controller{
 		->where('agent_dim.Code',$ci_users[0]->Code)
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-		->where('csi.sla_metric','Yes')
+
 		->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 		->first();
 
@@ -283,7 +284,7 @@ class AgentController extends Controller{
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
 		->whereNotIn('csi.ticket_number', $out)
-		->where('csi.sla_metric','Yes')
+
 		->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 		->first();
 
@@ -291,16 +292,14 @@ class AgentController extends Controller{
 
 		$csi_tracking=DB::table('fact')
 		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->where('agent_dim.Code',$ci_users[0]->Code)
 		->join('time_dim','fact.fk_time','=','time_dim.Id')
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-		->where('csi.sla_metric','Yes')
-		->select(DB::raw('time_dim.Created, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
+		->where('agent_dim.Id',$ci_users[0]->Id)
+
+		->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
 		->groupBy('CreatedYear','CreatedMonth','CreatedDay')
 		->get();
-
-		var_dump($csi_tracking);die;
 
 		return View('managerViews.dashboard3')->with([
 			'ci_users' => $ci_users,
@@ -341,7 +340,8 @@ class AgentController extends Controller{
 			'fcr_reso_missed'=>$fcr_reso_missed,
 			'total_ticket'=>$total_ticket,
 			'csi'=>$csi,
-			'csi_scrub'=>$csi_scrub
+			'csi_scrub'=>$csi_scrub,
+			'csi_tracking'=>$csi_tracking
 			]);
 }
 
@@ -590,7 +590,6 @@ public function rangedate(Request $request) {
 	->where('agent_dim.Id',$params['agent_id'])
 	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->where('csi.sla_metric','Yes')
 	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 	->first();
 
@@ -603,10 +602,22 @@ public function rangedate(Request $request) {
 	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 	->whereNotIn('tickets_dim.Number', $out)
 	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->where('csi.sla_metric','Yes')
 	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 	->first();
 
+	/*csi tracking*/
+
+	$csi_tracking=DB::table('fact')
+	->join('time_dim','fact.fk_time','=','time_dim.Id')
+	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
+	->where('time_dim.Created','>=',$params['datedeb'])
+	->where('time_dim.Created','<=',$params['datefin'])
+	->where('agent_dim.Id',$params['agent_id'])
+	->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
+	->groupBy('CreatedYear','CreatedMonth','CreatedDay')
+	->get();
 	/* */
 	return response()->json([
 		'tickets_per_agent' => $tickets_per_agent,
@@ -631,7 +642,8 @@ public function rangedate(Request $request) {
 		'ticket_ord_value'=>$ticket_ord_value,
 		'total_ticket'=>$total_ticket,
 		'csi'=>$csi,
-		'csi_scrub'=>$csi_scrub
+		'csi_scrub'=>$csi_scrub,
+		'csi_tracking'=>$csi_tracking
 		]);
 }
 
@@ -723,7 +735,6 @@ public function changeAgent(Request $request) {
 	->where('agent_dim.Id',$params['agent_id'])
 	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->where('csi.sla_metric','Yes')
 	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 	->first();
 
@@ -736,9 +747,22 @@ public function changeAgent(Request $request) {
 	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 	->whereNotIn('tickets_dim.Number', $out)
 	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->where('csi.sla_metric','Yes')
 	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 	->first();
+
+	/*csi tracking*/
+
+	$csi_tracking=DB::table('fact')
+	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+	->join('time_dim','fact.fk_time','=','time_dim.Id')
+	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
+	->where('time_dim.Created','>=',$params['datedeb'])
+	->where('time_dim.Created','<=',$params['datefin'])
+	->where('agent_dim.Id',$params['agent_id'])
+	->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
+	->groupBy('CreatedYear','CreatedMonth','CreatedDay')
+	->get();
 
 	return response()->json([
 		'tickets_all' => $tickets_all,
@@ -746,7 +770,8 @@ public function changeAgent(Request $request) {
 		'user_pic'=>$user_pic,
 		'fcr_reso_missed'=>$fcr_reso_missed,
 		'csi'=>$csi,
-		'csi_scrub'=>$csi_scrub
+		'csi_scrub'=>$csi_scrub,
+		'csi_tracking'=>$csi_tracking
 		]);
 }
 }
