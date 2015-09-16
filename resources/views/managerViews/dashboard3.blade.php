@@ -156,7 +156,7 @@ Dashboard
                             <div id="container1bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll" data-mcs-theme="dark">
                                 <div id="container1" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -164,7 +164,7 @@ Dashboard
                             <div id="container2bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll" data-mcs-theme="dark">
                                 <div id="container2" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -172,7 +172,7 @@ Dashboard
                             <div id="container3bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll" data-mcs-theme="dark">
                                 <div id="container3" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -180,7 +180,7 @@ Dashboard
                             <div id="container4bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll" data-mcs-theme="dark">
                                 <div id="container4" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -188,7 +188,7 @@ Dashboard
                             <div id="container5bis" class="containerbis"></div>
                             <hr>
                             <h3 class="titles">All agents comparison</h3>
-                            <div class="containerscroll">
+                            <div class="containerscroll customScroll">
                                 <div id="container5" class="containerbar"></div>
                             </div>
                         </div><!-- /.tab-pane -->
@@ -487,4 +487,7 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
     drawBar('#container5',ticket_ord_users,'Number of Ticket','',ticket_ord_value);
 </script>
 <!-- End Bar Chart -->
+<script>
+    $(".customScroll").mCustomScrollbar();
+</script>
 @endsection
