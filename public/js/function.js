@@ -221,14 +221,34 @@ function gauge(id,mi,mx,title,tht,tht_time){
     }
 
     function draw(data) {
-        var ticketsData1 = [];
+        /*var ticketsData1 = [];
         for (var i = 0; i < data.length; i++) {
             ticketsData1.push({
                 date: new Date(data[i].CreatedYear, data[i].CreatedMonth - 1, data[i].CreatedDay, data[i].CreatedHour, data[i].CreatedMinute, data[i].CreatedSecond, 0),
                 visits: data[i].count
             });
-        };
-
+        };*/
+        var ticketsData1 = [];
+        var deb = new Date($('#datedeb').html());
+        deb.setHours(0, 0, 0);
+        var fin = new Date($('#datefin').html());
+        fin.setHours(0, 0, 0);
+        var i = 0;
+        while (deb <= fin) {
+            try {
+                current = new Date(data[i].CreatedYear, data[i].CreatedMonth - 1, data[i].CreatedDay, data[i].CreatedHour, 0);
+            }
+            catch (err) {
+                current = new Date(0);
+            }
+            ticketsData1.push({
+                date: new Date(deb.getTime()),
+                visits: (current.getTime() == deb.getTime()) ? data[i].count : 0
+            });
+            if (current.getTime() == deb.getTime())
+                i++;
+            deb.setHours(deb.getHours() + 1);
+        }
         var chart2 = AmCharts.makeChart("ticketsChart2", {
             "type": "serial",
             "theme": "light",
@@ -288,9 +308,9 @@ function csiTrack(id, data) {
     var chart = AmCharts.makeChart(id, {
         "type": "serial",
         "theme": "light",
-        "marginRight": 25,
-        "autoMarginOffset": 10,
-        "marginTop": 7,
+        "marginRight": 40,
+        "autoMarginOffset": 20,
+        "marginTop": 1,
         "dataProvider": csiData,
         "valueAxes": [{
             "axisAlpha": 0.2,
@@ -309,11 +329,13 @@ function csiTrack(id, data) {
             "id": "csiTrack",
             "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
             "bullet": "round",
-            "bulletBorderAlpha": 2,
+            "bulletBorderAlpha": 1,
             "bulletColor": "#FFFFFF",
             "bulletSize": 3,
             "hideBulletsCount": 50,
             "title": "red line",
+            "bulletBorderColor": "#FFFFFF",
+            "hideBulletsCount": 50,
             "valueField": "visits",
             "lineThickness": 2,
             "useLineColorForBulletBorder": true
@@ -331,15 +353,15 @@ function csiTrack(id, data) {
         },
         "chartCursor": {
             "categoryBalloonDateFormat": "YYYY-MM-DD",
-            "cursorPosition": "mouse"
+            "cursorPosition": "mouse",
+            "valueLineEnabled": true,
+            "valueLineBalloonEnabled": true
         },
         "categoryField": "date",
         "categoryAxis": {
             "parseDates": true,
-            "minPeriod": "mm",
-            "axisColor": "#DADADA",
-            "dashLength": 2,
-            "minorGridEnabled": true
+            "axisAlpha": 0,
+            "minHorizontalGap": 60
         },
         "export": {
             "enabled": true

@@ -773,4 +773,42 @@ public function changeAgent(Request $request) {
 		'csi_tracking'=>$csi_tracking
 		]);
 }
+
+public function reloadTrack(Request $request)
+{
+	$params = $request->all();
+	$csi_tracking=array();
+	if ($params['scrub']==0) {
+		$csi_tracking=DB::table('fact')
+		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+		->join('time_dim','fact.fk_time','=','time_dim.Id')
+		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
+		->where('time_dim.Created','>=',$params['debut'])
+		->where('time_dim.Created','<=',$params['fin'])
+		->where('agent_dim.Id',$params['agent_id'])
+		->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
+		->groupBy('CreatedYear','CreatedMonth','CreatedDay')
+		->get();
+	} else {
+		$csi_tracking=DB::table('fact')
+		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
+		->join('time_dim','fact.fk_time','=','time_dim.Id')
+		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
+		->whereNotIn('csi.ticket_number', function($q){
+			$q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+		})
+		->where('time_dim.Created','>=',$params['debut'])
+		->where('time_dim.Created','<=',$params['fin'])
+		->where('agent_dim.Id',$params['agent_id'])
+		->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
+		->groupBy('CreatedYear','CreatedMonth','CreatedDay')
+		->get();
+	}
+	
+	return response()->json([
+		'csi_tracking'=>$csi_tracking
+		]);
+}
 }

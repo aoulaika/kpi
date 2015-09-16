@@ -40,6 +40,10 @@ Employees
 	.span{
 		font-size: 1.3em;
 	}
+	#chart-container{
+		height		: 390px;
+		font-size	: 11px;
+	}
 </style>
 @endsection
 @section('content')
@@ -520,9 +524,9 @@ Employees
 @section('script')
 <script src="{{ asset('/js/angular.min.js') }}"></script>
 <script src="{{ asset('/js/userCtrl.js') }}"></script>
-<script src="{{ asset('/js/highcharts.js') }}"></script>
-<script src="{{ asset('/js/highcharts-more.js') }}"></script>
-<script src="{{ asset('/js/exporting.js') }}"></script>
+<script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
+<script src="http://www.amcharts.com/lib/3/radar.js"></script>
+<script src="http://www.amcharts.com/lib/3/themes/light.js"></script>
 <script src="{{ asset('/js/showRadar.js') }}"></script>
 <script src="{{ asset('/js/xeditable.js') }}"></script>
 <script src="{{ asset('/js/bootstrap-select.min.js') }}"></script>

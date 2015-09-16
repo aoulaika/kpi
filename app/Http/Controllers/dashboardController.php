@@ -564,7 +564,7 @@ public function reload(Request $request)
     ->whereNotNull('geography.country_code')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
     ->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')
-    ->select(DB::raw('AVG(csi.rate) as count,geography.country_code,geography.country_name'))
+    ->select(DB::raw('AVG(csi.rate) as rate,geography.country_code,geography.country_name, count(*) as surveys'))
     ->groupBy('geography.country_code')
     ->get();
 
@@ -599,7 +599,7 @@ public function reload(Request $request)
     foreach ($csi_country as $key => $value) {
         array_push($csi_map, (object)array(
             'code'=>$value->country_code,
-            'value'=>$value->count,
+            'value'=>$value->rate,
             'name'=>$value->country_name
             ));
     }

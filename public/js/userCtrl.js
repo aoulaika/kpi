@@ -154,7 +154,6 @@ app.controller('ctrl', function($scope,$http) {
     $http.post('polarData', {id:item.Id})
     .then(function (response) {
       console.log(response.data.data);
-      
       showRadar(response.data.data);
     })
     .then(function (response) {

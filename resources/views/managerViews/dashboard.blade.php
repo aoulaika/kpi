@@ -334,8 +334,7 @@
                                                 <div class="form-group form-inline pull-right"
                                                      style="margin-right:10px;">
                                                     <label for="interval-type">Interval type: </label>
-                                                    <select name="interval-type" id="interval-type"
-                                                            class="form-control">
+                                                    <select name="interval-type" id="interval-type" class="form-control">
                                                         <option value="day">Day</option>
                                                         <option value="week">Week</option>
                                                         <option value="month">Month</option>
@@ -1211,8 +1210,8 @@
             str += '</tbody></table>';
             $(id).html(str);
         }
-        var csi_cat = JSON.parse('<?php echo json_encode($csi_cat); ?>');
-        var csi_country = JSON.parse('<?php echo json_encode($csi_location); ?>');
+        var csi_cat = <?php echo json_encode($csi_cat); ?>;
+        var csi_country = <?php echo json_encode($csi_location); ?>;
         reloadTable(csi_cat, '#csiCatTable', 'Category');
         reloadTable(csi_country, '#csiCountryTable', 'Country');
     </script>

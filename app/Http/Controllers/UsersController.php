@@ -155,15 +155,25 @@ class UsersController extends Controller{
     
     $data = array(
       (object)array(
-        'name'=>'Average',
-        'data'=>array(floatval($avg_fcr[0]->avg_fcr),floatval($avg_fcr_reso[0]->avg_fcr_reso),floatval($avg_kb[0]->avg_kb),floatval($avg_ci[0]->avg_ci)),
-        'pointPlacement'=>'on'
+        'name'=>'FCR Resolvable',
+        'average'=>round(floatval($avg_fcr_reso[0]->avg_fcr_reso),2),
+        'agent'=>round(floatval($fcr_reso[0]->fcr_reso),2)
         ),
       (object)array(
-        'name'=>'Agent',
-        'data'=>array(floatval($fcr[0]->fcr),floatval($fcr_reso[0]->fcr_reso),floatval($kb[0]->kb),floatval($ci[0]->ci)),
-        'pointPlacement'=>'on'
+        'name'=>'FCR',
+        'average'=>round(floatval($avg_fcr[0]->avg_fcr),2),
+        'agent'=>round(floatval($fcr[0]->fcr),2)
         ),
+      (object)array(
+        'name'=>'CI Usage',
+        'average'=>round(floatval($avg_ci[0]->avg_ci),2),
+        'agent'=>round(floatval($ci[0]->ci),2)
+        ),
+      (object)array(
+        'name'=>'EKMS Usage',
+        'average'=>round(floatval($avg_kb[0]->avg_kb),2),
+        'agent'=>round(floatval($kb[0]->kb),2)
+        )
       );
 
     return response()->json([

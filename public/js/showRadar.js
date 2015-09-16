@@ -1,30 +1,25 @@
 function showRadar (data) {
-    $('#chart-container').highcharts({
-        chart: {
-            polar: true,
-            type: 'line'
-        },
-        title: {
-            text: '',
-            x: -80
-        },
-        pane: {
-            size: '85%'
-        },
-        xAxis: {
-            categories: ['FCR', 'FCR Resolvable', 'EKMS Usage', 'CI Usage'],
-            tickmarkPlacement: 'on',
-            lineWidth: 0
-        },
-        yAxis: {
-            gridLineInterpolation: 'polygon',
-            lineWidth: 0,
-            max: 100
-        },
-        tooltip: {
-            shared: true,
-            pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>{series.name}'
-        },
-        series: data
-    });
+    var chart = AmCharts.makeChart( "chart-container", 
+    {
+      "type": "radar",
+      "theme": "light",
+      "dataProvider": data,
+      "startDuration": 2,
+      "categoryField": "name",
+      "valueAxes": [
+      {
+        "axisTitleOffset": 20,
+        "minimum": 0,
+        "axisAlpha": 0.15
+    }],
+    "graphs": [ {
+        "balloonText": "[[value]]% Average Usage",
+        "bullet": "round",
+        "valueField": "average"
+    },{
+        "balloonText": "[[value]]% Agent Usage",
+        "bullet": "round",
+        "valueField": "agent"
+    } ]
+} );
 }

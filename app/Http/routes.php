@@ -183,3 +183,8 @@ Route::get('reloadMap', [
     'as' => 'reloadMap',
     'uses' => 'DashboardController@reloadMap'
 ]);
+
+Route::get('reloadTrack', [
+    'as' => 'reloadTrack',
+    'uses' => 'AgentController@reloadTrack'
+]);

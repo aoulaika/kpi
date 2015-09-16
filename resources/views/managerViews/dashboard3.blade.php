@@ -103,6 +103,12 @@ Dashboard
                         <h5 class="minititle">CSI With Scrub <span style="color: red;" id="csiscrub"> {{ $csi_scrub->rate }}</span> For <span style="color: red;" id="csiscrub-count">{{ $csi_scrub->count }}</span> Surveys</h5>
                     </div>
                 </div>
+                <div class="row text-center">
+                        <div class="btn-group btn-group">
+                            <a class="btn btn-xs btn-default active scrub-track">Current CSI</a>
+                            <a class="btn btn-xs btn-default scrub-track">CSI With Scrub</a>
+                        </div>
+                </div>
                 <div class="row">
                     <div id="csiTracking"></div>
                 </div>
@@ -487,4 +493,30 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
     drawBar('#container5',ticket_ord_users,'Number of Ticket','',ticket_ord_value);
 </script>
 <!-- End Bar Chart -->
+    <!-- CSI Tracking -->
+    <script>
+        $('.scrub-track').click(function () {
+            $('.scrub-track.active').removeClass('active');
+            $(this).addClass('active');
+            var val = ($(this).text() == 'Current CSI') ? 0 : 1;
+            var txt = $(this).text();
+            var id=parseInt($('#agent').val())+1;
+            $.ajax({
+                url: 'reloadTrack',
+                type: "get",
+                data: {
+                    'scrub': val,
+                    'agent_id': id,
+                    'debut': $('#datedeb').text(),
+                    'fin': $('#datefin').text()
+                },
+                success: function (response) {
+                    csiTrack('csiTracking', response.csi_tracking);
+                },error: function (response) {
+                    console.log(response.responseText);
+                }
+            });
+        });
+    </script>
+    <!-- END CSI Tracking -->
 @endsection
