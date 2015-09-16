@@ -270,11 +270,11 @@ Dashboard
 			<div class="box-body">
 				<div class="nav-tabs-custom">
 					<ul class="nav nav-tabs">
-						<li class="active"><a href="#tab_1" data-toggle="tab">Tickets Per Hours</a></li>
-						<li><a href="#tab_2" data-toggle="tab">Comparing</a></li>
+						<li class="active"><a href="#tab1" data-toggle="tab">Tickets Per Hours</a></li>
+						<li><a href="#tab2" data-toggle="tab">Comparing</a></li>
 					</ul>
 					<div class="tab-content">
-						<div class="tab-pane active" id="tab_1">
+						<div class="tab-pane active" id="tab1">
 							<div>
 								<div class="col-sm-4" style="margin-bottom:15px">
 									<label for="product">Filter By Product</label>
@@ -299,7 +299,7 @@ Dashboard
 								<div  id="ticketsChart"></div>
 							</div>
 						</div><!-- /.tab-pane -->
-						<div class="tab-pane" id="tab_2">
+						<div class="tab-pane" id="tab2">
 							<div>
 								<div class="col-sm-4 form-group">
 									<label for="product">Filter By Product</label>
@@ -491,7 +491,7 @@ Dashboard
 					reloadPriority(response.critical,response.high,response.medium,response.low,response.planning);
 					data_temp=response.ticket_all;
 					reloadSelect(data_temp.product,'#product');
-					draw(data_temp.all,'ticketsChart');
+					ticketsChart = draw(data_temp.all,'ticketsChart');
 					$('.csi').first().html(response.csi_rate);
 					$('.csi').last().html(response.csi_rate_quality);
 					drawMap('#regions_div', response.countryChart, 2000, 'Number of Tickets', ' ticket');
@@ -530,6 +530,8 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 
 <!-- Tickets Per Hour Chart -->
 <script language="JavaScript">
+    var ticketsChart;
+    var compareChart;
 	var data=data_temp.all;
 	$(".select2").change(function() {
 		var v=$(this).val();
@@ -538,7 +540,10 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 		}else{
 			data=data_temp.product[v];
 		}
-		draw(data,'ticketsChart',$('#thickness').val());
+        var start = ticketsChart.startIndex;
+        var end = ticketsChart.endIndex;
+        ticketsChart = draw(data,'ticketsChart',$('#thickness').val());
+        ticketsChart.zoomToIndexes(start,end);
 	});
     $('#thickness').change(function() {
         var v=$('#product').val();
@@ -547,9 +552,12 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
         }else{
             data=data_temp.product[v];
         }
-        draw(data,'ticketsChart',$(this).val());
+        var start = ticketsChart.startIndex;
+        var end = ticketsChart.endIndex;
+        ticketsChart = draw(data,'ticketsChart',$(this).val());
+        ticketsChart.zoomToIndexes(start,end);
     });
-	draw(data,'ticketsChart',3);
+    ticketsChart = draw(data,'ticketsChart',3);
 	function draw(d,id,thickness) {
 		var ticketsData = [];
         var deb = new Date($('#debut').html());
@@ -575,7 +583,7 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 		var chart1 = AmCharts.makeChart(id, {
 			"type": "serial",
 			"theme": "light",
-			"marginRight": 80,
+			"marginRight": 30,
 			"autoMarginOffset": 20,
 			"marginTop": 7,
 			"dataProvider": ticketsData,
@@ -629,6 +637,7 @@ chart1.pathToImages = '/kpi/public/img/';
 			// different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
 			chart1.zoomToIndexes(ticketsData.length - 40, ticketsData.length - 1);
 		}
+        return chart1;
 	}
 </script>
 <!-- End Tickets Per Hour Chart -->
@@ -638,7 +647,7 @@ chart1.pathToImages = '/kpi/public/img/';
     console.log()
 	var values= JSON.parse('<?php echo json_encode($intervals); ?>');
 	var times= JSON.parse('<?php echo json_encode($times); ?>');
-	drawChart(values,7,times,3);
+    compareChart = drawChart(values,7,times,3);
 	function addDays(date, days) {
 		var result = new Date(date);
 		result.setDate(result.getDate() + days);
@@ -646,7 +655,10 @@ chart1.pathToImages = '/kpi/public/img/';
 	}
     $('#thicknessComp').change(function(){
         if(changed == false){
-            drawChart(values,7,times,$(this).val());
+            var start = compareChart.startIndex;
+            var end = compareChart.endIndex;
+            compareChart = drawChart(values,7,times,$(this).val());
+            compareChart.zoomToIndexes(start,end);
         }
         else{
             var dates = $('input.datedebut').map(function(i, el) {
@@ -666,7 +678,10 @@ chart1.pathToImages = '/kpi/public/img/';
                     'type': $('#interval-type').val()
                 },
                 success: function (response) {
-                    drawChart(response.values,range,response.times,$('#thicknessComp').val());
+                    var start = compareChart.startIndex;
+                    var end = compareChart.endIndex;
+                    compareChart = drawChart(response.values,range,response.times,$('#thicknessComp').val());
+                    compareChart.zoomToIndexes(start,end);
                 }
             });
         }
@@ -734,7 +749,7 @@ chart1.pathToImages = '/kpi/public/img/';
 				"legend": {
 					"useGraphSettings": true
 				},
-				"marginRight": 80,
+				"marginRight": 30,
 				"autoMarginOffset": 20,
 				"marginTop": 7,
 				"dataProvider": chartData,
@@ -774,6 +789,7 @@ chart1.pathToImages = '/kpi/public/img/';
             // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
             chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
         }
+        return chart;
     }
 </script>
 <!-- End Compare Weeks -->
@@ -1083,7 +1099,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
             			'type': $('#interval-type').val()
             		},
             		success: function (response) {
-            			drawChart(response.values,range,response.times,$('#thicknessComp').val());
+            			compareChart = drawChart(response.values,range,response.times,$('#thicknessComp').val());
                         changed = true;
             		}
             	});
@@ -1137,7 +1153,10 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 				'type': $('#interval-type').val()
 			},
 			success: function (response) {
-				drawChart(response.values,range,response.times,$('#thicknessComp').val());
+                var start = compareChart.startIndex;
+                var end = compareChart.endIndex;
+				compareChart = drawChart(response.values,range,response.times,$('#thicknessComp').val());
+                compareChart.zoomToIndexes(start,end);
 			}
 		});
 	});
