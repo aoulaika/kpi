@@ -138,24 +138,8 @@ Dashboard
                             <div id="csi_map" style="width: 100%;height: 340px;"></div>
                         </div><!-- /.tab-pane -->
                         <div class="tab-pane" id="tab_2">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Country</th>
-                                        <th>Number of surveys</th>
-                                        <th>CSI</th>
-                                        <th>CSI with scrub</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Morocco</td>
-                                        <td>80</td>
-                                        <td>5</td>
-                                        <td>5</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div>
+                            </div>
                         </div><!-- /.tab-pane -->
                     </div><!-- /.tab-content -->
                 </div><!-- nav-tabs-custom -->
@@ -169,33 +153,7 @@ Dashboard
 				<h3 class="box-title">CSI Per Category</h3>
 			</div><!-- /.box-header -->
 			<div class="box-body">
-                <div style="height:390px;overflow: auto;">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Number of surveys</th>
-                            <th>CSI</th>
-                            <th>CSI with Scrub</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($csi_cat as $row)
-                            @if($row[2]<4)
-                                <tr class="danger">
-                                    @elseif($row[2]>=4 && $row[2]<=4.25)
-                                <tr class="warning">
-                            @else
-                                <tr class="success">
-                                    @endif
-                                    <td>{{ $row[0] }}</td>
-                                    <td class="csiValues">{{ $row[1] }}</td>
-                                    <td class="csiValues">{{ $row[2] }}</td>
-                                    <td class="csiValues">{{ $row[3] }}</td>
-                                </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                <div id="csiCatTable" style="height:390px;overflow: auto;">
                 </div>
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
@@ -517,6 +475,7 @@ function reloadSelect (data,id) {
 	}
 	$(id).html(str);
 }
+
 function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_missed, fcr_reso_total) {
 	$('.total_ticket').html(total_ticket);
 	$('#ci_missed').html(ci_missed);
@@ -1162,4 +1121,37 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 	});
 </script>
 <!-- END Onchange datepicker and interval type select -->
+<!-- reload CSI Tables -->
+<script>
+    function reloadTable (data,id,column) {
+        var str='<table class="table"><thead>' +
+                '<tr><th>' +column+'</th>'+
+                '<th>Number of surveys</th>' +
+                '<th>CSI</th>' +
+                '<th>CSI with Scrub</th></tr></thead><tbody>';
+        for (var property in data) {
+            if (data.hasOwnProperty(property)) {
+                if (data[property][2] < 4) {
+                    str += '<tr class="danger">';
+                }
+                else if (data[property][2] >= 4 && data[property][2] <= 4.25) {
+                    str += '<tr class="warning">';
+                }
+                else {
+                    str += '<tr class="success">'
+                }
+                str += '<td>' + data[property][0] + '</td>' +
+                '<td class="csiValues">' + data[property][1] + '</td>' +
+                '<td class="csiValues">' + data[property][2] + '</td>' +
+                '<td class="csiValues">' + data[property][3] + '</td></tr>';
+            }
+        }
+        str+='</tbody></table>';
+        $(id).html(str);
+    }
+    var csi_cat = JSON.parse('<?php echo json_encode($csi_cat); ?>');
+    console.log(csi_cat);
+    reloadTable(csi_cat,'#csiCatTable','Category');
+</script>
+<!-- END reload CSI Tables -->
 @endsection
