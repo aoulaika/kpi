@@ -150,7 +150,7 @@
                             </div>
                             <!-- /.tab-pane -->
                             <div class="tab-pane" id="tab_2">
-                                <div id="csiCountryTable" style="height:341px;overflow: auto;">
+                                <div id="csiCountryTable" class="customScroll" data-mcs-theme="dark" style="height:341px;overflow: auto;">
                                 </div>
                             </div>
                             <!-- /.tab-pane -->
@@ -172,7 +172,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <div id="csiCatTable" style="height:395px;overflow: auto;">
+                    <div id="csiCatTable" class="customScroll" data-mcs-theme="dark" style="height:395px;overflow: auto;">
                     </div>
                 </div>
                 <!-- /.box-body -->
@@ -1250,4 +1250,7 @@
         });
     </script>
     <!-- END CSI MAP -->
+    <script>
+        $(".customScroll").mCustomScrollbar();
+    </script>
 @endsection
