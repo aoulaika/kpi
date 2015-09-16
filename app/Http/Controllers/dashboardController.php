@@ -234,7 +234,7 @@ class DashboardController extends Controller
         $csi_category=DB::table('fact')
             ->join('tickets_dim','tickets_dim.Id','=','fact.fk_ticket')
             ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-            ->select(DB::raw('count(*)as count,AVG(csi.rate) as avg,tickets_dim.Category'))
+            ->select(DB::raw('count(*)as count,FORMAT(avg(csi.rate),2) as avg,tickets_dim.Category'))
             ->groupBy('tickets_dim.Category')
             ->orderBy('avg','desc')
             ->get();
@@ -245,7 +245,7 @@ class DashboardController extends Controller
             ->whereNotIn('csi.ticket_number', function($q){
                 $q->select('ticket_number')->from('quality')->where('accounted','=','NO');
             })
-            ->select(DB::raw('AVG(csi.rate) as avg,tickets_dim.Category'))
+            ->select(DB::raw('FORMAT(avg(csi.rate),2) as avg,tickets_dim.Category'))
             ->groupBy('tickets_dim.Category')
             ->get();
 

@@ -20,9 +20,12 @@ Dashboard
 		font-family: 'Share Tech', sans-serif;
 		height: 95px;
 		vertical-align: middle;
-		margin-top: 6%;
-		margin-bottom: 6%;
+		margin-top: 9%;
+		margin-bottom: 9%;
 	}
+    .csiValues{
+        text-align: center;
+    }
 </style>
 @endsection
 @section('content')
@@ -120,53 +123,91 @@ Dashboard
 <!-- Customer Satisfaction Indicators -->
 <div class="row">
 	<div class="col-lg-5 col-sm-12">
-		<div class="box box-default" style="height:400px">
+		<div class="box box-default" style="height:460px">
 			<div class="box-header with-border">
-				<h3 class="box-title">CSI Per Country</h3>
+				<h3 class="box-title">CSI Per Location</h3>
 			</div><!-- /.box-header -->
 			<div class="box-body">
-				<div id="csi_map" style="width: 100%; height: 340px;"></div>
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_1" data-toggle="tab">Map</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">List</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab_1">
+                            <div id="csi_map" style="width: 100%;height: 340px;"></div>
+                        </div><!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_2">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Country</th>
+                                        <th>Number of surveys</th>
+                                        <th>CSI</th>
+                                        <th>CSI with scrub</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Morocco</td>
+                                        <td>80</td>
+                                        <td>5</td>
+                                        <td>5</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.tab-pane -->
+                    </div><!-- /.tab-content -->
+                </div><!-- nav-tabs-custom -->
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
 	</div><!-- /.col -->
 
 	<div class="col-lg-5 col-sm-12">
-		<div class="box box-default" style="height:400px">
+		<div class="box box-default" style="height:460px">
 			<div class="box-header with-border">
 				<h3 class="box-title">CSI Per Category</h3>
 			</div><!-- /.box-header -->
-			<div class="box-body" style="height:390px">
-                <table class="table">
-                    <thead>
+			<div class="box-body">
+                <div style="height:390px;overflow: auto;">
+                    <table class="table">
+                        <thead>
                         <tr>
                             <th>Category</th>
                             <th>Number of surveys</th>
                             <th>CSI</th>
                             <th>CSI with Scrub</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($csi_cat as $row)
-                        <tr>
-                            <td>{{ $row[0] }}</td>
-                            <td>{{ $row[1] }}</td>
-                            <td>{{ $row[2] }}</td>
-                            <td>{{ $row[3] }}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        @foreach($csi_cat as $row)
+                            @if($row[2]<4)
+                                <tr class="danger">
+                                    @elseif($row[2]>=4 && $row[2]<=4.25)
+                                <tr class="warning">
+                            @else
+                                <tr class="success">
+                                    @endif
+                                    <td>{{ $row[0] }}</td>
+                                    <td class="csiValues">{{ $row[1] }}</td>
+                                    <td class="csiValues">{{ $row[2] }}</td>
+                                    <td class="csiValues">{{ $row[3] }}</td>
+                                </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
 			</div><!-- /.box-body -->
 		</div><!-- /.box -->
 	</div><!-- /.col -->
 
 	<div class="col-lg-2">
-		<div class="box box-default" style="height:400px">
+		<div class="box box-default" style="height:460px">
 			<div class="box-header with-border">
 				<h3 class="box-title">CSI Rate</h3>
 			</div><!-- /.box-header -->
 			<div class="box-body">
-				<div class="box box-warning">
+				<div class="box box-warning" style="margin-top:20px;margin-bottom: 30px;">
 					<div class="box-header with-border">
 						<div class="box-title">Current CSI</div>
 						<div class="box-body csi">{{ $csi_rate }}</div>
