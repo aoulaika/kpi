@@ -275,85 +275,77 @@ function gauge(id,mi,mx,title,tht,tht_time){
             }
         });
 chart2.pathToImages = '/kpi/public/img/';
-chart2.addListener("rendered", zoomChart);
-zoomChart();
+}
 
-        // this method is called when chart is first inited as we listen for "dataUpdated" event
-        function zoomChart() {
-            // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
-            chart2.zoomToIndexes(ticketsData1.length - 40, ticketsData1.length - 1);
-        }
-    }
-
-    function csiTrack(id, data) {
-        var csiData = [];
-        console.log(data);
-        for (var i = 0; i < data.length; i++) {
-            csiData.push({
-                date: new Date(data[i].Created),
-                visits: data[i].rate
-            });
-        };
-
-        var chart2 = AmCharts.makeChart(id, {
-            "type": "serial",
-            "theme": "light",
-            "marginRight": 80,
-            "autoMarginOffset": 20,
-            "marginTop": 7,
-            "dataProvider": csiData,
-            "valueAxes": [{
-                "axisAlpha": 0.2,
-                "dashLength": 1,
-                "position": "left"
-            }],
-            "mouseWheelZoomEnabled": true,
-            "graphs": [{
-                "id": "ticketsChart2",
-                "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
-                "bullet": "round",
-                "bulletBorderAlpha": 1,
-                "bulletColor": "#FFFFFF",
-                "hideBulletsCount": 50,
-                "title": "red line",
-                "valueField": "visits",
-                "useLineColorForBulletBorder": true
-            }],
-            "chartScrollbar": {
-                "autoGridCount": true,
-                "graph": "ticketsChart2",
-                "scrollbarHeight": 40
-            },
-            "chartCursor": {
-                "categoryBalloonDateFormat": "YYYY-MM-DD",
-                "cursorPosition": "mouse"
-            },
-            "categoryField": "date",
-            "categoryAxis": {
-                "parseDates": true,
-                "minPeriod": "mm",
-                "axisColor": "#DADADA",
-                "dashLength": 1,
-                "minorGridEnabled": true,
-                "guides": [{
-                    "dashLength": 1,
-                    "inside": true,
-                    "label": "average",
-                    "lineAlpha": 2,
-                    "value": 80
-                }]
-            },
-            "export": {
-                "enabled": true
-            }
+function csiTrack(id, data) {
+    var csiData = [];
+    for (var i = 0; i < data.length; i++) {
+        csiData.push({
+            date: new Date(data[i].date),
+            visits: parseFloat(data[i].value)
         });
-chart2.pathToImages = '/kpi/public/img/';
-chart2.addListener("rendered", zoomChart);
-zoomChart();
-
-        // this method is called when chart is first inited as we listen for "dataUpdated" event
-        function zoomChart() {
-            // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
-            chart2.zoomToIndexes(csiData.length - 40, csiData.length - 1);
+    };
+    var chart = AmCharts.makeChart(id, {
+        "type": "serial",
+        "theme": "light",
+        "marginRight": 25,
+        "autoMarginOffset": 10,
+        "marginTop": 7,
+        "dataProvider": csiData,
+        "valueAxes": [{
+            "axisAlpha": 0.2,
+            "dashLength": 2,
+            "position": "left",
+            "guides": [{
+                "dashLength": 2,
+                "inside": true,
+                "label": "average",
+                "lineAlpha": 2,
+                "value": 4.25
+            }]
+        }],
+        "mouseWheelZoomEnabled": true,
+        "graphs": [{
+            "id": "csiTrack",
+            "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
+            "bullet": "round",
+            "bulletBorderAlpha": 2,
+            "bulletColor": "#FFFFFF",
+            "bulletSize": 3,
+            "hideBulletsCount": 50,
+            "title": "red line",
+            "valueField": "visits",
+            "lineThickness": 2,
+            "useLineColorForBulletBorder": true
+        }],
+        "chartScrollbar": {
+            "autoGridCount": true,
+            "graph": "csiTrack",
+            "oppositeAxis":false,
+            "graphFillAlpha": 0,
+            "graphLineAlpha": 0.5,
+            "selectedGraphFillAlpha": 0,
+            "selectedGraphLineAlpha": 1,
+            "autoGridCount":true,
+            "scrollbarHeight": 20
+        },
+        "chartCursor": {
+            "categoryBalloonDateFormat": "YYYY-MM-DD",
+            "cursorPosition": "mouse"
+        },
+        "categoryField": "date",
+        "categoryAxis": {
+            "parseDates": true,
+            "minPeriod": "mm",
+            "axisColor": "#DADADA",
+            "dashLength": 2,
+            "minorGridEnabled": true
+        },
+        "export": {
+            "enabled": true
         }
-    }
+    });
+
+chart.pathToImages = '/kpi/public/img/';
+
+}

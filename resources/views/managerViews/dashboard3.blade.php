@@ -1,12 +1,19 @@
 @extends('managerViews/layout')
 @section('title', ' Agents Dashboard')
 @section('page_title')
-    Dashboard
-    <small>Agents</small>
+Dashboard
+<small>Agents</small>
+@endsection
+@section('style')
+<style>
+    #csiTracking{
+        height: 210px;
+    }
+</style>
 @endsection
 @section('page_current')
-    <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboards</a></li>
-    <li class="active">Agents dashboard</li>
+<li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboards</a></li>
+<li class="active">Agents dashboard</li>
 @endsection
 @section('content')
 <div class="row">
@@ -56,8 +63,6 @@
                         <h3 class="agent-name" id="agent_name"></h3>
                         <h4 class="minititle">Handled <span id="nbr" style="color: #44A1C1;"></span> Tickets</h4>
                         <h5 class="minititle">Missed <span style="color: red;" id="missed_resolvable"> {{ $fcr_reso_missed }}/{{ $fcr_reso_total }}</span> Resolvable Tickets </h5>
-                        <h5 class="minititle">Current CSI <span style="color: red;" id="csi"> {{ $csi->rate }}</span> For <span style="color: red;" id="csi-count">{{ $csi->count }}</span> Tickets</h5>
-                        <h5 class="minititle">CSI With Scrub <span style="color: red;" id="csiscrub"> {{ $csi_scrub->rate }}</span> For <span style="color: red;" id="csiscrub-count">{{ $csi_scrub->count }}</span> Tickets</h5>
                     </div>
                     <div class="col-lg-7" >
                         <table class="table percentable">
@@ -87,6 +92,19 @@
                             </tr>
                         </table>
                     </div>
+                </div>
+                <hr>
+                <h3 class="titles">CSI Tracking</h3>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h5 class="minititle">Current CSI <span style="color: red;" id="csi"> {{ $csi->rate }}</span> For <span style="color: red;" id="csi-count">{{ $csi->count }}</span> Surveys</h5>
+                    </div>
+                    <div class="col-lg-6">
+                        <h5 class="minititle">CSI With Scrub <span style="color: red;" id="csiscrub"> {{ $csi_scrub->rate }}</span> For <span style="color: red;" id="csiscrub-count">{{ $csi_scrub->count }}</span> Surveys</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="csiTracking"></div>
                 </div>
                 <hr>
                 <div class="row">
@@ -268,24 +286,28 @@
 <!-- date range picker -->
 <script type="text/javascript">
     $('.daterange-btn').daterangepicker(
-            {
-                ranges: {
-                    'All':['01-01-1900',moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                startDate: '01-01-1900',
-                endDate: moment()
-            },
-            function (start, end) {
-                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-            }
+    {
+        ranges: {
+            'All':['01-01-1900',moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: '01-01-1900',
+        endDate: moment()
+    },
+    function (start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
     );
 </script>
 <!-- END date range picker -->
+<script>
+    var csiTracking = JSON.parse('<?php echo json_encode($csi_tracking); ?>');
+    csiTrack('csiTracking', csiTracking);
+</script>
 <!-- Script Change User -->
 <script>
     var ci_temp = JSON.parse('<?php echo json_encode($ci_users); ?>');
@@ -335,6 +357,7 @@
                 /* Setting values for tickets chart */
                 console.log(response);
                 /*csi*/
+                csiTrack('csiTracking', response.csi_tracking);
                 $('#csi').text(response.csi.rate);$('#csi-count').text(response.csi.count);
                 $('#csiscrub').text(response.csi_scrub.rate);$('#csiscrub-count').text(response.csi_scrub.count);
                 var img = "{{ asset('/img/default-user.png') }}";
@@ -353,7 +376,7 @@
                 console.log(xhr.responseText);
             }
         });
-    });
+});
 doit(ci_temp[0].Name, tickets_per_agent[0].count, ci_temp[0].count,kb_temp[0].count, fcr_temp[0].count, fcr_reso_temp[0].count);
 gauge('#gauge1', 0, 20, tickets_per_agent[0].count+' Tickets', [parseInt(tht_temp[0].tht)], tht_temp[0].tht_time);
 gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].tht_password)], tht_temp[0].tht_password_time);
@@ -393,6 +416,7 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
                     $('#csi').text(response.csi.rate);$('#csi-count').text(response.csi.count);
                     $('#csiscrub').text(response.csi_scrub.rate);$('#csiscrub-count').text(response.csi_scrub.count);
 
+                    csiTrack('csiTracking', response.csi_tracking);
                     /* Setting html values and graphes */
                     doit(ci_temp[v].Name,tickets_per_agent[v].count,ci_temp[v].count,kb_temp[v].count,fcr_temp[v].count,fcr_reso_temp[v].count);
                     gauge('#gauge1',0,20,tickets_per_agent[v].count+' Tickets',[tht_temp[v].tht],tht_temp[v].tht_time);
@@ -420,17 +444,16 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
 </script>
 <!-- Tickets Per Hour Chart -->
 <script language="JavaScript">
-var data_temp = JSON.parse('<?php echo json_encode($tickets_all); ?>');
-$("#product").change(function() {
-    var v=$(this).val();
-    if(v=='all'){
-        draw(data_temp.all);
-    }else{
-        draw(data_temp.product[v]);
-    }
-
-});
-draw(data_temp.all);
+    var data_temp = JSON.parse('<?php echo json_encode($tickets_all); ?>');
+    $("#product").change(function() {
+        var v=$(this).val();
+        if(v=='all'){
+            draw(data_temp.all);
+        }else{
+            draw(data_temp.product[v]);
+        }
+    });
+    draw(data_temp.all);
 </script>
 <!-- End Change date range -->
 <!-- End Tickets Per Hour Chart -->
