@@ -213,7 +213,7 @@ class AgentController extends Controller {
 		$tickets=DB::table('fact')
 		->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
 		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->where('agent_dim.Id','1')
+		->where('agent_dim.Id',$ci_users[0]->Id)
 		->select(DB::raw('count(*) as count, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
 		->groupBy('CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
 		->get();
@@ -223,7 +223,7 @@ class AgentController extends Controller {
 		->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
 		->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
 		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->where('agent_dim.Id','1')
+		->where('agent_dim.Id',$ci_users[0]->Id)
 		->whereNotNull('Product')
 		->select(DB::raw('count(*) as count, Product, CreatedYear, CreatedMonth, CreatedDay, CreatedHour, CreatedMinute, CreatedSecond'))
 		->groupBy('Product','CreatedYear','CreatedMonth','CreatedDay','CreatedHour')
@@ -249,7 +249,7 @@ class AgentController extends Controller {
 		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
 		->where('Contact_type','like','Phone')
 		->where('tickets_dim.fcr_resolvable','=','Yes')
-		->where('agent_dim.Id','1')
+		->where('agent_dim.Id',$ci_users[0]->Id)
 		->count();
 
 		$fcr_reso_missed=DB::table('fact')
@@ -258,33 +258,30 @@ class AgentController extends Controller {
 		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
 		->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
 		->where('Contact_type','like','Phone')
-		->where('agent_dim.Id','1')
+		->where('agent_dim.Id',$ci_users[0]->Id)
 		->where('tickets_dim.fcr_resolvable','=','Yes')
 		->where('tickets_dim.fcr_resolved','=','0')
 		->count();
 
 
 		/*CSI*/
-		$out=DB::table('quality')
-		->where('quality.accounted','=','NO')
-		->lists('ticket_number');
 
 		$csi=DB::table('fact')
 		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->where('agent_dim.Code',$ci_users[0]->Code)
+		->where('agent_dim.Id',$ci_users[0]->Id)
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-
 		->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 		->first();
 
 		$csi_scrub=DB::table('fact')
 		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->where('agent_dim.Code',$ci_users[0]->Code)
+		->where('agent_dim.Id',$ci_users[0]->Id)
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-		->whereNotIn('csi.ticket_number', $out)
-
+		->whereNotIn('csi.ticket_number', function($q){
+			$q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+		})
 		->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 		->first();
 
@@ -296,10 +293,12 @@ class AgentController extends Controller {
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
 		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
 		->where('agent_dim.Id',$ci_users[0]->Id)
-
 		->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
 		->groupBy('CreatedYear','CreatedMonth','CreatedDay')
 		->get();
+
+		$begin = DB::table('time_dim')->min('Created');
+		$end = (new \Datetime())->format('Y-m-d');
 
 		return View('managerViews.dashboard3')->with([
 			'ci_users' => $ci_users,
@@ -340,6 +339,8 @@ class AgentController extends Controller {
 			'fcr_reso_missed'=>$fcr_reso_missed,
 			'total_ticket'=>$total_ticket,
 			'csi'=>$csi,
+			'begin'=>$begin,
+			'end'=>$end,
 			'csi_scrub'=>$csi_scrub,
 			'csi_tracking'=>$csi_tracking
 			]);
@@ -578,9 +579,6 @@ public function rangedate(Request $request) {
 		}
 	}
 	/*CSI*/
-	$out=DB::table('quality')
-	->where('quality.accounted','=','NO')
-	->lists('ticket_number');
 
 	$csi=DB::table('fact')
 	->join('time_dim','fact.fk_time','=','time_dim.Id')
@@ -600,7 +598,9 @@ public function rangedate(Request $request) {
 	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
 	->where('agent_dim.Id',$params['agent_id'])
 	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-	->whereNotIn('tickets_dim.Number', $out)
+	->whereNotIn('csi.ticket_number', function($q){
+		$q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+	})
 	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
 	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 	->first();
@@ -723,9 +723,6 @@ public function changeAgent(Request $request) {
 	}
 
 	/*CSI*/
-	$out=DB::table('quality')
-	->where('quality.accounted','=','NO')
-	->lists('ticket_number');
 
 	$csi=DB::table('fact')
 	->join('time_dim','fact.fk_time','=','time_dim.Id')
@@ -745,7 +742,9 @@ public function changeAgent(Request $request) {
 	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
 	->where('agent_dim.Id',$params['agent_id'])
 	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-	->whereNotIn('tickets_dim.Number', $out)
+	->whereNotIn('csi.ticket_number', function($q){
+		$q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+	})
 	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
 	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
 	->first();

@@ -23,9 +23,9 @@ Dashboard
 		margin-top: 9%;
 		margin-bottom: 9%;
 	}
-    .csiValues{
-        text-align: center;
-    }
+	.csiValues{
+		text-align: center;
+	}
 </style>
 @endsection
 @section('content')
@@ -128,377 +128,391 @@ Dashboard
 				<h3 class="box-title">CSI Per Location</h3>
 			</div><!-- /.box-header -->
 			<div class="box-body">
-                <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab_1" data-toggle="tab">Map</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">List</a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="tab_1">
-                            <div id="csi_map" style="width: 100%;height: 340px;"></div>
-                        </div><!-- /.tab-pane -->
-                        <div class="tab-pane" id="tab_2">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Country</th>
-                                        <th>Number of surveys</th>
-                                        <th>CSI</th>
-                                        <th>CSI with scrub</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Morocco</td>
-                                        <td>80</td>
-                                        <td>5</td>
-                                        <td>5</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div><!-- /.tab-pane -->
-                    </div><!-- /.tab-content -->
-                </div><!-- nav-tabs-custom -->
-			</div><!-- /.box-body -->
-		</div><!-- /.box -->
-	</div><!-- /.col -->
-
-	<div class="col-lg-5 col-sm-12">
-		<div class="box box-default" style="height:460px">
-			<div class="box-header with-border">
-				<h3 class="box-title">CSI Per Category</h3>
-			</div><!-- /.box-header -->
-			<div class="box-body">
-                <div style="height:390px;overflow: auto;">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Number of surveys</th>
-                            <th>CSI</th>
-                            <th>CSI with Scrub</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($csi_cat as $row)
-                            @if($row[2]<4)
-                                <tr class="danger">
-                                    @elseif($row[2]>=4 && $row[2]<=4.25)
-                                <tr class="warning">
-                            @else
-                                <tr class="success">
-                                    @endif
-                                    <td>{{ $row[0] }}</td>
-                                    <td class="csiValues">{{ $row[1] }}</td>
-                                    <td class="csiValues">{{ $row[2] }}</td>
-                                    <td class="csiValues">{{ $row[3] }}</td>
-                                </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-			</div><!-- /.box-body -->
-		</div><!-- /.box -->
-	</div><!-- /.col -->
-
-	<div class="col-lg-2">
-		<div class="box box-default" style="height:460px">
-			<div class="box-header with-border">
-				<h3 class="box-title">CSI Rate</h3>
-			</div><!-- /.box-header -->
-			<div class="box-body">
-				<div class="box box-warning" style="margin-top:20px;margin-bottom: 30px;">
-					<div class="box-header with-border">
-						<div class="box-title">Current CSI</div>
-						<div class="box-body csi">{{ $csi_rate }}</div>
-					</div>
-				</div>
-				<div class="box box-primary">
-					<div class="box-header with-border">
-						<div class="box-title">CSI With Scrub</div>
-						<div class="box-body csi">{{ $csi_rate_quality }}</div>
-					</div>
-				</div>
-			</div><!-- /.box-body -->
-		</div><!-- /.box -->
-	</div>
-</div> <!-- /.row -->
-<!-- End Customer Satisfaction Indicators -->
-
-<!-- Average Tickets Handling Time & Tickets Priority -->
-<div class="row">
-	<div class="col-lg-7 col-sm-12">
-		<div class="box box-default">
-			<div class="box-header with-border">
-				<h3 class="box-title">Average Tickets Handle Time</h3>
-			</div><!-- /.box-header -->
-			<div class="box-body" style="min-height:320px">
-				<div class="row">
-					<div class="col-lg-6">
-						<div id="gauge1" style="height:250px;margin: auto;"></div>
-						<h5 class="center">Average THT</h5>
-					</div>
-					<div class="col-lg-6">
-						<div id="gauge2" style="height:250px;margin: auto;"></div>
-						<h5 class="center">Average THT for Password Reset Closure</h5>
-					</div>
-				</div>
-			</div><!-- /.box-body -->
-		</div><!-- /.box -->
-	</div><!-- /.col -->
-
-	<div class="col-lg-5 col-sm-12">
-		<div class="box box-default">
-			<div class="box-header with-border">
-				<h3 class="box-title">Tickets Priority</h3>
-			</div><!-- /.box-header -->
-			<div class="box-body">
-				<div id="priorityPie" style="margin: auto;"></div>
-			</div><!-- /.box-body -->
-		</div><!-- /.box -->
-	</div><!-- /.col -->
-</div> <!-- /.row -->
-<!-- End Average Tickets Handling Time & Tickets Priority -->
-
-<!-- Tickets Per Hours -->
-<div class="row">
-	<div class="col-xs-12">
-		<div class="box box-default">
-			<div class="box-header with-border">
-				<h3 class="box-title">Tickets Per Time</h3>
-			</div>
-			<div class="box-body">
 				<div class="nav-tabs-custom">
 					<ul class="nav nav-tabs">
-						<li class="active"><a href="#tab1" data-toggle="tab">Tickets Per Hours</a></li>
-						<li><a href="#tab2" data-toggle="tab">Comparing</a></li>
+						<li class="active"><a href="#tab_1" data-toggle="tab">Map</a></li>
+						<li><a href="#tab_2" data-toggle="tab">List</a></li>
 					</ul>
 					<div class="tab-content">
-						<div class="tab-pane active" id="tab1">
-							<div>
-								<div class="col-sm-4" style="margin-bottom:15px">
-									<label for="product">Filter By Product</label>
-									<select name="product" id="product" class="form-control select2">
-										<option value="all">All</option>
-										@foreach ($tickets_all['product'] as $key => $value)
-										<option value="{{ $key }}">{{ $key }}</option>
-										@endforeach
-									</select>
-								</div>
-                                <div class="col-sm-2" style="margin-bottom:15px">
-                                    <label>Line thickness</label>
-                                    <select name="thickness" id="thickness" class="form-control">
-                                        <option value="3" selected>Default</option>
-                                        <option value="1">light</option>
-                                        <option value="2">Medium</option>
-                                        <option value="4">Bold </option>
-                                        <option value="5">Bold x2</option>
-                                        <option value="6">Bold x3</option>
-                                    </select>
-                                </div>
-								<div  id="ticketsChart"></div>
+						<div class="tab-pane active" id="tab_1">
+							<div class="btn-group btn-group pull-right">
+								<a class="btn btn-xs btn-default active scrub-map">Current CSI</a>
+								<a class="btn btn-xs btn-default scrub-map">CSI With Scrub</a>
 							</div>
+							<div id="csi_map" style="width: 100%;height: 320px;"></div>
 						</div><!-- /.tab-pane -->
-						<div class="tab-pane" id="tab2">
-							<div>
-								<div class="col-sm-4 form-group">
-									<label for="product">Filter By Product</label>
-									<select name="product-week" id="product-week" class="form-control select2">
-										<option value="all">All</option>
-										@foreach ($tickets_all['product'] as $key => $value)
-										<option value="{{ $key }}">{{ $key }}</option>
-										@endforeach
-									</select>
+						<div class="tab-pane" id="tab_2">
+							<div style="height:341px;overflow: auto;">
+								<table class="table">
+									<thead>
+										<tr>
+											<th>Country</th>
+											<th>Number of surveys</th>
+											<th>CSI</th>
+											<th>CSI with Scrub</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach($csi_location as $row)
+										@if($row[2]<4)
+										<tr class="danger">
+											@elseif($row[2]>=4 && $row[2]<=4.25)
+											<tr class="warning">
+												@else
+												<tr class="success">
+													@endif
+													<td>{{ $row[0] }}</td>
+													<td class="csiValues">{{ $row[1] }}</td>
+													<td class="csiValues">{{ $row[2] }}</td>
+													<td class="csiValues">{{ $row[3] }}</td>
+												</tr>
+												@endforeach
+											</tbody>
+										</table>
+									</div>
+								</div><!-- /.tab-pane -->
+							</div><!-- /.tab-content -->
+						</div><!-- nav-tabs-custom -->
+					</div><!-- /.box-body -->
+				</div><!-- /.box -->
+			</div><!-- /.col -->
+
+			<div class="col-lg-5 col-sm-12">
+				<div class="box box-default" style="height:460px">
+					<div class="box-header with-border">
+						<h3 class="box-title">CSI Per Category</h3>
+					</div><!-- /.box-header -->
+					<div class="box-body">
+						<div style="height:395px;overflow: auto;">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Category</th>
+										<th>Number of surveys</th>
+										<th>CSI</th>
+										<th>CSI with Scrub</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($csi_cat as $row)
+									@if($row[2]<4)
+									<tr class="danger">
+										@elseif($row[2]>=4 && $row[2]<=4.25)
+										<tr class="warning">
+											@else
+											<tr class="success">
+												@endif
+												<td>{{ $row[0] }}</td>
+												<td class="csiValues">{{ $row[1] }}</td>
+												<td class="csiValues">{{ $row[2] }}</td>
+												<td class="csiValues">{{ $row[3] }}</td>
+											</tr>
+											@endforeach
+										</tbody>
+									</table>
 								</div>
-                                <div class="col-sm-2" style="margin-bottom:15px">
-                                    <label>Line thickness</label>
-                                    <select name="thicknessComp" id="thicknessComp" class="form-control">
-                                        <option value="3" selected>Default</option>
-                                        <option value="1">light</option>
-                                        <option value="2">Medium</option>
-                                        <option value="4">Bold </option>
-                                        <option value="5">Bold x2</option>
-                                        <option value="6">Bold x3</option>
-                                    </select>
-                                </div>
-								<a class="btn btn-primary pull-right" style="margin-top: 25px" data-toggle="modal" data-target="#myModal"><i class="fa fa-calendar"></i> Change intervals to compare</a>
-								<div id="weeks"></div>
+							</div><!-- /.box-body -->
+						</div><!-- /.box -->
+					</div><!-- /.col -->
+
+					<div class="col-lg-2">
+						<div class="box box-default" style="height:460px">
+							<div class="box-header with-border">
+								<h3 class="box-title">CSI Rate</h3>
+							</div><!-- /.box-header -->
+							<div class="box-body">
+								<div class="box box-warning" style="margin-top:20px;margin-bottom: 30px;">
+									<div class="box-header with-border">
+										<div class="box-title">Current CSI</div>
+										<div class="box-body csi">{{ $csi_rate }}</div>
+									</div>
+								</div>
+								<div class="box box-primary">
+									<div class="box-header with-border">
+										<div class="box-title">CSI With Scrub</div>
+										<div class="box-body csi">{{ $csi_rate_quality }}</div>
+									</div>
+								</div>
+							</div><!-- /.box-body -->
+						</div><!-- /.box -->
+					</div>
+				</div> <!-- /.row -->
+				<!-- End Customer Satisfaction Indicators -->
+
+				<!-- Average Tickets Handling Time & Tickets Priority -->
+				<div class="row">
+					<div class="col-lg-7 col-sm-12">
+						<div class="box box-default">
+							<div class="box-header with-border">
+								<h3 class="box-title">Average Tickets Handle Time</h3>
+							</div><!-- /.box-header -->
+							<div class="box-body" style="min-height:320px">
+								<div class="row">
+									<div class="col-lg-6">
+										<div id="gauge1" style="height:250px;margin: auto;"></div>
+										<h5 class="center">Average THT</h5>
+									</div>
+									<div class="col-lg-6">
+										<div id="gauge2" style="height:250px;margin: auto;"></div>
+										<h5 class="center">Average THT for Password Reset Closure</h5>
+									</div>
+								</div>
+							</div><!-- /.box-body -->
+						</div><!-- /.box -->
+					</div><!-- /.col -->
+
+					<div class="col-lg-5 col-sm-12">
+						<div class="box box-default">
+							<div class="box-header with-border">
+								<h3 class="box-title">Tickets Priority</h3>
+							</div><!-- /.box-header -->
+							<div class="box-body">
+								<div id="priorityPie" style="margin: auto;"></div>
+							</div><!-- /.box-body -->
+						</div><!-- /.box -->
+					</div><!-- /.col -->
+				</div> <!-- /.row -->
+				<!-- End Average Tickets Handling Time & Tickets Priority -->
+
+				<!-- Tickets Per Hours -->
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="box box-default">
+							<div class="box-header with-border">
+								<h3 class="box-title">Tickets Per Time</h3>
 							</div>
-						</div><!-- /.tab-pane -->
-						<!-- intervals modal -->
-						<div id="myModal" class="modal fade" role="dialog">
-							<div class="modal-dialog">
-								<!-- Modal content-->
-								<div class="modal-content">
-									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal">&times;</button>
-										<h4 class="modal-title">Choosing intervals</h4>
-									</div>
-									<div class="modal-body">
-										<div class="row">
-											<div class="form-group form-inline pull-right" style="margin-right:10px;">
-												<label for="interval-type">Interval type: </label>
-												<select name="interval-type" id="interval-type" class="form-control">
-													<option value="day">Day</option>
-													<option value="week">Week</option>
-													<option value="month">Month</option>
-												</select>
+							<div class="box-body">
+								<div class="nav-tabs-custom">
+									<ul class="nav nav-tabs">
+										<li class="active"><a href="#tab1" data-toggle="tab">Tickets Per Hours</a></li>
+										<li><a href="#tab2" data-toggle="tab">Comparing</a></li>
+									</ul>
+									<div class="tab-content">
+										<div class="tab-pane active" id="tab1">
+											<div>
+												<div class="col-sm-4" style="margin-bottom:15px">
+													<label for="product">Filter By Product</label>
+													<select name="product" id="product" class="form-control select2">
+														<option value="all">All</option>
+														@foreach ($tickets_all['product'] as $key => $value)
+														<option value="{{ $key }}">{{ $key }}</option>
+														@endforeach
+													</select>
+												</div>
+												<div class="col-sm-2" style="margin-bottom:15px">
+													<label>Line thickness</label>
+													<select name="thickness" id="thickness" class="form-control">
+														<option value="3" selected>Default</option>
+														<option value="1">light</option>
+														<option value="2">Medium</option>
+														<option value="4">Bold </option>
+														<option value="5">Bold x2</option>
+														<option value="6">Bold x3</option>
+													</select>
+												</div>
+												<div  id="ticketsChart"></div>
+											</div>
+										</div><!-- /.tab-pane -->
+										<div class="tab-pane" id="tab2">
+											<div>
+												<div class="col-sm-4 form-group">
+													<label for="product">Filter By Product</label>
+													<select name="product-week" id="product-week" class="form-control select2">
+														<option value="all">All</option>
+														@foreach ($tickets_all['product'] as $key => $value)
+														<option value="{{ $key }}">{{ $key }}</option>
+														@endforeach
+													</select>
+												</div>
+												<div class="col-sm-2" style="margin-bottom:15px">
+													<label>Line thickness</label>
+													<select name="thicknessComp" id="thicknessComp" class="form-control">
+														<option value="3" selected>Default</option>
+														<option value="1">light</option>
+														<option value="2">Medium</option>
+														<option value="4">Bold </option>
+														<option value="5">Bold x2</option>
+														<option value="6">Bold x3</option>
+													</select>
+												</div>
+												<a class="btn btn-primary pull-right" style="margin-top: 25px" data-toggle="modal" data-target="#myModal"><i class="fa fa-calendar"></i> Change intervals to compare</a>
+												<div id="weeks"></div>
+											</div>
+										</div><!-- /.tab-pane -->
+										<!-- intervals modal -->
+										<div id="myModal" class="modal fade" role="dialog">
+											<div class="modal-dialog">
+												<!-- Modal content-->
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal">&times;</button>
+														<h4 class="modal-title">Choosing intervals</h4>
+													</div>
+													<div class="modal-body">
+														<div class="row">
+															<div class="form-group form-inline pull-right" style="margin-right:10px;">
+																<label for="interval-type">Interval type: </label>
+																<select name="interval-type" id="interval-type" class="form-control">
+																	<option value="day">Day</option>
+																	<option value="week">Week</option>
+																	<option value="month">Month</option>
+																</select>
+															</div>
+														</div>
+														<input type="hidden" name="_token" value="{{ csrf_token() }}">
+														<!-- Date dd/mm/yyyy -->
+														<div id="repeatBlock">
+															<div class="row" style="margin-top:15px;">
+																<div class="col-lg-2">
+																	<strong><p style="margin-top: 4px;">#1</p></strong>
+																</div>
+																<div class="col-lg-5 form-inline">
+																	<label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut"/>
+																</div>
+																<div class="col-lg-5 form-inline">
+																	<label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
+																</div>
+															</div>
+															<div class="row toRepeat" style="margin-top:15px;">
+																<div class="col-lg-2">
+																	<strong><p class="ordre" style="margin-top: 4px;">#2</p></strong>
+																</div>
+																<div class="col-lg-5 form-inline">
+																	<label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut" />
+																</div>
+																<div class="col-lg-5 form-inline">
+																	<label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<a id="zid" class="btn btn-primary pull-right" style="margin:10px;"><i class="fa fa-plus"></i></a>
+														</div>
+														<div class="row">
+															<div class="alert alert-danger alert-dismissable" id="alert1" style="display: none;">
+																<h4><i class="icon fa fa-ban"></i> Alert!</h4>
+																<p>Intervals must begin by the same day of the week !</p>
+															</div>
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+														<button id="btnIntervals" class="btn btn-primary">Set</button>
+													</div>
+												</div>
 											</div>
 										</div>
-										<input type="hidden" name="_token" value="{{ csrf_token() }}">
-										<!-- Date dd/mm/yyyy -->
-										<div id="repeatBlock">
-											<div class="row" style="margin-top:15px;">
-												<div class="col-lg-2">
-													<strong><p style="margin-top: 4px;">#1</p></strong>
-												</div>
-												<div class="col-lg-5 form-inline">
-													<label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut"/>
-												</div>
-												<div class="col-lg-5 form-inline">
-													<label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
-												</div>
-											</div>
-											<div class="row toRepeat" style="margin-top:15px;">
-												<div class="col-lg-2">
-													<strong><p class="ordre" style="margin-top: 4px;">#2</p></strong>
-												</div>
-												<div class="col-lg-5 form-inline">
-													<label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut" />
-												</div>
-												<div class="col-lg-5 form-inline">
-													<label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<a id="zid" class="btn btn-primary pull-right" style="margin:10px;"><i class="fa fa-plus"></i></a>
-										</div>
-										<div class="row">
-											<div class="alert alert-danger alert-dismissable" id="alert1" style="display: none;">
-												<h4><i class="icon fa fa-ban"></i> Alert!</h4>
-												<p>Intervals must begin by the same day of the week !</p>
-											</div>
-										</div>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-										<button id="btnIntervals" class="btn btn-primary">Set</button>
-									</div>
-								</div>
+									</div><!-- /.tab-content -->
+								</div><!-- nav-tabs-custom -->
 							</div>
 						</div>
-					</div><!-- /.tab-content -->
-				</div><!-- nav-tabs-custom -->
-			</div>
-		</div>
-	</div>
-</div>
-<!-- End Tickets Per Hours -->
+					</div>
+				</div>
+				<!-- End Tickets Per Hours -->
 
-<!-- Average Resolution Time Per Category -->
-<div class="row">
-	<div class="col-md-6">
-		<div class="box box-default">
-			<div class="box-header with-border">
-				<h3 class="box-title">Tickets per Categories</h3>
-			</div><!-- /.box-header -->
-			<div class="box-body" style="height:440px">
-				<div id="categoryPie"></div>
-			</div><!-- /.box-body -->
-		</div><!-- /.box -->
-	</div><!-- /.col -->
-	<div class="col-md-6">
-		<div class="box box-default">
-			<div class="box-header with-border">
-				<h3 class="box-title">Tickets Per Country</h3>
-			</div><!-- /.box-header -->
-			<div class="box-body" style="height:440px">
-				<div id="regions_div" style="width: 100%; height: 100%;"></div>
-			</div><!-- /.box-body -->
-		</div><!-- /.box -->
-	</div><!-- /.col -->
-</div>
-<!-- End Average Resolution Time Per Category -->
-@endsection
-@section('script')
-<!-- Select2 -->
-<script src="{{ asset('/plugins/select2/select2.full.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('/js/d3.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('/js/amcharts.js') }}"></script>
-<script src="{{ asset('/js/gauge.js') }}"></script>
-<script src="{{ asset('/js/light.js') }}"></script>
-<script src="{{ asset('/js/highcharts.js') }}"></script>
-<script src="{{ asset('/js/highcharts-more.js') }}"></script>
-<script src="{{ asset('/js/solid-gauge.js') }}"></script>
-<script src="{{ asset('/js/pie.js') }}" type="text/javascript"></script>
-<script src="{{ asset('/js/radialProgress.js') }}" type="text/javascript"></script>
-<script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
+				<!-- Average Resolution Time Per Category -->
+				<div class="row">
+					<div class="col-md-6">
+						<div class="box box-default">
+							<div class="box-header with-border">
+								<h3 class="box-title">Tickets per Categories</h3>
+							</div><!-- /.box-header -->
+							<div class="box-body" style="height:440px">
+								<div id="categoryPie"></div>
+							</div><!-- /.box-body -->
+						</div><!-- /.box -->
+					</div><!-- /.col -->
+					<div class="col-md-6">
+						<div class="box box-default">
+							<div class="box-header with-border">
+								<h3 class="box-title">Tickets Per Country</h3>
+							</div><!-- /.box-header -->
+							<div class="box-body" style="height:440px">
+								<div id="regions_div" style="width: 100%; height: 100%;"></div>
+							</div><!-- /.box-body -->
+						</div><!-- /.box -->
+					</div><!-- /.col -->
+				</div>
+				<!-- End Average Resolution Time Per Category -->
+				@endsection
+				@section('script')
+				<!-- Select2 -->
+				<script src="{{ asset('/plugins/select2/select2.full.min.js') }}" type="text/javascript"></script>
+				<script src="{{ asset('/js/d3.min.js') }}" type="text/javascript"></script>
+				<script src="{{ asset('/js/amcharts.js') }}"></script>
+				<script src="{{ asset('/js/gauge.js') }}"></script>
+				<script src="{{ asset('/js/light.js') }}"></script>
+				<script src="{{ asset('/js/highcharts.js') }}"></script>
+				<script src="{{ asset('/js/highcharts-more.js') }}"></script>
+				<script src="{{ asset('/js/solid-gauge.js') }}"></script>
+				<script src="{{ asset('/js/pie.js') }}" type="text/javascript"></script>
+				<script src="{{ asset('/js/radialProgress.js') }}" type="text/javascript"></script>
+				<script src="{{ asset('/js/serial.js') }}" type="text/javascript"></script>
 
 
-<!-- date range picker -->
-<script type="text/javascript">
-    var changed = false;
-    $('.daterange-btn').daterangepicker(
-            {
-                ranges: {
-                    'All':['{{ $begin_inv }}',moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                startDate: '{{ $begin_inv }}',
-                endDate: moment()
-            },
-            function (start, end) {
-                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-            }
-    );
-</script>
-<!-- END date range picker -->
+				<!-- date range picker -->
+				<script type="text/javascript">
+					var changed = false;
+					$('.daterange-btn').daterangepicker(
+					{
+						ranges: {
+							'All':['{{ $begin_inv }}',moment()],
+							'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+							'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+							'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+							'This Month': [moment().startOf('month'), moment().endOf('month')],
+							'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+						},
+						startDate: '{{ $begin_inv }}',
+						endDate: moment()
+					},
+					function (start, end) {
+						$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+					}
+					);
+				</script>
+				<!-- END date range picker -->
 
-<!-- Ajax -->
-<script>
-	var data_temp = JSON.parse('<?php echo json_encode($tickets_all); ?>');
-	$(document).ready(function(){
-		$('#daterange-dash').on('apply.daterangepicker', function(ev, picker) {
-			$('#debut').html(picker.startDate.format('YYYY-MM-DD'));
-			$('#fin').html(picker.endDate.format('YYYY-MM-DD'));
-			$.ajax({
-				url: 'reload',
-				type: "post",
-				data: {
-					'_token': $('input[name=_token]').val(),
-					'datedeb': picker.startDate.format('YYYY-MM-DD'),
-					'datefin': picker.endDate.format('YYYY-MM-DD')
-				},
-				success: function(response){
-					globalView('div1', "Total CI Usage", 100*(1-response.ci_missed/response.total_ticket));
-					globalView('div2', "Total KB Usage", 100*(1-response.kb_missed/response.total_ticket));
-					globalView('div3', "Total FCR", 100*(1-response.fcr_missed/response.total_ticket_phone));
-					globalView('div4', "Total FCR Resolvable", 100*(1-response.fcr_reso_missed/response.fcr_reso_total));
-					drawGauge('#gauge1', [response.avg_tht.all[0]], 0, 20, '', response.avg_tht.all[1]);
-					drawGauge('#gauge2', [response.avg_tht.password[0]], 0, 10, '', response.avg_tht.password[1]);
-					drawPie('#priorityPie',response.priority);
-                    series = [{
-                        name: 'Number of tickets',
-                        showInLegend: false,
-                        data: response.category[1]
-                    }];
-                    drawBar('#categoryPie',response.category[0],' tickets',series);
-					reloadPriority(response.critical,response.high,response.medium,response.low,response.planning);
-					data_temp=response.ticket_all;
-					reloadSelect(data_temp.product,'#product');
-					ticketsChart = draw(data_temp.all,'ticketsChart');
-					$('.csi').first().html(response.csi_rate);
-					$('.csi').last().html(response.csi_rate_quality);
-					drawMap('#regions_div', response.countryChart, 2000, 'Number of Tickets', ' ticket');
-					drawMap('#csi_map', response.csi_map, 4.5, 'CSI Rating', ' ');
-					reloadMissed(response.total_ticket, response.ci_missed, response.kb_missed, response.fcr_missed, response.fcr_reso_missed, response.fcr_reso_total);
-				}
-			});
+				<!-- Ajax -->
+				<script>
+					var data_temp = JSON.parse('<?php echo json_encode($tickets_all); ?>');
+					$(document).ready(function(){
+						$('#daterange-dash').on('apply.daterangepicker', function(ev, picker) {
+							$('#debut').html(picker.startDate.format('YYYY-MM-DD'));
+							$('#fin').html(picker.endDate.format('YYYY-MM-DD'));
+							$.ajax({
+								url: 'reload',
+								type: "post",
+								data: {
+									'_token': $('input[name=_token]').val(),
+									'datedeb': picker.startDate.format('YYYY-MM-DD'),
+									'datefin': picker.endDate.format('YYYY-MM-DD')
+								},
+								success: function(response){
+									globalView('div1', "Total CI Usage", 100*(1-response.ci_missed/response.total_ticket));
+									globalView('div2', "Total KB Usage", 100*(1-response.kb_missed/response.total_ticket));
+									globalView('div3', "Total FCR", 100*(1-response.fcr_missed/response.total_ticket_phone));
+									globalView('div4', "Total FCR Resolvable", 100*(1-response.fcr_reso_missed/response.fcr_reso_total));
+									drawGauge('#gauge1', [response.avg_tht.all[0]], 0, 20, '', response.avg_tht.all[1]);
+									drawGauge('#gauge2', [response.avg_tht.password[0]], 0, 10, '', response.avg_tht.password[1]);
+									drawPie('#priorityPie',response.priority);
+									series = [{
+										name: 'Number of tickets',
+										showInLegend: false,
+										data: response.category[1]
+									}];
+									drawBar('#categoryPie',response.category[0],' tickets',series);
+									reloadPriority(response.critical,response.high,response.medium,response.low,response.planning);
+									data_temp=response.ticket_all;
+									reloadSelect(data_temp.product,'#product');
+									ticketsChart = draw(data_temp.all,'ticketsChart');
+									$('.csi').first().html(response.csi_rate);
+									$('.csi').last().html(response.csi_rate_quality);
+									drawMap('#regions_div', response.countryChart, 2000, 'Number of Tickets', ' ticket');
+									drawMap('#csi_map', response.csi_map, 4.5, 'Current CSI', ' ');
+									reloadMissed(response.total_ticket, response.ci_missed, response.kb_missed, response.fcr_missed, response.fcr_reso_missed, response.fcr_reso_total);
+								}
+							});
 });	
 });
 function reloadPriority (critical,high,medium,low,planning) {
@@ -530,8 +544,8 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 
 <!-- Tickets Per Hour Chart -->
 <script language="JavaScript">
-    var ticketsChart;
-    var compareChart;
+	var ticketsChart;
+	var compareChart;
 	var data=data_temp.all;
 	$(".select2").change(function() {
 		var v=$(this).val();
@@ -540,45 +554,45 @@ function reloadMissed(total_ticket, ci_missed, kb_missed, fcr_missed, fcr_reso_m
 		}else{
 			data=data_temp.product[v];
 		}
-        var start = ticketsChart.startIndex;
-        var end = ticketsChart.endIndex;
-        ticketsChart = draw(data,'ticketsChart',$('#thickness').val());
-        ticketsChart.zoomToIndexes(start,end);
+		var start = ticketsChart.startIndex;
+		var end = ticketsChart.endIndex;
+		ticketsChart = draw(data,'ticketsChart',$('#thickness').val());
+		ticketsChart.zoomToIndexes(start,end);
 	});
-    $('#thickness').change(function() {
-        var v=$('#product').val();
-        if(v=='all'){
-            data=data_temp.all;
-        }else{
-            data=data_temp.product[v];
-        }
-        var start = ticketsChart.startIndex;
-        var end = ticketsChart.endIndex;
-        ticketsChart = draw(data,'ticketsChart',$(this).val());
-        ticketsChart.zoomToIndexes(start,end);
-    });
-    ticketsChart = draw(data,'ticketsChart',3);
+	$('#thickness').change(function() {
+		var v=$('#product').val();
+		if(v=='all'){
+			data=data_temp.all;
+		}else{
+			data=data_temp.product[v];
+		}
+		var start = ticketsChart.startIndex;
+		var end = ticketsChart.endIndex;
+		ticketsChart = draw(data,'ticketsChart',$(this).val());
+		ticketsChart.zoomToIndexes(start,end);
+	});
+	ticketsChart = draw(data,'ticketsChart',3);
 	function draw(d,id,thickness) {
 		var ticketsData = [];
-        var deb = new Date($('#debut').html());
-        deb.setHours(0,0,0);
-        var fin = new Date($('#fin').html());
-        fin.setHours(0,0,0);
-        var i = 0;
+		var deb = new Date($('#debut').html());
+		deb.setHours(0,0,0);
+		var fin = new Date($('#fin').html());
+		fin.setHours(0,0,0);
+		var i = 0;
 		while(deb<=fin) {
-            try{
-                current = new Date(d[i].CreatedYear, d[i].CreatedMonth - 1, d[i].CreatedDay, d[i].CreatedHour, 0);
-            }
-            catch(err){
-                current = new Date(0);
-            }
+			try{
+				current = new Date(d[i].CreatedYear, d[i].CreatedMonth - 1, d[i].CreatedDay, d[i].CreatedHour, 0);
+			}
+			catch(err){
+				current = new Date(0);
+			}
 			ticketsData.push({
 				date: new Date(deb.getTime()),
 				visits: (current.getTime() == deb.getTime())?d[i].count:0
 			});
-            if(current.getTime() == deb.getTime())
-                i++;
-            deb.setHours(deb.getHours()+1);
+			if(current.getTime() == deb.getTime())
+				i++;
+			deb.setHours(deb.getHours()+1);
 		}
 		var chart1 = AmCharts.makeChart(id, {
 			"type": "serial",
@@ -637,55 +651,55 @@ chart1.pathToImages = '/kpi/public/img/';
 			// different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
 			chart1.zoomToIndexes(ticketsData.length - 40, ticketsData.length - 1);
 		}
-        return chart1;
+		return chart1;
 	}
 </script>
 <!-- End Tickets Per Hour Chart -->
 
 <!-- Compare Weeks -->
 <script>
-    console.log()
+	console.log()
 	var values= JSON.parse('<?php echo json_encode($intervals); ?>');
 	var times= JSON.parse('<?php echo json_encode($times); ?>');
-    compareChart = drawChart(values,7,times,3);
+	compareChart = drawChart(values,7,times,3);
 	function addDays(date, days) {
 		var result = new Date(date);
 		result.setDate(result.getDate() + days);
 		return result;
 	}
-    $('#thicknessComp').change(function(){
-        if(changed == false){
-            var start = compareChart.startIndex;
-            var end = compareChart.endIndex;
-            compareChart = drawChart(values,7,times,$(this).val());
-            compareChart.zoomToIndexes(start,end);
-        }
-        else{
-            var dates = $('input.datedebut').map(function(i, el) {
-                return el.value;
-            }).get();
-            var range = 1;
-            if($('#interval-type').val()=='week')
-                range = 7;
-            if($('#interval-type').val()=='month')
-                range = 30;
-            $.ajax({
-                url: 'reloadIntervals',
-                type: "get",
-                data: {
-                    'dates': dates,
-                    'product': $('#product-week').val(),
-                    'type': $('#interval-type').val()
-                },
-                success: function (response) {
-                    var start = compareChart.startIndex;
-                    var end = compareChart.endIndex;
-                    compareChart = drawChart(response.values,range,response.times,$('#thicknessComp').val());
-                    compareChart.zoomToIndexes(start,end);
-                }
-            });
-        }
-    });
+	$('#thicknessComp').change(function(){
+		if(changed == false){
+			var start = compareChart.startIndex;
+			var end = compareChart.endIndex;
+			compareChart = drawChart(values,7,times,$(this).val());
+			compareChart.zoomToIndexes(start,end);
+		}
+		else{
+			var dates = $('input.datedebut').map(function(i, el) {
+				return el.value;
+			}).get();
+			var range = 1;
+			if($('#interval-type').val()=='week')
+				range = 7;
+			if($('#interval-type').val()=='month')
+				range = 30;
+			$.ajax({
+				url: 'reloadIntervals',
+				type: "get",
+				data: {
+					'dates': dates,
+					'product': $('#product-week').val(),
+					'type': $('#interval-type').val()
+				},
+				success: function (response) {
+					var start = compareChart.startIndex;
+					var end = compareChart.endIndex;
+					compareChart = drawChart(response.values,range,response.times,$('#thicknessComp').val());
+					compareChart.zoomToIndexes(start,end);
+				}
+			});
+		}
+	});
 	function drawChart(values,range,times,thickness){
 		var chartData=[];
 		var dates=[];
@@ -960,7 +974,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 	drawMap('#regions_div', dataTemp, 2000, 'Number of Tickets', ' ticket');
 
 	var csi_map=<?php echo json_encode($csi_map); ?>;
-	drawMap('#csi_map', csi_map, 4.5, 'CSI Rating', '');
+	drawMap('#csi_map', csi_map, 4.5, 'Current CSI', '');
 
 	function drawMap (id, dataTemp, mx, nm, sx) {
 		$(id).highcharts('Map', {
@@ -1003,14 +1017,14 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 <!-- End Others Script -->
 
 <script type="text/javascript">
-    /* Preparing data for tickets per cat bar chart */
-    dataBar = JSON.parse('<?php echo json_encode($category); ?>');
-    series = [{
-        name: 'Number of tickets',
-        showInLegend: false,
-        data: dataBar[1]
-    }];
-    /* tickets per cat bar chart  */
+	/* Preparing data for tickets per cat bar chart */
+	dataBar = JSON.parse('<?php echo json_encode($category); ?>');
+	series = [{
+		name: 'Number of tickets',
+		showInLegend: false,
+		data: dataBar[1]
+	}];
+	/* tickets per cat bar chart  */
 	drawBar('#categoryPie',dataBar[0],' tickets',series);
 
 	function drawBar(id,cat,tooltip,dataArray){
@@ -1018,12 +1032,12 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 			chart:{
 				type:'bar'
 			},
-            title: {
-                text: ' '
-            },
-            xAxis: {
-                categories: cat
-            },
+			title: {
+				text: ' '
+			},
+			xAxis: {
+				categories: cat
+			},
 			exporting: { enabled: false },
 			tooltip: {
 				valueSuffix: tooltip
@@ -1100,7 +1114,7 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
             		},
             		success: function (response) {
             			compareChart = drawChart(response.values,range,response.times,$('#thicknessComp').val());
-                        changed = true;
+            			changed = true;
             		}
             	});
             }
@@ -1153,13 +1167,34 @@ $(id).highcharts(Highcharts.merge(gaugeOptions, {
 				'type': $('#interval-type').val()
 			},
 			success: function (response) {
-                var start = compareChart.startIndex;
-                var end = compareChart.endIndex;
+				var start = compareChart.startIndex;
+				var end = compareChart.endIndex;
 				compareChart = drawChart(response.values,range,response.times,$('#thicknessComp').val());
-                compareChart.zoomToIndexes(start,end);
+				compareChart.zoomToIndexes(start,end);
 			}
 		});
 	});
 </script>
 <!-- END Onchange datepicker and interval type select -->
+
+<script>
+	$('.scrub-map').click(function() {
+		$('.scrub-map.active').removeClass('active');
+		$(this).addClass('active');
+		var val=($(this).text() == 'Current CSI')?0:1;
+		var txt=$(this).text();
+		$.ajax({
+			url: 'reloadMap',
+			type: "get",
+			data: {
+				'scrub': val,
+				'debut': $('#debut').text(),
+				'fin': $('#fin').text()
+			},
+			success: function (response) {
+				drawMap('#csi_map', response.csi, 4.5, txt, ' ');
+			}
+		});
+	});
+</script>
 @endsection

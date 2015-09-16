@@ -178,3 +178,8 @@ Route::get('reloadIntervals', [
     'as' => 'reloadIntervals',
     'uses' => 'DashboardController@reloadIntervals'
 ]);
+
+Route::get('reloadMap', [
+    'as' => 'reloadMap',
+    'uses' => 'DashboardController@reloadMap'
+]);

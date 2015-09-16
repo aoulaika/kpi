@@ -321,7 +321,7 @@ function csiTrack(id, data) {
         "chartScrollbar": {
             "autoGridCount": true,
             "graph": "csiTrack",
-            "oppositeAxis":false,
+            "oppositeAxis":true,
             "graphFillAlpha": 0,
             "graphLineAlpha": 0.5,
             "selectedGraphFillAlpha": 0,

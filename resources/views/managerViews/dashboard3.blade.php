@@ -32,7 +32,7 @@ Dashboard
                     </div><!-- /.form group -->
                 </div>
                 <div class="col-lg-6">
-                    <span class="pull-right" id="range"><span class="date" id="total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span class="date" id="datedeb">1900-01-01</span> and : <span class="date" id="datefin">2015-08-19</span></span>
+                    <span class="pull-right" id="range"><span class="date" id="total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span class="date" id="datedeb">{{ $begin }}</span> and : <span class="date" id="datefin">{{ $end }}</span></span>
                 </div>
             </div><!-- /.box-header -->
         </div>
