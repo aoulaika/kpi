@@ -48,9 +48,10 @@
                         <!-- /.form group -->
                     </div>
                     <div class="col-lg-6">
-                        <span class="pull-right" id="range"><span class="date total_ticket">{{ $total_ticket }}</span> Tickets Handled between :  <span
-                                    class="date" id="debut">{{ $begin }}</span> and : <span class="date"
-                                                                                            id="fin">{{ $end }}</span></span>
+                        <span class="pull-right" id="range"><span class="date total_ticket">{{ $total_ticket }}</span>
+                            Tickets Handled between :  <span class="date" id="debut">{{ $begin }}</span>
+                            and : <span class="date" id="fin">{{ $end }}</span>
+                        </span>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -349,13 +350,10 @@
                                                         <strong><p style="margin-top: 4px;">#1</p></strong>
                                                     </div>
                                                     <div class="col-lg-5 form-inline">
-                                                        <label>FROM :</label> <input type="date" name="datedebut[]"
-                                                                                     class="form-control datedebut"/>
+                                                        <label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut"/>
                                                     </div>
                                                     <div class="col-lg-5 form-inline">
-                                                        <label>TO :</label> <input type="text" name="datefin[]"
-                                                                                   class="form-control datefin"
-                                                                                   disabled/>
+                                                        <label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
                                                     </div>
                                                 </div>
                                                 <div class="row toRepeat" style="margin-top:15px;">
@@ -364,19 +362,15 @@
                                                         </strong>
                                                     </div>
                                                     <div class="col-lg-5 form-inline">
-                                                        <label>FROM :</label> <input type="date" name="datedebut[]"
-                                                                                     class="form-control datedebut"/>
+                                                        <label>FROM :</label> <input type="date" name="datedebut[]" class="form-control datedebut"/>
                                                     </div>
                                                     <div class="col-lg-5 form-inline">
-                                                        <label>TO :</label> <input type="text" name="datefin[]"
-                                                                                   class="form-control datefin"
-                                                                                   disabled/>
+                                                        <label>TO :</label> <input type="text" name="datefin[]" class="form-control datefin" disabled/>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <a id="zid" class="btn btn-primary pull-right" style="margin:10px;"><i
-                                                            class="fa fa-plus"></i></a>
+                                                <a id="zid" class="btn btn-primary pull-right" style="margin:10px;"><i class="fa fa-plus"></i></a>
                                             </div>
                                             <div class="row">
                                                 <div class="alert alert-danger alert-dismissable" id="alert1"
