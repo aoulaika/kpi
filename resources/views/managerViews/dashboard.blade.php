@@ -508,7 +508,7 @@
                         reloadPriority(response.critical, response.high, response.medium, response.low, response.planning);
                         data_temp = response.ticket_all;
                         reloadSelect(data_temp.product, '#product');
-                        ticketsChart = draw(data_temp.all, 'ticketsChart');
+                        ticketsChart = draw(data_temp.all, 'ticketsChart',3);
                         $('.csi').first().html(response.csi_rate);
                         $('.csi').last().html(response.csi_rate_quality);
                         drawMap('#regions_div', response.countryChart, 2000, 'Number of Tickets', ' ticket');
@@ -518,6 +518,7 @@
                         reloadTable(response.csi_cat,'#csiCatTable','Category');
                         //reload CSI per country table
                         reloadTable(response.csi_location,'#csiCountryTable','Country');
+                        $(".customScroll").mCustomScrollbar();
                     },
                     error: function(err){
                         console.log(err.responseText);
@@ -1198,9 +1199,9 @@
             var str = '<table class="table"><thead>' +
                     '<tr><th>' + column + '</th>' +
                     '<th>Number of surveys</th>' +
+                    '<th>D-SAT Valid</th>' +
                     '<th>CSI</th>' +
-                    '<th>CSI with Scrub</th>' +
-                    '<th>D-SAT Valid</th></tr></thead><tbody>';
+                    '<th>CSI with Scrub</th></tr></thead><tbody>';
             for (var property in data) {
                 if (data.hasOwnProperty(property)) {
                     if(column == 'Country'){
@@ -1219,9 +1220,9 @@
                     }
                     str += '<td>' + data[property][0] + '</td>' +
                     '<td class="csiValues">' + data[property][1] + '</td>' +
+                    '<td class="csiValues">' + data[property][4] + '</td>' +
                     '<td class="csiValues">' + data[property][2] + '</td>' +
-                    '<td class="csiValues">' + data[property][3] + '</td>' +
-                    '<td class="csiValues">' + data[property][4] + '</td></tr>';
+                    '<td class="csiValues">' + data[property][3] + '</td></tr>';
                 }
             }
             str += '</tbody></table>';
