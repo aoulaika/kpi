@@ -227,73 +227,73 @@ function gauge(id,mi,mx,title,tht,tht_time){
                 date: new Date(data[i].CreatedYear, data[i].CreatedMonth - 1, data[i].CreatedDay, data[i].CreatedHour, data[i].CreatedMinute, data[i].CreatedSecond, 0),
                 visits: data[i].count
             });
-        };*/
-        var ticketsData1 = [];
-        var deb = new Date($('#datedeb').html());
-        deb.setHours(0, 0, 0);
-        var fin = new Date($('#datefin').html());
-        fin.setHours(0, 0, 0);
-        var i = 0;
-        while (deb <= fin) {
-            try {
-                current = new Date(data[i].CreatedYear, data[i].CreatedMonth - 1, data[i].CreatedDay, data[i].CreatedHour, 0);
-            }
-            catch (err) {
-                current = new Date(0);
-            }
-            ticketsData1.push({
-                date: new Date(deb.getTime()),
-                visits: (current.getTime() == deb.getTime()) ? data[i].count : 0
-            });
-            if (current.getTime() == deb.getTime())
-                i++;
-            deb.setHours(deb.getHours() + 1);
-        }
-        var chart2 = AmCharts.makeChart("ticketsChart2", {
-            "type": "serial",
-            "theme": "light",
-            "marginRight": 80,
-            "autoMarginOffset": 20,
-            "marginTop": 7,
-            "dataProvider": ticketsData1,
-            "valueAxes": [{
-                "axisAlpha": 0.2,
-                "dashLength": 1,
-                "position": "left"
-            }],
-            "mouseWheelZoomEnabled": true,
-            "graphs": [{
-                "id": "ticketsChart2",
-                "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
-                "bullet": "round",
-                "bulletBorderAlpha": 1,
-                "bulletColor": "#FFFFFF",
-                "hideBulletsCount": 50,
-                "title": "red line",
-                "valueField": "visits",
-                "useLineColorForBulletBorder": true
-            }],
-            "chartScrollbar": {
-                "autoGridCount": true,
-                "graph": "ticketsChart2",
-                "scrollbarHeight": 40
-            },
-            "chartCursor": {
-                "categoryBalloonDateFormat": "JJ h, DD MMMM",
-                "cursorPosition": "mouse"
-            },
-            "categoryField": "date",
-            "categoryAxis": {
-                "parseDates": true,
-                "minPeriod": "mm",
-                "axisColor": "#DADADA",
-                "dashLength": 1,
-                "minorGridEnabled": true
-            },
-            "export": {
-                "enabled": true
-            }
-        });
+};*/
+var ticketsData1 = [];
+var deb = new Date($('#datedeb').html());
+deb.setHours(0, 0, 0);
+var fin = new Date($('#datefin').html());
+fin.setHours(0, 0, 0);
+var i = 0;
+while (deb <= fin) {
+    try {
+        current = new Date(data[i].CreatedYear, data[i].CreatedMonth - 1, data[i].CreatedDay, data[i].CreatedHour, 0);
+    }
+    catch (err) {
+        current = new Date(0);
+    }
+    ticketsData1.push({
+        date: new Date(deb.getTime()),
+        visits: (current.getTime() == deb.getTime()) ? data[i].count : 0
+    });
+    if (current.getTime() == deb.getTime())
+        i++;
+    deb.setHours(deb.getHours() + 1);
+}
+var chart2 = AmCharts.makeChart("ticketsChart2", {
+    "type": "serial",
+    "theme": "light",
+    "marginRight": 80,
+    "autoMarginOffset": 20,
+    "marginTop": 7,
+    "dataProvider": ticketsData1,
+    "valueAxes": [{
+        "axisAlpha": 0.2,
+        "dashLength": 1,
+        "position": "left"
+    }],
+    "mouseWheelZoomEnabled": true,
+    "graphs": [{
+        "id": "ticketsChart2",
+        "balloonText": "[[category]]<br/><b><span style='font-size:14px;'>value: [[value]]</span></b>",
+        "bullet": "round",
+        "bulletBorderAlpha": 1,
+        "bulletColor": "#FFFFFF",
+        "hideBulletsCount": 50,
+        "title": "red line",
+        "valueField": "visits",
+        "useLineColorForBulletBorder": true
+    }],
+    "chartScrollbar": {
+        "autoGridCount": true,
+        "graph": "ticketsChart2",
+        "scrollbarHeight": 40
+    },
+    "chartCursor": {
+        "categoryBalloonDateFormat": "JJ h, DD MMMM",
+        "cursorPosition": "mouse"
+    },
+    "categoryField": "date",
+    "categoryAxis": {
+        "parseDates": true,
+        "minPeriod": "mm",
+        "axisColor": "#DADADA",
+        "dashLength": 1,
+        "minorGridEnabled": true
+    },
+    "export": {
+        "enabled": true
+    }
+});
 chart2.pathToImages = '/kpi/public/img/';
 }
 
@@ -316,6 +316,7 @@ function csiTrack(id, data) {
             "axisAlpha": 0.2,
             "dashLength": 2,
             "position": "left",
+            "minimum": 0,
             "guides": [{
                 "dashLength": 2,
                 "inside": true,
