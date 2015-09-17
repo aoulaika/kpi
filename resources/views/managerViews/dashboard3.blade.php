@@ -339,6 +339,9 @@ Dashboard
     $("#agent").change(function() {
         var v=$(this).val();
 
+        $('.scrub-track').first().addClass('active');
+        $('.scrub-track').last().removeClass('active');
+
         doit(ci_temp[v].Name, tickets_per_agent[v].count, ci_temp[v].count, kb_temp[v].count, fcr_temp[v].count, fcr_reso_temp[v].count);
 
         gauge('#gauge1', 0, 20, tickets_per_agent[v].count+' Tickets', [parseInt(tht_temp[v].tht)], tht_temp[v].tht_time);
