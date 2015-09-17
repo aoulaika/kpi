@@ -739,30 +739,27 @@ public function reloadMap(Request $request)
     $params = $request->all();
     $csi_country = array();
     if ($params['scrub']==0) {
-        $csi_country=DB::table('fact')
-        ->join('time_dim','fact.fk_time','=','time_dim.Id')
-        ->where('time_dim.Created','>=',$params['debut'])
-        ->where('time_dim.Created','<=',$params['fin'])
-        ->join('geography','geography.Id','=','fact.fk_geography')
+
+        $csi_country=DB::table('csi')
+        ->where('csi.received','>',$params['debut'])
+        ->where('csi.received','<',$params['fin'])
+        ->whereNotNull('csi.location')
+        ->join('geography','geography.country_name','=','csi.location')
         ->whereNotNull('geography.country_code')
-        ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
         ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,geography.country_code,geography.country_name, count(*) as surveys'))
         ->groupBy('geography.country_code')
         ->orderBy('rate','desc')
         ->get();
     } else {
-        $csi_country=DB::table('fact')
-        ->join('time_dim','fact.fk_time','=','time_dim.Id')
-        ->where('time_dim.Created','>=',$params['debut'])
-        ->where('time_dim.Created','<=',$params['fin'])
-        ->join('geography','geography.Id','=','fact.fk_geography')
-        ->whereNotNull('geography.country_code')
-        ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-        ->whereNotIn('csi.ticket_number', function($q){
-            $q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+        $csi_country=DB::table('csi')
+        ->whereNotIn('csi.id',function($q){
+            $q->select('id')->from('csi')->where('d_sat_valid','=','NO');
         })
+        ->where('csi.received','>',$params['debut'])
+        ->where('csi.received','<',$params['fin'])
+        ->whereNotNull('csi.location')
+        ->join('geography','geography.country_name','=','csi.location')
+        ->whereNotNull('geography.country_code')
         ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,geography.country_code,geography.country_name, count(*) as surveys'))
         ->groupBy('geography.country_code')
         ->orderBy('rate','desc')

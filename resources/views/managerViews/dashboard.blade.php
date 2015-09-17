@@ -1252,6 +1252,8 @@
                 },
                 success: function (response) {
                     drawMap('#csi_map', response.csi, 4.5, txt, ' ');
+                },error: function (response) {
+                    console.log(response.responseText);
                 }
             });
         });
