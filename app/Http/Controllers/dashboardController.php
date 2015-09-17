@@ -239,7 +239,9 @@ class DashboardController extends Controller
 
         $csi_country=DB::table('csi')
         ->whereNotNull('csi.location')
-        ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,csi.location, count(*) as surveys'))
+        ->join('geography','geography.country_name','=','csi.location')
+        ->whereNotNull('geography.country_code')
+        ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,csi.location, count(*) as surveys,geography.country_code,geography.country_name'))
         ->groupBy('csi.location')
         ->orderBy('rate','desc')
         ->get();
