@@ -1199,22 +1199,29 @@
                     '<tr><th>' + column + '</th>' +
                     '<th>Number of surveys</th>' +
                     '<th>CSI</th>' +
-                    '<th>CSI with Scrub</th></tr></thead><tbody>';
+                    '<th>CSI with Scrub</th>' +
+                    '<th>D-SAT Valid</th></tr></thead><tbody>';
             for (var property in data) {
                 if (data.hasOwnProperty(property)) {
-                    if (data[property][2] < 4) {
-                        str += '<tr class="danger">';
+                    if(column == 'Country'){
+                        if (data[property][2] < 4) {
+                            str += '<tr class="danger">';
+                        }
+                        else if (data[property][2] >= 4 && data[property][2] <= 4.25) {
+                            str += '<tr class="warning">';
+                        }
+                        else {
+                            str += '<tr class="success">'
+                        }
                     }
-                    else if (data[property][2] >= 4 && data[property][2] <= 4.25) {
-                        str += '<tr class="warning">';
-                    }
-                    else {
-                        str += '<tr class="success">'
+                    else{
+                        str += '<tr>'
                     }
                     str += '<td>' + data[property][0] + '</td>' +
                     '<td class="csiValues">' + data[property][1] + '</td>' +
                     '<td class="csiValues">' + data[property][2] + '</td>' +
-                    '<td class="csiValues">' + data[property][3] + '</td></tr>';
+                    '<td class="csiValues">' + data[property][3] + '</td>' +
+                    '<td class="csiValues">' + data[property][4] + '</td></tr>';
                 }
             }
             str += '</tbody></table>';

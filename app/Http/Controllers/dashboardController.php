@@ -184,46 +184,81 @@ class DashboardController extends Controller
         'product'=>$tickets_product
         ];
 
-        $country=DB::table('fact')
-        ->join('geography','geography.Id','=','fact.fk_geography')
-        ->whereNotNull('geography.country_code')
-        ->select(DB::raw('count(*) as count,geography.country_code,geography.country_name'))
-        ->groupBy('geography.country_code')
-        ->get();
+        $csi_rate=DB::table('csi')
+            ->select(DB::raw('FORMAT(avg(csi.rate),2) as rate'))
+            ->first()->rate;
 
-        $csi_country=DB::table('fact')
-        ->join('geography','geography.Id','=','fact.fk_geography')
-        ->whereNotNull('geography.country_code')
-        ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-        ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,geography.country_code,geography.country_name, count(*) as surveys'))
-        ->groupBy('geography.country_code')
+        $csi_rate_quality=DB::table('csi')
+            ->where('d_sat_valid','=','YES')
+            ->orWhere('d_sat_valid','like','0,0')
+            ->orWhereNull('d_sat_valid')
+            ->select(DB::raw('FORMAT(avg(csi.rate),2) as rate'))
+            ->first()->rate;
+
+        $csi_category=DB::table('csi')
+            ->whereNotNull('product')
+            ->select(DB::raw('count(*) as count,FORMAT(avg(csi.rate),2) as avg,csi.product as product'))
+            ->groupBy('product')
+            ->orderBy('count','desc')
+            ->get();
+
+        $csi_category_scrub=DB::table('csi')
+            ->whereNotNull('product')
+            ->whereNotIn('id',function($q){
+                $q->select('id')->from('csi')->where('d_sat_valid','=','NO');
+            })
+            ->select(DB::raw('count(*) as d_sat_valid,FORMAT(avg(csi.rate),2) as avg,csi.product as product'))
+            ->groupBy('product')
+            ->get();
+
+        foreach($csi_category as $obj){
+            $csi_cat[$obj->product][0] = $obj->product;
+            $csi_cat[$obj->product][1] = $obj->count;
+            $csi_cat[$obj->product][2] = $obj->avg;
+            $csi_cat[$obj->product][3] = ' ';
+            $csi_cat[$obj->product][4] = 0;
+        }
+
+        foreach($csi_category_scrub as $obj){
+            $csi_cat[$obj->product][3] = $obj->avg;
+            $csi_cat[$obj->product][4] = $obj->d_sat_valid;
+        }
+
+        $country=DB::table('fact')
+            ->join('geography','geography.Id','=','fact.fk_geography')
+            ->whereNotNull('geography.country_code')
+            ->select(DB::raw('count(*) as count,geography.country_code,geography.country_name'))
+            ->groupBy('geography.country_code')
+            ->get();
+
+        $csi_country=DB::table('csi')
+        ->whereNotNull('csi.location')
+        ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,csi.location, count(*) as surveys'))
+        ->groupBy('csi.location')
         ->orderBy('rate','desc')
         ->get();
 
-        $csi_country_scrub=DB::table('fact')
-        ->join('geography','geography.Id','=','fact.fk_geography')
-        ->whereNotNull('geography.country_code')
-        ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-        ->whereNotIn('csi.ticket_number', function($q){
-            $q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+        $csi_country_scrub=DB::table('csi')
+        ->whereNotIn('id',function($q){
+            $q->select('id')->from('csi')->where('d_sat_valid','=','NO');
         })
-        ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,geography.country_code,geography.country_name, count(*) as surveys'))
-        ->groupBy('geography.country_code')
+        ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,csi.location,count(*) as surveys'))
+        ->groupBy('csi.location')
         ->orderBy('rate','desc')
         ->get();
 
         $csi_location=array();
 
         foreach ($csi_country as $obj) {
-            $csi_location[$obj->country_name][0] = $obj->country_name;
-            $csi_location[$obj->country_name][1] = $obj->surveys;
-            $csi_location[$obj->country_name][2] = $obj->rate;
-            $csi_location[$obj->country_name][3] = 0;
+            $csi_location[$obj->location][0] = $obj->location;
+            $csi_location[$obj->location][1] = $obj->surveys;
+            $csi_location[$obj->location][2] = $obj->rate;
+            $csi_location[$obj->location][3] = ' ';
+            $csi_location[$obj->location][4] = 0;
         }
         foreach($csi_country_scrub as $obj){
-            $csi_location[$obj->country_name][3] = $obj->rate;
+            $csi_location[$obj->location][3] = $obj->rate;
+            $csi_location[$obj->location][4] = $obj->surveys;
         }
 
         $csi_map=array();
@@ -235,21 +270,6 @@ class DashboardController extends Controller
                 ));
         }
 
-        $csi_rate=DB::table('csi')
-        ->where('csi.sla_metric','=','Yes')
-        ->join('tickets_dim','tickets_dim.Number','=','csi.ticket_number')
-        ->select(DB::raw('FORMAT(avg(csi.rate),2) as rate'))
-        ->first()->rate;
-
-        $csi_rate_quality=DB::table('csi')
-        ->where('csi.sla_metric','=','Yes')
-        ->join('tickets_dim','tickets_dim.Number','=','csi.ticket_number')
-        ->whereNotIn('csi.ticket_number', function($q){
-            $q->select('ticket_number')->from('quality')->where('accounted','=','NO');
-        })
-        ->select(DB::raw('FORMAT(avg(csi.rate),2) as rate'))
-        ->first()->rate;
-
         $countryChart=array();
         foreach ($country as $key => $value) {
             array_push($countryChart, (object)array(
@@ -257,35 +277,6 @@ class DashboardController extends Controller
                 'value'=>$value->count,
                 'name'=>$value->country_name
                 ));
-        }
-
-        $csi_category=DB::table('fact')
-        ->join('tickets_dim','tickets_dim.Id','=','fact.fk_ticket')
-        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-        ->select(DB::raw('count(*)as count,FORMAT(avg(csi.rate),2) as avg,tickets_dim.Category'))
-        ->groupBy('tickets_dim.Category')
-        ->orderBy('avg','desc')
-        ->get();
-
-        $csi_category_scrub=DB::table('fact')
-        ->join('tickets_dim','tickets_dim.Id','=','fact.fk_ticket')
-        ->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-        ->whereNotIn('csi.ticket_number', function($q){
-            $q->select('ticket_number')->from('quality')->where('accounted','=','NO');
-        })
-        ->select(DB::raw('FORMAT(avg(csi.rate),2) as avg,tickets_dim.Category'))
-        ->groupBy('tickets_dim.Category')
-        ->get();
-
-        foreach($csi_category as $obj){
-            $csi_cat[$obj->Category][0] = $obj->Category;
-            $csi_cat[$obj->Category][1] = $obj->count;
-            $csi_cat[$obj->Category][2] = $obj->avg;
-            $csi_cat[$obj->Category][3] = 0;
-        }
-
-        foreach($csi_category_scrub as $obj){
-            $csi_cat[$obj->Category][3] = $obj->avg;
         }
 
         $begin = DB::table('time_dim')->min('Created');
