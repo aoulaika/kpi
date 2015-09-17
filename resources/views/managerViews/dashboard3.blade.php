@@ -511,6 +511,7 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
                 'fin': $('#datefin').text()
             },
             success: function (response) {
+                console.log(response);
                 csiTrack('csiTracking', response.csi_tracking);
             },error: function (response) {
                 console.log(response.responseText);

@@ -269,35 +269,27 @@ class AgentController extends Controller {
 
 		/*CSI*/
 
-		$csi=DB::table('fact')
-		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->where('agent_dim.Id',$ci_users[0]->Id)
-		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-		->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
+		$csi=DB::table('csi')
+		->where('csi.agent_code',$ci_users[0]->Code)
+		->select(DB::raw('count(*) as count, FORMAT(avg(csi.rate),2) as rate'))
 		->first();
 
-		$csi_scrub=DB::table('fact')
-		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->where('agent_dim.Id',$ci_users[0]->Id)
-		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-		->whereNotIn('csi.ticket_number', function($q){
-			$q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+		$csi_scrub=DB::table('csi')
+		->where('csi.agent_code',$ci_users[0]->Code)
+		->where(function($q){
+			$q->where('csi.d_sat_valid', '=', 'YES');
+			$q->orWhere('csi.d_sat_valid', '=', '0,0');
+			$q->orWhereNull('csi.d_sat_valid');
 		})
-		->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
+		->select(DB::raw('count(*) as count, FORMAT(avg(csi.rate),2) as rate'))
 		->first();
 
 		/*csi tracking*/
 
-		$csi_tracking=DB::table('fact')
-		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->join('time_dim','fact.fk_time','=','time_dim.Id')
-		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-		->where('agent_dim.Id',$ci_users[0]->Id)
-		->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
-		->groupBy('CreatedYear','CreatedMonth','CreatedDay')
+		$csi_tracking=DB::table('csi')
+		->where('csi.agent_code',$ci_users[0]->Code)
+		->select(DB::raw('csi.received as date, avg(csi.rate) as value'))
+		->groupBy('csi.received_year','csi.received_month','csi.received_day')
 		->get();
 
 		$begin = DB::table('time_dim')->min('Created');
@@ -588,44 +580,38 @@ public function rangedate(Request $request) {
 		}
 	}
 	/*CSI*/
+	$code=DB::table('agent_dim')
+	->where('agent_dim.Id','=',$params['agent_id'])
+	->select('agent_dim.Code')
+	->first()->Code;
 
-	$csi=DB::table('fact')
-	->join('time_dim','fact.fk_time','=','time_dim.Id')
-	->where('time_dim.Created','>=',$params['datedeb'])
-	->where('time_dim.Created','<=',$params['datefin'])
-	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-	->where('agent_dim.Id',$params['agent_id'])
-	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
+	$csi=DB::table('csi')
+	->where('csi.received','>',$params['datedeb'])
+	->where('csi.received','<',$params['datefin'])
+	->where('csi.agent_code',$code)
+	->select(DB::raw('count(*) as count, FORMAT(avg(csi.rate),2) as rate'))
 	->first();
 
-	$csi_scrub=DB::table('fact')
-	->join('time_dim','fact.fk_time','=','time_dim.Id')
-	->where('time_dim.Created','>=',$params['datedeb'])
-	->where('time_dim.Created','<=',$params['datefin'])
-	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-	->where('agent_dim.Id',$params['agent_id'])
-	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-	->whereNotIn('csi.ticket_number', function($q){
-		$q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+	$csi_scrub=DB::table('csi')
+	->where('csi.received','>',$params['datedeb'])
+	->where('csi.received','<',$params['datefin'])
+	->where('csi.agent_code',$code)
+	->where(function($q){
+		$q->where('csi.d_sat_valid', '=', 'YES');
+		$q->orWhere('csi.d_sat_valid', '=', '0,0');
+		$q->orWhereNull('csi.d_sat_valid');
 	})
-	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
+	->select(DB::raw('count(*) as count, FORMAT(avg(csi.rate),2) as rate'))
 	->first();
 
 	/*csi tracking*/
 
-	$csi_tracking=DB::table('fact')
-	->join('time_dim','fact.fk_time','=','time_dim.Id')
-	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->where('time_dim.Created','>=',$params['datedeb'])
-	->where('time_dim.Created','<=',$params['datefin'])
-	->where('agent_dim.Id',$params['agent_id'])
-	->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
-	->groupBy('CreatedYear','CreatedMonth','CreatedDay')
+	$csi_tracking=DB::table('csi')
+	->where('csi.received','>',$params['datedeb'])
+	->where('csi.received','<',$params['datefin'])
+	->where('csi.agent_code',$code)
+	->select(DB::raw('csi.received as date, avg(csi.rate) as value'))
+	->groupBy('csi.received_year','csi.received_month','csi.received_day')
 	->get();
 	/* */
 	return response()->json([
@@ -734,44 +720,38 @@ public function changeAgent(Request $request) {
 	}
 
 	/*CSI*/
+	$code=DB::table('agent_dim')
+	->where('agent_dim.Id','=',$params['agent_id'])
+	->select('agent_dim.Code')
+	->first()->Code;
 
-	$csi=DB::table('fact')
-	->join('time_dim','fact.fk_time','=','time_dim.Id')
-	->where('time_dim.Created','>=',$params['datedeb'])
-	->where('time_dim.Created','<=',$params['datefin'])
-	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-	->where('agent_dim.Id',$params['agent_id'])
-	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
+	$csi=DB::table('csi')
+	->where('csi.received','>',$params['datedeb'])
+	->where('csi.received','<',$params['datefin'])
+	->where('csi.agent_code',$code)
+	->select(DB::raw('count(*) as count, FORMAT(avg(csi.rate),2) as rate'))
 	->first();
 
-	$csi_scrub=DB::table('fact')
-	->join('time_dim','fact.fk_time','=','time_dim.Id')
-	->where('time_dim.Created','>=',$params['datedeb'])
-	->where('time_dim.Created','<=',$params['datefin'])
-	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-	->where('agent_dim.Id',$params['agent_id'])
-	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-	->whereNotIn('csi.ticket_number', function($q){
-		$q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+	$csi_scrub=DB::table('csi')
+	->where('csi.received','>',$params['datedeb'])
+	->where('csi.received','<',$params['datefin'])
+	->where('csi.agent_code',$code)
+	->where(function($q){
+		$q->where('csi.d_sat_valid', '=', 'YES');
+		$q->orWhere('csi.d_sat_valid', '=', '0,0');
+		$q->orWhereNull('csi.d_sat_valid');
 	})
-	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->select(DB::raw('agent_dim.Id, agent_dim.Name, count(*) as count, IFNULL(FORMAT(avg(csi.rate),2),0) as rate'))
+	->select(DB::raw('count(*) as count, FORMAT(avg(csi.rate),2) as rate'))
 	->first();
 
 	/*csi tracking*/
 
-	$csi_tracking=DB::table('fact')
-	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-	->join('time_dim','fact.fk_time','=','time_dim.Id')
-	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-	->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-	->where('time_dim.Created','>=',$params['datedeb'])
-	->where('time_dim.Created','<=',$params['datefin'])
-	->where('agent_dim.Id',$params['agent_id'])
-	->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
-	->groupBy('CreatedYear','CreatedMonth','CreatedDay')
+	$csi_tracking=DB::table('csi')
+	->where('csi.received','>',$params['datedeb'])
+	->where('csi.received','<',$params['datefin'])
+	->where('csi.agent_code',$code)
+	->select(DB::raw('csi.received as date, avg(csi.rate) as value'))
+	->groupBy('csi.received_year','csi.received_month','csi.received_day')
 	->get();
 
 	return response()->json([
@@ -788,33 +768,31 @@ public function changeAgent(Request $request) {
 public function reloadTrack(Request $request)
 {
 	$params = $request->all();
+	$code=DB::table('agent_dim')
+	->where('agent_dim.Id','=',$params['agent_id'])
+	->select('agent_dim.Code')
+	->first()->Code;
 	$csi_tracking=array();
 	if ($params['scrub']==0) {
-		$csi_tracking=DB::table('fact')
-		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->join('time_dim','fact.fk_time','=','time_dim.Id')
-		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-		->where('time_dim.Created','>=',$params['debut'])
-		->where('time_dim.Created','<=',$params['fin'])
-		->where('agent_dim.Id',$params['agent_id'])
-		->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
-		->groupBy('CreatedYear','CreatedMonth','CreatedDay')
+		$csi_tracking=DB::table('csi')
+		->where('csi.received','>',$params['debut'])
+		->where('csi.received','<',$params['fin'])
+		->where('csi.agent_code',$code)
+		->select(DB::raw('csi.received as date, avg(csi.rate) as value'))
+		->groupBy('csi.received_year','csi.received_month','csi.received_day')
 		->get();
 	} else {
-		$csi_tracking=DB::table('fact')
-		->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
-		->join('time_dim','fact.fk_time','=','time_dim.Id')
-		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-		->join('csi', 'csi.ticket_number', '=', 'tickets_dim.Number')
-		->whereNotIn('csi.ticket_number', function($q){
-			$q->select('ticket_number')->from('quality')->where('accounted','=','NO');
+		$csi_tracking=DB::table('csi')
+		->where('csi.received','>',$params['debut'])
+		->where('csi.received','<',$params['fin'])
+		->where('csi.agent_code',$code)
+		->where(function($q){
+			$q->where('csi.d_sat_valid', '=', 'YES');
+			$q->orWhere('csi.d_sat_valid', '=', '0,0');
+			$q->orWhereNull('csi.d_sat_valid');
 		})
-		->where('time_dim.Created','>=',$params['debut'])
-		->where('time_dim.Created','<=',$params['fin'])
-		->where('agent_dim.Id',$params['agent_id'])
-		->select(DB::raw('time_dim.Created as date, cast(avg(csi.rate) as decimal(10,2)) as value'))
-		->groupBy('CreatedYear','CreatedMonth','CreatedDay')
+		->select(DB::raw('csi.received as date, avg(csi.rate) as value'))
+		->groupBy('csi.received_year','csi.received_month','csi.received_day')
 		->get();
 	}
 
