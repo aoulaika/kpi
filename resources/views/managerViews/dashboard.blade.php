@@ -508,7 +508,7 @@
                         reloadPriority(response.critical, response.high, response.medium, response.low, response.planning);
                         data_temp = response.ticket_all;
                         reloadSelect(data_temp.product, '#product');
-                        ticketsChart = draw(data_temp.all, 'ticketsChart');
+                        ticketsChart = draw(data_temp.all, 'ticketsChart',3);
                         $('.csi').first().html(response.csi_rate);
                         $('.csi').last().html(response.csi_rate_quality);
                         drawMap('#regions_div', response.countryChart, 2000, 'Number of Tickets', ' ticket');
@@ -518,6 +518,7 @@
                         reloadTable(response.csi_cat,'#csiCatTable','Category');
                         //reload CSI per country table
                         reloadTable(response.csi_location,'#csiCountryTable','Country');
+                        $(".customScroll").mCustomScrollbar();
                     },
                     error: function(err){
                         console.log(err.responseText);
