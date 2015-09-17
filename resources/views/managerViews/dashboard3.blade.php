@@ -9,6 +9,10 @@ Dashboard
     #csiTracking{
         height: 210px;
     }
+    .agent-image{
+        height: 100px;
+        width: 100px;
+    }
 </style>
 @endsection
 @section('page_current')
@@ -370,11 +374,9 @@ Dashboard
                 $('#csi').text(response.csi.rate);$('#csi-count').text(response.csi.count);
                 $('#csiscrub').text(response.csi_scrub.rate);$('#csiscrub-count').text(response.csi_scrub.count);
                 var img = "{{ asset('/img/default-user.png') }}";
-                'localhost/kpi/public/img/default-user.png';
                 if(response.user_pic != 'default-user.png'){
                     var i="/images/"+response.user_pic;
-                    console.log(i);
-                    img = "http://kpi.dev"+i;
+                    img = "http://localhost/kpi/public"+i;
                 }
                 $('#agent-image').attr('src', img);
                 reloadSelect(response.tickets_all.product,'#product');

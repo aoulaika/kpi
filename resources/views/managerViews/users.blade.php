@@ -90,7 +90,7 @@ Employees
 						<div class="col-xs-5">
 							<a class="image" ng-click="editItem(item)" data-toggle="modal" data-target="#myModal">
 								<span class="rollover"></span>
-								<img class="imgborder" alt="" src="{{ asset('img/default-user.png') }}">
+								<img class="imgborder" alt="" ng-src="{{ asset('/images/<% item.picture || def_img %>') }}">
 							</a>
 						</div>
 						<div class="col-xs-7">
@@ -112,7 +112,7 @@ Employees
 								<div class="col-lg-3">
 									<div class="media">
 										<a class="pull-left" href="#">
-											<img class="media-object dp img-circle" ng-src="{{ asset('/images/<% selectedItem.picture %>') }}" style="width: 100px;height:100px;">
+											<img class="media-object dp img-circle" ng-src="{{ asset('/images/<% selectedItem.picture || def_img %>') }}" style="width: 100px;height:100px;">
 										</a>
 									</div>
 								</div>
