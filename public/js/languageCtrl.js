@@ -16,10 +16,6 @@ app.controller('languageCtrl', function($scope, $http){
 		$scope.languages=response.languages;
 	});
 
-	$scope.angle = function (id) {
-		$(id).toggleClass('fa-angle-down fa-angle-up');
-	};
-
 	$scope.addLanguage = function (language) {
 		console.log(language);
 		$http.post('addlanguage', {'_token': language.token, 'name': language.name})

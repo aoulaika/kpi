@@ -90,7 +90,7 @@ Employees
 						<div class="col-xs-5">
 							<a class="image" ng-click="editItem(item)" data-toggle="modal" data-target="#myModal">
 								<span class="rollover"></span>
-								<img class="imgborder" alt="" src="{{ asset('img/default-user.png') }}">
+								<img class="imgborder" alt="" ng-src="{{ asset('/images/<% item.picture || def_img %>') }}">
 							</a>
 						</div>
 						<div class="col-xs-7">
@@ -112,7 +112,7 @@ Employees
 								<div class="col-lg-3">
 									<div class="media">
 										<a class="pull-left" href="#">
-											<img class="media-object dp img-circle" ng-src="{{ asset('/images/<% selectedItem.picture %>') }}" style="width: 100px;height:100px;">
+											<img class="media-object img-circle" ng-src="{{ asset('/images/<% selectedItem.picture || def_img %>') }}" style="width: 100px;height:100px;">
 										</a>
 									</div>
 								</div>
@@ -134,7 +134,7 @@ Employees
 											<li class="active"><a href="#tab_1-1" data-toggle="tab" aria-expanded="true">Personal details</a></li>
 											<li class=""><a href="#tab_2-2" data-toggle="tab" aria-expanded="false">Professional details</a></li>
 											<li class=""><a href="#tab_3-3" data-toggle="tab" aria-expanded="false">Tools</a></li>
-											<li class=""><a href="#tab_4-4" data-toggle="tab" aria-expanded="false">Projects</a></li>
+											<li class=""><a href="#tab_4-4" data-toggle="tab" aria-expanded="false">Accounts</a></li>
 										</ul>
 										<div class="tab-content">
 											<div class="tab-pane active" id="tab_1-1">
@@ -286,6 +286,14 @@ Employees
 												</table>
 											</div><!-- /.tab-pane -->
 											<div class="tab-pane" id="tab_4-4">
+												<table class="table">
+													<tr ng-repeat="acc in user_accounts">
+														<td><b>Account Name</b></td>
+														<td><% acc.name %></td>
+														<td><b>Account ID</b></td>
+														<td><% acc.account_id %></td>
+													</tr>
+												</table>
 											</div>
 										</div><!-- /.tab-content -->
 									</div>

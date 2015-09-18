@@ -17,7 +17,6 @@ app.controller('ctrl', function($scope,$http) {
     $scope.teams=response.teams;
     $scope.selectedTeam = {value: 0, text: ""};
     $scope.items=response.users;
-    console.log(response.users);
   })
   .error(function(response) {
     console.log('Error getUsers');
@@ -109,6 +108,8 @@ app.controller('ctrl', function($scope,$http) {
   {value: "WFA", text: "WFA"},
   ];
 
+  $scope.def_img = 'default-user.png';
+
   $scope.editItem = function(item){
     $scope.selectedItem = item;
     item.originalItem = angular.copy(item);
@@ -120,7 +121,7 @@ app.controller('ctrl', function($scope,$http) {
       }
     })
     .then(function (response) {
-      console.log('Error getTeamName');
+      console.log('Error while getting TeamName');
       console.log(response);
     });
 
@@ -129,7 +130,7 @@ app.controller('ctrl', function($scope,$http) {
       $scope.user_languages = response.data.languages;
     })
     .then(function (response) {
-      console.log('Error getUserLanguages');
+      console.log('Error while getting UserLanguages');
       console.log(response);
     });
 
@@ -138,7 +139,7 @@ app.controller('ctrl', function($scope,$http) {
       $scope.user_tools=response.data.tools;
     })
     .then(function (response) {
-      console.log('Error getUserTools');
+      console.log('Error while getting UserTools');
       console.log(response);
     });
 
@@ -147,17 +148,26 @@ app.controller('ctrl', function($scope,$http) {
       $scope.user_tools=response.data.tools;
     })
     .then(function (response) {
-      console.log('Error getUserTools');
+      console.log('Error while getting UserTools');
       console.log(response);
     });
 
     $http.post('polarData', {id:item.Id})
     .then(function (response) {
-      console.log(response.data.data);
       showRadar(response.data.data);
     })
     .then(function (response) {
       console.log('Error polarData');
+      console.log(response);
+    });
+
+    $http.post('getAccounts', {id:item.Id})
+    .then(function (response) {
+      $scope.user_accounts = response.data.accounts;
+      console.log(response.data);
+    })
+    .then(function (response) {
+      console.log('Error while getting accounts');
       console.log(response);
     });
 
@@ -173,7 +183,7 @@ app.controller('ctrl', function($scope,$http) {
           $scope.user_languages = data;
         })
         .then(function (response) {
-          console.log('Error getUserLanguages');
+          console.log('Error while getting UserLanguages');
           console.log(response);
         });
       }else if(attribut == 'tool'){

@@ -10,12 +10,13 @@ function showRadar (data) {
       {
         "axisTitleOffset": 20,
         "minimum": 0,
+        "maximum": 100,
         "axisAlpha": 0.15
     }],
     "graphs": [ {
-        "balloonText": "[[value]]% Average Usage",
+        "balloonText": "[[value]]% Target",
         "bullet": "round",
-        "valueField": "average"
+        "valueField": "target"
     },{
         "balloonText": "[[value]]% Agent Usage",
         "bullet": "round",
