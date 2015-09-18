@@ -161,6 +161,16 @@ app.controller('ctrl', function($scope,$http) {
       console.log(response);
     });
 
+    $http.post('getAccounts', {id:item.Id})
+    .then(function (response) {
+      $scope.user_accounts = response.data.accounts;
+      console.log(response.data);
+    })
+    .then(function (response) {
+      console.log('Error while getting accounts');
+      console.log(response);
+    });
+
   };
 
   $scope.editUser = function(id, attribut, data) {

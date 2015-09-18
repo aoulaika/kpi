@@ -188,3 +188,8 @@ Route::get('reloadTrack', [
     'as' => 'reloadTrack',
     'uses' => 'AgentController@reloadTrack'
 ]);
+
+Route::post('getAccounts', [
+    'as' => 'getAccounts',
+    'uses' => 'UsersController@getAccounts'
+]);

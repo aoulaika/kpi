@@ -91,7 +91,7 @@ class UsersController extends Controller{
     ->join('fact','fact.fk_agent','=','agent_dim.Id')
     ->join('ci_dim', 'fact.fk_ci', '=', 'ci_dim.Id')
     ->select(DB::raw('SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS ci'))
-    ->get();
+    ->first()->ci;
 
     $kb=DB::table('user_project')
     ->where('user_project.user_id','=',$params['id'])
@@ -101,7 +101,7 @@ class UsersController extends Controller{
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
     ->where('Category','not like','Service Catalog')
     ->select(DB::raw('SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS kb'))
-    ->get();
+    ->first()->kb;
 
     $fcr=DB::table('user_project')
     ->where('user_project.user_id','=',$params['id'])
@@ -111,7 +111,7 @@ class UsersController extends Controller{
     ->where('Contact_type','like','Phone')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
     ->select(DB::raw('SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS fcr'))
-    ->get();
+    ->first()->fcr;
 
     $fcr_reso=DB::table('user_project')
     ->where('user_project.user_id','=',$params['id'])
@@ -121,58 +121,54 @@ class UsersController extends Controller{
     ->where('Contact_type','like','Phone')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
     ->select(DB::raw('IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS fcr_reso'))
-    ->get();
+    ->first()->fcr_reso;
 
-    $avg_ci=DB::table('fact')
-    ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
-    ->join('ci_dim', 'fact.fk_ci', '=', 'ci_dim.Id')
-    ->select(DB::raw('SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS avg_ci'))
-    ->get();
-
-    $avg_kb=DB::table('fact')
-    ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
-    ->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
+    $tht=DB::table('user_project')
+    ->where('user_project.user_id','=',$params['id'])
+    ->join('agent_dim','agent_dim.Code','=','user_project.account_id')
+    ->join('fact','fact.fk_agent','=','agent_dim.Id')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-    ->where('Category','not like','Service Catalog')
-    ->select(DB::raw('SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS avg_kb'))
-    ->get();
+    ->select(DB::raw('sum(case when Handling_time <= 900 then 1 else 0 end)*100/count(*) as tht'))
+    ->first()->tht;
 
-    $avg_fcr=DB::table('fact')
-    ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
-    ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+    $tht_psr=DB::table('user_project')
+    ->where('user_project.user_id','=',$params['id'])
+    ->join('agent_dim','agent_dim.Code','=','user_project.account_id')
+    ->join('fact','fact.fk_agent','=','agent_dim.Id')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-    ->where('Contact_type','like','Phone')
-    ->select(DB::raw('SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS avg_fcr'))
-    ->get();
-
-    $avg_fcr_reso=DB::table('fact')
-    ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
-    ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
-    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-    ->where('Contact_type','like','Phone')
-    ->select(DB::raw('IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS avg_fcr_reso'))
-    ->get();
+    ->select(DB::raw('SUM(CASE WHEN (Handling_time <= 300 AND Closure_code = \'Password Reset\') THEN 1 ELSE 0 END)*100/SUM(CASE WHEN Closure_code = \'Password Reset\' THEN 1 else 0 END) as tht_psr'))
+    ->first()->tht_psr;
     
     $data = array(
       (object)array(
         'name'=>'FCR Resolvable',
-        'average'=>round(floatval($avg_fcr_reso[0]->avg_fcr_reso),2),
-        'agent'=>round(floatval($fcr_reso[0]->fcr_reso),2)
+        'target'=>90,
+        'agent'=>round(floatval($fcr_reso),2)
         ),
       (object)array(
         'name'=>'FCR',
-        'average'=>round(floatval($avg_fcr[0]->avg_fcr),2),
-        'agent'=>round(floatval($fcr[0]->fcr),2)
+        'target'=>60,
+        'agent'=>round(floatval($fcr),2)
         ),
       (object)array(
-        'name'=>'CI Usage',
-        'average'=>round(floatval($avg_ci[0]->avg_ci),2),
-        'agent'=>round(floatval($ci[0]->ci),2)
+        'name'=>'THT',
+        'target'=>90,
+        'agent'=>round(floatval($tht),2)
+        ),
+      (object)array(
+        'name'=>'THT Password Reset',
+        'target'=>57,
+        'agent'=>round(floatval($tht_psr),2)
         ),
       (object)array(
         'name'=>'EKMS Usage',
-        'average'=>round(floatval($avg_kb[0]->avg_kb),2),
-        'agent'=>round(floatval($kb[0]->kb),2)
+        'target'=>88.19,
+        'agent'=>round(floatval($kb),2)
+        ),
+      (object)array(
+        'name'=>'CI Usage',
+        'target'=>90,
+        'agent'=>round(floatval($ci),2)
         )
       );
 
@@ -356,5 +352,19 @@ public function getAccount() {
   'accounts'=>$accounts
   ]);
 }
+
+public function getAccounts(Request $request) {
+  $params=$request->all();
+  $accounts=DB::table('users')
+  ->where('users.id','=',$params['id'])
+  ->join('user_project','user_project.user_id','=','users.id')
+  ->join('projects','projects.id','=','user_project.project_id')
+  ->select('projects.*','user_project.account_id')
+  ->get();
+  return response()->json([
+    'accounts'=>$accounts
+    ]);
+}
+
 
 }
