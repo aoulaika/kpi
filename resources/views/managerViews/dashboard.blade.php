@@ -515,6 +515,9 @@
                         drawMap('#csi_map', response.csi_map, 4.5, 'Current CSI', ' ');
                         reloadMissed(response.total_ticket, response.ci_missed, response.kb_missed, response.fcr_missed, response.fcr_reso_missed, response.fcr_reso_total);
                         //reload CSI per category table
+                        $('.customScroll').mCustomScrollbar("destroy");
+                        $('#csiCatTable').html("");
+                        $('#csiCountryTable').html("");
                         reloadTable(response.csi_cat,'#csiCatTable','Category');
                         //reload CSI per country table
                         reloadTable(response.csi_location,'#csiCountryTable','Country');
