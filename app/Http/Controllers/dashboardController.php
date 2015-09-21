@@ -425,7 +425,7 @@ public function reload(Request $request)
         ->groupBy('Product')
         ->orderBy('y', 'desc')
         ->get();
-    
+
     $categoryName=array();
     foreach ($category as $key => $value) {
         array_push($categoryName, $value->name);

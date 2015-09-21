@@ -212,6 +212,11 @@ function gauge(id,mi,mx,title,tht,tht_time){
             xAxis: {
                 categories: name
             },
+            plotOptions: {
+                series: {
+                    pointWidth: 15
+                }
+            },
             series: [{
                 name: graphName,
                 showInLegend: false,
