@@ -111,6 +111,8 @@ app.controller('ctrl', function($scope,$http) {
   $scope.def_img = 'default-user.png';
 
   $scope.editItem = function(item){
+
+    $('#chart-container').html('');
     $scope.selectedItem = item;
     item.originalItem = angular.copy(item);
 
@@ -131,15 +133,6 @@ app.controller('ctrl', function($scope,$http) {
     })
     .then(function (response) {
       console.log('Error while getting UserLanguages');
-      console.log(response);
-    });
-
-    $http.post('getUserTools', {id:item.Id})
-    .then(function (response) {
-      $scope.user_tools=response.data.tools;
-    })
-    .then(function (response) {
-      console.log('Error while getting UserTools');
       console.log(response);
     });
 
