@@ -255,6 +255,22 @@ class DashboardController extends Controller
         ->orderBy('rate','desc')
         ->get();
 
+        $csi_map=array();
+        foreach ($csi_country as $key => $value) {
+            array_push($csi_map, (object)array(
+                'code'=>$value->country_code,
+                'value'=>$value->rate,
+                'name'=>$value->country_name
+                ));
+        }
+
+        $csi_country=DB::table('csi')
+        ->whereNotNull('csi.location')
+        ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,csi.location, count(*) as surveys'))
+        ->groupBy('csi.location')
+        ->orderBy('rate','desc')
+        ->get();
+
         $csi_location=array();
 
         foreach ($csi_country as $obj) {
@@ -267,15 +283,6 @@ class DashboardController extends Controller
         foreach($csi_country_scrub as $obj){
             $csi_location[$obj->location][3] = $obj->rate;
             $csi_location[$obj->location][4] = $obj->surveys;
-        }
-
-        $csi_map=array();
-        foreach ($csi_country as $key => $value) {
-            array_push($csi_map, (object)array(
-                'code'=>$value->country_code,
-                'value'=>$value->rate,
-                'name'=>$value->country_name
-                ));
         }
 
         $countryChart=array();

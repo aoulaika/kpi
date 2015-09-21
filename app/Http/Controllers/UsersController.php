@@ -108,6 +108,7 @@ class UsersController extends Controller{
     ->join('agent_dim','agent_dim.Code','=','user_project.account_id')
     ->join('fact','fact.fk_agent','=','agent_dim.Id')
     ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+    ->where('Category','not like','Service Catalog')
     ->where('Contact_type','like','Phone')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
     ->select(DB::raw('SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS fcr'))
@@ -118,6 +119,7 @@ class UsersController extends Controller{
     ->join('agent_dim','agent_dim.Code','=','user_project.account_id')
     ->join('fact','fact.fk_agent','=','agent_dim.Id')
     ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+    ->where('Category','not like','Service Catalog')
     ->where('Contact_type','like','Phone')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
     ->select(DB::raw('IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS fcr_reso'))
@@ -138,36 +140,80 @@ class UsersController extends Controller{
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
     ->select(DB::raw('SUM(CASE WHEN (Handling_time <= 300 AND Closure_code = \'Password Reset\') THEN 1 ELSE 0 END)*100/SUM(CASE WHEN Closure_code = \'Password Reset\' THEN 1 else 0 END) as tht_psr'))
     ->first()->tht_psr;
+
+    $avg_ci=DB::table('fact')
+    ->join('ci_dim', 'fact.fk_ci', '=', 'ci_dim.Id')
+    ->select(DB::raw('SUM(CASE WHEN ci_dim.Name IS NOT NULL THEN 1 ELSE 0 END) * 100 / COUNT(*) AS avg_ci'))
+    ->first()->avg_ci;
+
+    $avg_kb=DB::table('fact')
+    ->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->where('Category','not like','Service Catalog')
+    ->select(DB::raw('SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS avg_kb'))
+    ->first()->avg_kb;
+
+    $avg_fcr=DB::table('fact')
+    ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->where('Category','not like','Service Catalog')
+    ->where('Contact_type','like','Phone')
+    ->select(DB::raw('SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS avg_fcr'))
+    ->first()->avg_fcr;
+
+    $avg_fcr_reso=DB::table('fact')
+    ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->where('Category','not like','Service Catalog')
+    ->where('Contact_type','like','Phone')
+    ->select(DB::raw('IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS avg_fcr_reso'))
+    ->first()->avg_fcr_reso;
+
+    $avg_tht=DB::table('fact')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->select(DB::raw('sum(case when Handling_time <= 900 then 1 else 0 end)*100/count(*) as avg_tht'))
+    ->first()->avg_tht;
+
+    $avg_tht_psr=DB::table('fact')
+    ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+    ->select(DB::raw('SUM(CASE WHEN (Handling_time <= 300 AND Closure_code = \'Password Reset\') THEN 1 ELSE 0 END)*100/SUM(CASE WHEN Closure_code = \'Password Reset\' THEN 1 else 0 END) as avg_tht_psr'))
+    ->first()->avg_tht_psr;
     
     $data = array(
       (object)array(
         'name'=>'FCR Resolvable',
         'target'=>90,
+        'average'=>round(floatval($avg_fcr_reso),2),
         'agent'=>round(floatval($fcr_reso),2)
         ),
       (object)array(
         'name'=>'FCR',
         'target'=>60,
+        'average'=>round(floatval($avg_fcr),2),
         'agent'=>round(floatval($fcr),2)
         ),
       (object)array(
         'name'=>'THT',
         'target'=>90,
+        'average'=>round(floatval($avg_tht),2),
         'agent'=>round(floatval($tht),2)
         ),
       (object)array(
         'name'=>'THT Password Reset',
         'target'=>57,
+        'average'=>round(floatval($avg_tht_psr),2),
         'agent'=>round(floatval($tht_psr),2)
         ),
       (object)array(
         'name'=>'EKMS Usage',
         'target'=>88.19,
+        'average'=>round(floatval($avg_kb),2),
         'agent'=>round(floatval($kb),2)
         ),
       (object)array(
         'name'=>'CI Usage',
         'target'=>90,
+        'average'=>round(floatval($avg_ci),2),
         'agent'=>round(floatval($ci),2)
         )
       );
