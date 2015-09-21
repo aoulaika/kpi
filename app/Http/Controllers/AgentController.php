@@ -39,7 +39,7 @@ class AgentController extends Controller {
 		->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
 		->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-		->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count'))
+		->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\') THEN 1 ELSE 0  END) AS count'))
 		->groupBy('agent_dim.Id')
 		->get();
 
@@ -47,9 +47,7 @@ class AgentController extends Controller {
 		->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
 		->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-		->where('Category','not like','Service Catalog')
-		->where('Contact_type','like','Phone')
-		->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN FCR_resolved = 1 THEN 1 ELSE 0 END) * 100 / COUNT(*) AS count'))
+		->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolved = 1) THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\') THEN 1 ELSE 0 END) AS count'))
 		->groupBy('agent_dim.Id')
 		->get();
 
@@ -57,9 +55,7 @@ class AgentController extends Controller {
 		->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
 		->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-		->where('Category','not like','Service Catalog')
-		->where('Contact_type','like','Phone')
-		->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS count'))
+		->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) AS count'))
 		->groupBy('agent_dim.Id')
 		->get();
 
@@ -413,30 +409,25 @@ public function rangedate(Request $request) {
 	->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
 	->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
 	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-	->where('Category','not like','Service Catalog')
-	->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END) * 100 /SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END),0) AS count'))
+	->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END) AS count'))
 	->groupBy('agent_dim.Id')
 	->get();
 
 	$fcr= DB::table('fact')
 	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
 	->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-	->where('Category','not like','Service Catalog')
 	->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
 	->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
-	->where('Contact_type','like','Phone')
-	->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END) * 100 /SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END),0)  AS count'))
+	->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolved = 1 AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0 END) AS count'))
 	->groupBy('agent_dim.Id')
 	->get();
 
 	$fcr_reso= DB::table('fact')
 	->join('agent_dim', 'agent_dim.Id', '=', 'fact.fk_agent')
 	->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-	->where('Category','not like','Service Catalog')
 	->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
 	->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
-	->where('Contact_type','like','Phone')
-	->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (FCR_resolved = 1 AND FCR_resolvable = \'Yes\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0  END) * 100 /SUM(CASE WHEN (time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\' AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0  END),0) AS count'))
+	->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolved = 1 AND FCR_resolvable = \'Yes\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolvable = \'Yes\' AND time_dim.Created>=\'' . $params['datedeb'] . '\' AND time_dim.Created<=\'' . $params['datefin'] . '\') THEN 1 ELSE 0 END) AS count'))
 	->groupBy('agent_dim.Id')
 	->get();
 
