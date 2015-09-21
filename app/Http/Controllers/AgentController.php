@@ -85,7 +85,7 @@ class AgentController extends Controller {
 		->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
 		->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
 		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-		->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / COUNT(*) AS count'))
+		->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND EKMS_knowledge_Id IS NOT NULL AND EKMS_knowledge_Id LIKE \'https://knowledge.rf.lilly.com/%\') THEN 1 ELSE 0  END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\') THEN 1 ELSE 0  END) AS count'))
 		->groupBy('agent_dim.Id')
 		->orderBy('count','desc')
 		->get();
