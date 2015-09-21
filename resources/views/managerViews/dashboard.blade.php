@@ -1058,6 +1058,11 @@
                 xAxis: {
                     categories: cat
                 },
+                plotOptions: {
+                    series: {
+                pointWidth: 15
+            }
+        },
                 exporting: {enabled: false},
                 tooltip: {
                     valueSuffix: tooltip
