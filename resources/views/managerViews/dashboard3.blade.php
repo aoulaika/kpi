@@ -58,7 +58,7 @@ Dashboard
                         <div class="form-group">
                             <label for="agent">Choose Agent</label>
                             <select class="form-control select2" id="agent" name="agent">
-                                @foreach ($fcr_reso_users as $key => $user)
+                                @foreach ($ci_users as $key => $user)
                                 <option value="{{ $key }}">{{ $user->Name }}</option>
                                 @endforeach
                             </select>
