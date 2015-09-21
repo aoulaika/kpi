@@ -94,7 +94,7 @@ class AgentController extends Controller {
             ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
             ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
             ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-            ->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) AS count'))
+            ->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolved = 1) THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\') THEN 1 ELSE 0 END) AS count'))
             ->groupBy('agent_dim.Id')
             ->orderBy('count','desc')
             ->get();
@@ -103,7 +103,7 @@ class AgentController extends Controller {
             ->join('agent_dim','agent_dim.Id','=','fact.fk_agent')
             ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
             ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-            ->select(DB::raw('agent_dim.Id, agent_dim.Name, IFNULL(SUM(CASE WHEN (Contact_type like \'Phone\' AND Category not like \'Service Catalog\' AND FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN FCR_resolvable = \'Yes\' THEN 1 ELSE 0 END),0) AS count'))
+            ->select(DB::raw('agent_dim.Id, agent_dim.Name, SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolved = 1 AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) * 100 / SUM(CASE WHEN (Category not like \'Service Catalog\' AND Contact_type like \'Phone\' AND FCR_resolvable = \'Yes\') THEN 1 ELSE 0 END) AS count'))
             ->groupBy('agent_dim.Id')
             ->orderBy('count','desc')
             ->get();
