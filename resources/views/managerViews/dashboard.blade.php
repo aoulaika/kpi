@@ -398,7 +398,7 @@
     </div>
     <!-- End Tickets Per Hours -->
 
-    <!-- Average Resolution Time Per Category -->
+    <!-- Tickets per category/country-->
     <div class="row">
         <div class="col-md-6">
             <div class="box box-default">
@@ -406,8 +406,8 @@
                     <h3 class="box-title">Tickets per Categories</h3>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body" style="height:440px">
-                    <div id="categoryPie"></div>
+                <div class="box-body customScroll" style="height:440px;overflow:auto;">
+                    <div id="categoryPie" style="min-height:3000px;"></div>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -429,7 +429,7 @@
         </div>
         <!-- /.col -->
     </div>
-    <!-- End Average Resolution Time Per Category -->
+    <!-- End Tickets per category/country -->
 @endsection
 @section('script')
     <!-- Select2 -->

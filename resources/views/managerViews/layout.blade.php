@@ -75,8 +75,15 @@
         }
     </style>
     @yield('style')
+    <script src="{{ asset('/js/jQuery-2.1.4.min.js') }}"></script>
+    <script type="text/javascript">
+        $(window).load(function() {
+            $(".loader").fadeOut("slow");
+        })
+    </script>
 </head>
 <body class="skin-blue sidebar-mini sidebar-collapse">
+    <div class="loader"></div>
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
@@ -106,18 +113,6 @@
                                         Mohamed Yassine El Harruchi - Project Manager
                                         <small>Super User</small>
                                     </p>
-                                </li>
-                                <!-- Menu Body -->
-                                <li class="user-body">
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Followers</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Sales</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Friends</a>
-                                    </div>
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
@@ -215,7 +210,6 @@
     <div class="control-sidebar-bg"></div>
         <!-- fin -->
         </div>
-        <script src="{{ asset('/js/jQuery-2.1.4.min.js') }}"></script>
         <!-- daterangepicker -->
         <script src="{{ asset('/js/moment.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('/plugins/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
@@ -248,5 +242,14 @@
         <script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script>
         <script src="{{ asset('/js/jquery.mCustomScrollbar.concat.min.js') }}" type="text/javascript"></script>
         @yield('script')
+        <script>
+            $(document).ready(function () {
+                $(document).ajaxStart(function () {
+                    $(".loader").show();
+                }).ajaxStop(function () {
+                    $(".loader").hide();
+                });
+            });
+        </script>
     </body>
 </html>

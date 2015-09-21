@@ -29,7 +29,6 @@ class DashboardController extends Controller
         ->count();
 
         $kb_missed= DB::table('fact')
-        ->join('time_dim','fact.fk_time','=','time_dim.Id')
         ->join('kb_dim', 'fact.fk_kb', '=', 'kb_dim.Id')
         ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
         ->where('Category','not like','Service Catalog')
@@ -44,9 +43,7 @@ class DashboardController extends Controller
         ->count();
 
         $fcr_missed=DB::table('fact')
-        ->join('time_dim','fact.fk_time','=','time_dim.Id')
         ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-        ->where('Category','not like','Service Catalog')
         ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
         ->where('Contact_type','like','Phone')
         ->where('Category','not like','Service Catalog')
@@ -54,9 +51,7 @@ class DashboardController extends Controller
         ->count();
 
         $total_fcr_reso = DB::table('fact')
-        ->join('time_dim','fact.fk_time','=','time_dim.Id')
         ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-        ->where('Category','not like','Service Catalog')
         ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
         ->where('Contact_type','like','Phone')
         ->where('Category','not like','Service Catalog')
@@ -64,9 +59,7 @@ class DashboardController extends Controller
         ->get();
 
         $fcr_reso_total=DB::table('fact')
-        ->join('time_dim','fact.fk_time','=','time_dim.Id')
         ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-        ->where('Category','not like','Service Catalog')
         ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
         ->where('Contact_type','like','Phone')
         ->where('Category','not like','Service Catalog')
@@ -74,9 +67,7 @@ class DashboardController extends Controller
         ->count();
 
         $fcr_reso_missed=DB::table('fact')
-        ->join('time_dim','fact.fk_time','=','time_dim.Id')
         ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-        ->where('Category','not like','Service Catalog')
         ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
         ->where('Contact_type','like','Phone')
         ->where('Category','not like','Service Catalog')
@@ -119,10 +110,10 @@ class DashboardController extends Controller
             );
 
         $category=DB::table('fact')
-        ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-        ->whereNotNull('Category')
-        ->select(DB::raw('count(*) as y, category as name'))
-        ->groupBy('Category')
+        ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+        ->whereNotNull('Product')
+        ->select(DB::raw('count(*) as y, Product as name'))
+        ->groupBy('Product')
         ->orderBy('y', 'desc')
         ->get();
         $categoryName=array();
@@ -425,15 +416,16 @@ public function reload(Request $request)
         );
 
     $category=DB::table('fact')
-    ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
-    ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
-    ->whereNotNull('Category')
-    ->where('time_dim.Created','>=',$params['datedeb'])
-    ->where('time_dim.Created','<=',$params['datefin'])
-    ->select(DB::raw('count(*) as y, category as name'))
-    ->groupBy('Category')
-    ->orderBy('y', 'desc')
-    ->get();
+        ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
+        ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
+        ->whereNotNull('Product')
+        ->where('time_dim.Created','>=',$params['datedeb'])
+        ->where('time_dim.Created','<=',$params['datefin'])
+        ->select(DB::raw('count(*) as y, Product as name'))
+        ->groupBy('Product')
+        ->orderBy('y', 'desc')
+        ->get();
+    
     $categoryName=array();
     foreach ($category as $key => $value) {
         array_push($categoryName, $value->name);
@@ -543,7 +535,6 @@ public function reload(Request $request)
     $fcr_missed=DB::table('fact')
     ->join('time_dim','fact.fk_time','=','time_dim.Id')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-    ->where('Category','not like','Service Catalog')
     ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
     ->where('Contact_type','like','Phone')
     ->where('Category','not like','Service Catalog')
@@ -554,7 +545,6 @@ public function reload(Request $request)
     $fcr_reso_total=DB::table('fact')
     ->join('time_dim','fact.fk_time','=','time_dim.Id')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-    ->where('Category','not like','Service Catalog')
     ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
     ->where('Contact_type','like','Phone')
     ->where('Category','not like','Service Catalog')
@@ -565,7 +555,6 @@ public function reload(Request $request)
     $fcr_reso_missed=DB::table('fact')
     ->join('time_dim','fact.fk_time','=','time_dim.Id')
     ->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
-    ->where('Category','not like','Service Catalog')
     ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
     ->where('Contact_type','like','Phone')
     ->where('Category','not like','Service Catalog')
@@ -598,6 +587,24 @@ public function reload(Request $request)
         ->orderBy('rate','desc')
         ->get();
 
+    $csi_map=array();
+    foreach ($csi_country as $key => $value) {
+        array_push($csi_map, (object)array(
+            'code'=>$value->country_code,
+            'value'=>$value->rate,
+            'name'=>$value->country_name
+        ));
+    }
+
+    $csi_country=DB::table('csi')
+        ->where('received','>=',$params['datedeb'])
+        ->where('received','<=',$params['datefin'])
+        ->whereNotNull('csi.location')
+        ->select(DB::raw('FORMAT(AVG(csi.rate),2) as rate,csi.location, count(*) as surveys'))
+        ->groupBy('csi.location')
+        ->orderBy('rate','desc')
+        ->get();
+
     $csi_location=array();
 
     foreach ($csi_country as $obj) {
@@ -612,14 +619,6 @@ public function reload(Request $request)
         $csi_location[$obj->location][4] = $obj->surveys;
     }
 
-    $csi_map=array();
-    foreach ($csi_country as $key => $value) {
-        array_push($csi_map, (object)array(
-            'code'=>$value->country_code,
-            'value'=>$value->rate,
-            'name'=>$value->country_name
-        ));
-    }
     $csi_rate=DB::table('csi')
         ->where('received','>=',$params['datedeb'])
         ->where('received','<=',$params['datefin'])

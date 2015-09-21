@@ -18,10 +18,16 @@ class ErrorsController extends Controller
 {
     public function errors()
     {
+        /* By default only errors created last week will be displayed */
+        $end = new \DateTime();
+        $end->setTime(0,0,0);
+        $start = clone $end;
+        $start->modify('-6 day');
         $arrayError = DB::table('fact')
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
             ->join('errors', 'errors.fk_fact', '=', 'fact.Id')
-            ->where('Created', '2015-07-31')
+            ->where('Created','>=', $start->format('Y-m-d'))
+            ->where('Created','<=', $end->format('Y-m-d'))
             ->where('error_type','=','FCR')
             ->distinct()
             ->lists('fk_fact');
@@ -32,7 +38,8 @@ class ErrorsController extends Controller
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
             ->join('contact_dim', 'fact.fk_contact', '=', 'contact_dim.Id')
             ->where('Contact_type','like','Phone')
-            ->where('Created', '2015-07-31')
+            ->where('Created','>=', $start->format('Y-m-d'))
+            ->where('Created','<=', $end->format('Y-m-d'))
             ->where('FCR_resolved', '=', '0')
             ->where('FCR_resolvable', '=', 'Yes')
             ->whereNotIn('fact.Id', $arrayError)
@@ -43,7 +50,8 @@ class ErrorsController extends Controller
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
             ->join('errors', 'errors.fk_fact', '=', 'fact.Id')
-            ->where('Created', '2015-07-31')
+            ->where('Created','>=', $start->format('Y-m-d'))
+            ->where('Created','<=', $end->format('Y-m-d'))
             ->where('error_type','=','FCR')
             ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,errors.error_type as error_type,errors.rca_ag_comment as rca_ag_comment,errors.action as action,errors.remarks as remarks,errors.accounted as accounted,errors.checked as checked'))
             ->union($post_fcr)
@@ -52,7 +60,8 @@ class ErrorsController extends Controller
         $arrayError = DB::table('fact')
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
             ->join('errors', 'errors.fk_fact', '=', 'fact.Id')
-            ->where('Created', '2015-07-31')
+            ->where('Created','>=', $start->format('Y-m-d'))
+            ->where('Created','<=', $end->format('Y-m-d'))
             ->where('error_type','=','KB')
             ->distinct()
             ->lists('fk_fact');
@@ -63,7 +72,8 @@ class ErrorsController extends Controller
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
             ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
             ->where('Category','not like','Service Catalog')
-            ->where('Created', '2015-07-31')
+            ->where('Created','>=', $start->format('Y-m-d'))
+            ->where('Created','<=', $end->format('Y-m-d'))
             ->where(function ($query) {
                 $query->whereNull('EKMS_knowledge_Id')
                     ->orWhere('EKMS_knowledge_Id', 'not like', '%https://knowledge.rf.lilly.com/%');
@@ -77,7 +87,8 @@ class ErrorsController extends Controller
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
             ->join('errors', 'errors.fk_fact', '=', 'fact.Id')
             ->join('kb_dim', 'kb_dim.Id', '=', 'fact.fk_kb')
-            ->where('Created', '2015-07-31')
+            ->where('Created','>=', $start->format('Y-m-d'))
+            ->where('Created','<=', $end->format('Y-m-d'))
             ->where('error_type','=','KB')
             ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,errors.error_type as error_type,errors.rca_ag_comment as rca_ag_comment,errors.action as action,errors.remarks as remarks,errors.accounted as accounted,errors.checked as checked'))
             ->union($post_kb)
@@ -86,7 +97,8 @@ class ErrorsController extends Controller
         $arrayError = DB::table('fact')
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
             ->join('errors', 'errors.fk_fact', '=', 'fact.Id')
-            ->where('Created', '2015-07-31')
+            ->where('Created','>=', $start->format('Y-m-d'))
+            ->where('Created','<=', $end->format('Y-m-d'))
             ->where('error_type','=','CI')
             ->distinct()
             ->lists('fk_fact');
@@ -96,7 +108,8 @@ class ErrorsController extends Controller
             ->join('time_dim', 'time_dim.Id', '=', 'fact.fk_time')
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
             ->join('ci_dim', 'ci_dim.Id', '=', 'fact.fk_ci')
-            ->where('Created','2015-07-31')
+            ->where('Created','>=', $start->format('Y-m-d'))
+            ->where('Created','<=', $end->format('Y-m-d'))
             ->whereNull('ci_dim.name')
             ->whereNotIn('fact.Id',$arrayError)
             ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,\'CI\' as error_type,\'\' as rca_ag_comment,\'\' as action,\'\' as remarks,0 as accounted,0 as checked'));
@@ -107,7 +120,8 @@ class ErrorsController extends Controller
             ->join('tickets_dim', 'tickets_dim.Id', '=', 'fact.fk_ticket')
             ->join('errors','errors.fk_fact','=','fact.Id')
             ->join('ci_dim', 'ci_dim.Id', '=', 'fact.fk_ci')
-            ->where('Created','2015-07-31')
+            ->where('Created','>=', $start->format('Y-m-d'))
+            ->where('Created','<=', $end->format('Y-m-d'))
             ->where('error_type','=','CI')
             ->select(DB::raw('fact.Id,tickets_dim.Number,time_dim.Created,tickets_dim.Short_Description,agent_dim.Code,agent_dim.Name,SEC_TO_TIME(fact.Handling_time) as hdl_time,errors.error_type as error_type,errors.rca_ag_comment as rca_ag_comment,errors.action as action,errors.remarks as remarks,errors.accounted as accounted,errors.checked as checked'))
             ->union($post_ci)
