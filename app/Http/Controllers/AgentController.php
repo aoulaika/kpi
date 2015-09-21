@@ -278,10 +278,8 @@ class AgentController extends Controller {
 
 		$csi_scrub=DB::table('csi')
 		->where('csi.agent_code',$ci_users[0]->Code)
-		->where(function($q){
-			$q->where('csi.d_sat_valid', '=', 'YES');
-			$q->orWhere('csi.d_sat_valid', '=', '0,0');
-			$q->orWhereNull('csi.d_sat_valid');
+		->whereNotIn('id',function($q){
+			$q->select('id')->from('csi')->where('d_sat_valid','=','NO');
 		})
 		->select(DB::raw('count(*) as count, FORMAT(avg(csi.rate),2) as rate'))
 		->first();
@@ -293,6 +291,52 @@ class AgentController extends Controller {
 		->select(DB::raw('csi.received as date, avg(csi.rate) as value'))
 		->groupBy('csi.received_year','csi.received_month','csi.received_day')
 		->get();
+
+		$csi_users=DB::table('fact')
+		->join('agent_dim', 'fact.fk_agent', '=', 'agent_dim.Id')
+		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+		->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')
+		->select(DB::raw('agent_dim.*, FORMAT(avg(csi.rate),2) as rate, count(*) as surveys'))
+		->groupBy('agent_dim.Id')
+		->orderBy('rate','desc')
+		->get();
+
+		$csi_users_scrub=DB::table('fact')
+		->join('agent_dim', 'fact.fk_agent', '=', 'agent_dim.Id')
+		->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+		->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')
+		->whereNotIn('csi.id',function($q){
+			$q->select('id')->from('csi')->where('d_sat_valid','=','NO');
+		})
+		->select(DB::raw('agent_dim.*, FORMAT(avg(csi.rate),2) as rate, count(*) as surveys'))
+		->groupBy('agent_dim.Id')
+		->orderBy('rate','desc')
+		->get();
+		$users_csi=array();
+		$i=1;
+		foreach ($csi_users as $obj) {
+			$picture=DB::table('user_project')
+			->join('users','users.Id','=','user_project.user_id')
+			->where('user_project.account_id','=',$obj->Code)
+			->select('users.picture')
+			->first();
+			if ($picture) {
+				$users_csi[$obj->Code]['picture']="/images/".$picture->picture;
+			} else {
+				$users_csi[$obj->Code]['picture']="/images/".'default-user.png';
+			}
+
+			$users_csi[$obj->Code]['number']=$i++;
+			$users_csi[$obj->Code]['name']=$obj->Name;
+			$users_csi[$obj->Code]['csi']=$obj->rate;
+			$users_csi[$obj->Code]['csi_surveys']=$obj->surveys;
+			$users_csi[$obj->Code]['csi_scrub']=$obj->rate;
+			$users_csi[$obj->Code]['csi_scrub_surveys']=0;
+		}
+		foreach ($csi_users_scrub as $obj) {
+			$users_csi[$obj->Code]['csi_scrub']=$obj->rate;
+			$users_csi[$obj->Code]['csi_scrub_surveys']=$obj->surveys;
+		}
 
 		$begin = DB::table('time_dim')->min('Created');
 		$end = (new \Datetime())->format('Y-m-d');
@@ -339,6 +383,7 @@ class AgentController extends Controller {
 			'begin'=>$begin,
 			'end'=>$end,
 			'csi_scrub'=>$csi_scrub,
+			'users_csi'=>$users_csi,
 			'csi_tracking'=>$csi_tracking
 			]);
 }
@@ -615,6 +660,56 @@ public function rangedate(Request $request) {
 	->select(DB::raw('csi.received as date, avg(csi.rate) as value'))
 	->groupBy('csi.received_year','csi.received_month','csi.received_day')
 	->get();
+
+	$csi_users=DB::table('fact')
+	->join('agent_dim', 'fact.fk_agent', '=', 'agent_dim.Id')
+	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+	->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')
+	->where('csi.received','>',$params['datedeb'])
+	->where('csi.received','<',$params['datefin'])
+	->select(DB::raw('agent_dim.*, FORMAT(avg(csi.rate),2) as rate, count(*) as surveys'))
+	->groupBy('agent_dim.Id')
+	->orderBy('rate','desc')
+	->get();
+
+	$csi_users_scrub=DB::table('fact')
+	->join('agent_dim', 'fact.fk_agent', '=', 'agent_dim.Id')
+	->join('tickets_dim', 'fact.fk_ticket', '=', 'tickets_dim.Id')
+	->join('csi', 'tickets_dim.Number', '=', 'csi.ticket_number')
+	->where('csi.received','>',$params['datedeb'])
+	->where('csi.received','<',$params['datefin'])
+	->whereNotIn('csi.id',function($q){
+		$q->select('id')->from('csi')->where('d_sat_valid','=','NO');
+	})
+	->select(DB::raw('agent_dim.*, FORMAT(avg(csi.rate),2) as rate, count(*) as surveys'))
+	->groupBy('agent_dim.Id')
+	->orderBy('rate','desc')
+	->get();
+	$users_csi=array();
+	$i=1;
+	foreach ($csi_users as $obj) {
+		$picture=DB::table('user_project')
+		->join('users','users.Id','=','user_project.user_id')
+		->where('user_project.account_id','=',$obj->Code)
+		->select('users.picture')
+		->first();
+		if ($picture) {
+			$users_csi[$obj->Code]['picture']="/images/".$picture->picture;
+		} else {
+			$users_csi[$obj->Code]['picture']="/images/".'default-user.png';
+		}
+
+		$users_csi[$obj->Code]['number']=$i++;
+		$users_csi[$obj->Code]['name']=$obj->Name;
+		$users_csi[$obj->Code]['csi']=$obj->rate;
+		$users_csi[$obj->Code]['csi_surveys']=$obj->surveys;
+		$users_csi[$obj->Code]['csi_scrub']=$obj->rate;
+		$users_csi[$obj->Code]['csi_scrub_surveys']=0;
+	}
+	foreach ($csi_users_scrub as $obj) {
+		$users_csi[$obj->Code]['csi_scrub']=$obj->rate;
+		$users_csi[$obj->Code]['csi_scrub_surveys']=$obj->surveys;
+	}
 	/* */
 	return response()->json([
 		'tickets_per_agent' => $tickets_per_agent,
@@ -640,6 +735,7 @@ public function rangedate(Request $request) {
 		'total_ticket'=>$total_ticket,
 		'csi'=>$csi,
 		'csi_scrub'=>$csi_scrub,
+		'users_csi'=>$users_csi,
 		'csi_tracking'=>$csi_tracking
 		]);
 }

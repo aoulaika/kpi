@@ -13,6 +13,10 @@ Dashboard
         height: 100px;
         width: 100px;
     }
+    .rank-img{
+        height: 50px;
+        width: 50px;
+    }
 </style>
 @endsection
 @section('page_current')
@@ -206,73 +210,52 @@ Dashboard
                 </div><!-- nav-tabs-custom -->
             </div><!-- /.box-body -->
         </div><!-- /.box -->
-        <div class="box box-default">
+        <div class="box box-default" style="height:664px;">
             <div class="box-header with-border">
-                <h3 class="box-title">Top 10 Agents</h3>
+                <h3 class="box-title">Top Agents</h3>
             </div><!-- /.box-header -->
-            <div class="box-body">
-                <ul class="products-list product-list-in-box">
-                    <li class="item">
-                        <div class="row">
-                            <div class="col-lg-1">
-                                <span class="rank">1</span>
+            <div class="box-body" style="height:620px;">
+                <div class="customScroll" data-mcs-theme="dark" style="height:610px;overflow: auto;">
+                    <ul id="top-agent" class="products-list product-list-in-box">
+                        @foreach($users_csi as $index => $obj)
+                        <li class="item">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <span class="rank">{{ $obj['number'] }}</span>
+                                </div>
+                                <div class="col-lg-1">
+                                    <img src="{{ asset($obj['picture']) }}" class="rank-img" alt="Product Image" />
+                                </div>
+                                <div class="col-lg-8">
+                                    <a href="#" class="product-title">{{ $obj['name'] }}</a>
+                                    <span class="product-description" style="font-size:0.9em">
+                                      <span class="rank-titles" >Current CSI :</span> <span class="rank-titles" > rate </span>{{ $obj['csi'] }} <span class="rank-titles" >For </span>{{ $obj['csi_surveys'] }} Surveys<br>
+                                      <span class="rank-titles" >CSI With Scrub :</span> <span class="rank-titles" > rate </span>{{ $obj['csi_scrub'] }} <span class="rank-titles" >For </span>{{ $obj['csi_scrub_surveys'] }} Surveys
+                                  </span>
+                              </div>
+                              @if($obj['number']==1)
+                              <div class="col-lg-2">
+                                <span class="pull-right" style="color:#FFCC00"><i class="fa fa-3x fa-trophy"></i></span>
                             </div>
-                            <div class="col-lg-1">
-                                <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
+                            @endif
+                            @if($obj['number']==2)
+                            <div class="col-lg-2">
+                                <span class="pull-right" style="color:#E2E2E2"><i class="fa fa-3x fa-trophy"></i></span>
                             </div>
-                            <div class="col-lg-8">
-                                <a href="#" class="product-title">Oussama Laouina </a>
-                                <span class="product-description" style="font-size:0.9em">
-                                  <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                              </span>
-                          </div>
-                          <div class="col-lg-2">
-                            <span class="pull-right" style="color:#CFB53B"><i class="fa fa-3x fa-trophy"></i></span>
+                            @endif
+                            @if($obj['number']==3)
+                            <div class="col-lg-2">
+                                <span class="pull-right" style="color:#E29A2C"><i class="fa fa-3x fa-trophy"></i></span>
+                            </div>
+                            @endif
+
                         </div>
-                    </div>
-                </li><!-- /.item -->
-                <li class="item">
-                    <div class="row">
-                        <div class="col-lg-1">
-                            <span class="rank">2</span>
-                        </div>
-                        <div class="col-lg-1">
-                            <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                        </div>
-                        <div class="col-lg-8">
-                            <a href="#" class="product-title">Karima Majid </a>
-                            <span class="product-description" style="font-size:0.9em">
-                              <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                          </span>
-                      </div>
-                      <div class="col-lg-2">
-                        <span class="pull-right" style="color:#c0c0c0"><i class="fa fa-3x fa-trophy"></i></span>
-                    </div>
-                </div>
-            </li><!-- /.item -->
-            <li class="item">
-                <div class="row">
-                    <div class="col-lg-1">
-                        <span class="rank">3</span>
-                    </div>
-                    <div class="col-lg-1">
-                        <img src="dist/img/default-50x50.gif" class="rank-img" alt="Product Image" />
-                    </div>
-                    <div class="col-lg-8">
-                        <a href="#" class="product-title">Zakaria Seghrouchni </a>
-                        <span class="product-description" style="font-size:0.9em">
-                          <span class="rank-titles" >Number of tickets :</span> 2410<br> <span class="rank-titles" >EKMS Usage :</span> 50%, <span class="rank-titles" >CI Usage :</span> 66%, <span class="rank-titles" >FCR  :</span> 89%, <span class="rank-titles" >FCR Resolvable</span> : 56%
-                      </span>
-                  </div>
-                  <div class="col-lg-2">
-                    <span class="pull-right" style="color:#cd7f32"><i class="fa fa-3x fa-trophy"></i></span>
-                </div>
+                    </li><!-- /.item -->
+                    @endforeach
+                </ul>
             </div>
-        </li><!-- /.item -->
-    </ul>
-    <center><span id="more" class="hvr-pulse"> ... </span></center>
-</div>
-</div>
+        </div>
+    </div>
 </div><!-- /.col -->
 </div>
 <input name="_token" type="hidden" value="{{ csrf_token() }}" />
@@ -426,6 +409,7 @@ gauge('#gauge2', 0, 10, prc_nbr_temp[0].count+' Tickets', [parseInt(tht_temp[0].
                     /*csi*/
                     $('#csi').text(response.csi.rate);$('#csi-count').text(response.csi.count);
                     $('#csiscrub').text(response.csi_scrub.rate);$('#csiscrub-count').text(response.csi_scrub.count);
+                    reloadTop(response.users_csi);
 
                     csiTrack('csiTracking', response.csi_tracking);
                     /* Setting html values and graphes */

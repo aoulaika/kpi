@@ -372,3 +372,39 @@ function csiTrack(id, data) {
 chart.pathToImages = '/kpi/public/img/';
 
 }
+
+function reloadTop (data) {
+    var str='';
+    for (var key in data) {
+       if (data.hasOwnProperty(key)) {
+        str+="<li class='item'>";
+        str+="<div class='row'>";
+            str+="<div class='col-lg-1'>";
+                str+="<span class='rank'>"+data[key].number+"</span>";
+            str+="</div>";
+            str+="<div class='col-lg-1'>";
+                str+="<img src='../../../kpi/public"+data[key].picture+"' class='rank-img' alt='Product Image' />";
+            str+="</div>";
+            str+="<div class='col-lg-8'>";
+                str+="<a class='product-title'>"+data[key].name+"</a>";
+                str+="<span class='product-description' style='font-size:0.9em'>";
+                    str+="<span class='rank-titles' >Current CSI :</span> <span class='rank-titles' > rate </span>"+data[key].csi+" <span class='rank-titles' >For </span>"+data[key].csi_surveys+" Surveys<br>";
+                    str+="<span class='rank-titles' >CSI With Scrub :</span> <span class='rank-titles' > rate </span>"+data[key].csi_scrub+" <span class='rank-titles' >For </span>"+data[key].csi_scrub_surveys+" Surveys";
+                str+="</span>";
+            str+="</div>";
+
+            str+="<div class='col-lg-2'>";
+            if (data[key].number==1) {
+                str+="<span class='pull-right' style='color:#FFCC00'><i class='fa fa-3x fa-trophy'></i></span>";        
+            } else if(data[key].number==2){
+                str+="<span class='pull-right' style='color:#E2E2E2'><i class='fa fa-3x fa-trophy'></i></span>";        
+            } else if(data[key].number==3){
+                str+="<span class='pull-right' style='color:#E29A2C'><i class='fa fa-3x fa-trophy'></i></span>";        
+            }
+            str+="</div>";
+        str+="</div>";
+        str+="</li>";
+        }
+    }
+    $('#top-agent').html(str);
+}
